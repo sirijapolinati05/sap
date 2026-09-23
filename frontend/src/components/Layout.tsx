@@ -19,7 +19,7 @@ const Layout: React.FC = () => {
     <div className="min-h-screen bg-slate-50 flex flex-col font-sans text-slate-800">
       
       {/* Top Navbar */}
-      <header className="bg-white border-b border-gray-200 h-14 flex items-center justify-between px-4 sticky top-0 z-10 shadow-sm print:hidden">
+      <header className="bg-white border-b border-gray-200 h-14 flex items-center justify-between px-4 fixed top-0 left-0 right-0 z-30 shadow-sm print:hidden">
         <div className="flex items-center space-x-4">
           <button 
             onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
@@ -69,7 +69,7 @@ const Layout: React.FC = () => {
         </div>
       </header>
 
-      <div className="flex flex-1 overflow-hidden relative">
+      <div className="flex flex-1 overflow-hidden relative mt-14">
         
         {/* Mobile Sidebar Overlay */}
         {isMobileMenuOpen && (
@@ -80,7 +80,7 @@ const Layout: React.FC = () => {
         )}
 
         {/* Sidebar */}
-        <aside className={`absolute md:static inset-y-0 left-0 transform ${isMobileMenuOpen ? 'translate-x-0' : '-translate-x-full'} md:translate-x-0 transition-transform duration-200 ease-in-out z-50 w-56 bg-white border-r border-gray-200 flex flex-col py-4 h-full print:hidden`}>
+        <aside className={`fixed top-14 bottom-0 left-0 transform ${isMobileMenuOpen ? 'translate-x-0' : '-translate-x-full'} md:translate-x-0 transition-transform duration-200 ease-in-out z-20 w-56 bg-white border-r border-gray-200 flex flex-col py-4 print:hidden overflow-y-auto`}>
           <nav className="flex-1 space-y-1 px-3">
             {[
               { icon: HomeIcon, label: 'Home', path: '/home' },
@@ -116,7 +116,7 @@ const Layout: React.FC = () => {
         </aside>
 
         {/* Main Content Area */}
-        <main className="flex-1 overflow-y-auto bg-slate-50">
+        <main className="flex-1 overflow-y-auto bg-slate-50 md:ml-56">
           <Outlet />
         </main>
       </div>

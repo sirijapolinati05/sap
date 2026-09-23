@@ -1,10 +1,46 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { ChevronRight, Search, ChevronDown } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 
 const Reports: React.FC = () => {
   const [currentReport, setCurrentReport] = useState<string | null>(null);
+  const [inventoryItems, setInventoryItems] = useState<any[]>([]);
+  const [invoices, setInvoices] = useState<any[]>([]);
+  const [selectedProduct, setSelectedProduct] = useState<string>('');
   const navigate = useNavigate();
+
+  useEffect(() => {
+    fetch('http://localhost:8000/inventory')
+      .then(res => res.json())
+      .then(data => setInventoryItems(data))
+      .catch(console.error);
+    
+    fetch('http://localhost:8000/invoices')
+      .then(res => res.json())
+      .then(data => setInvoices(data))
+      .catch(console.error);
+  }, []);
+
+  const filteredSales = React.useMemo(() => {
+    if (!selectedProduct) return [];
+    
+    const sales: any[] = [];
+    invoices.forEach(inv => {
+      const items = inv.items || [];
+      items.forEach((item: any) => {
+        if (item.name === selectedProduct) {
+          sales.push({
+            date: inv.date,
+            customer: inv.customer,
+            invoiceId: inv.id,
+            qty: item.quantity,
+            amount: item.amount
+          });
+        }
+      });
+    });
+    return sales;
+  }, [invoices, selectedProduct]);
 
   if (currentReport === 'sales-summary') {
     return (
@@ -25,8 +61,15 @@ const Reports: React.FC = () => {
             {/* Item Name Select */}
             <div className="p-3 border-b border-gray-200">
               <div className="relative">
-                <select className="w-full border border-gray-300 rounded py-2.5 px-3 text-sm appearance-none bg-[#f9fafb] focus:outline-none focus:border-blue-500 text-slate-500 shadow-inner">
-                  <option>Item Name</option>
+                <select 
+                  className="w-full border border-gray-300 rounded py-2.5 px-3 text-sm appearance-none bg-[#f9fafb] focus:outline-none focus:border-blue-500 text-slate-500 shadow-inner"
+                  value={selectedProduct}
+                  onChange={(e) => setSelectedProduct(e.target.value)}
+                >
+                  <option value="">Select Item Name...</option>
+                  {inventoryItems.map((item, idx) => (
+                    <option key={idx} value={item.item_name}>{item.item_name}</option>
+                  ))}
                 </select>
                 <ChevronDown className="w-4 h-4 text-gray-400 absolute right-3 top-3 pointer-events-none" />
               </div>
@@ -46,11 +89,54 @@ const Reports: React.FC = () => {
               </div>
             </div>
 
-            {/* Empty State */}
-            <div className="py-24 flex flex-col items-center justify-center text-slate-400">
-              <Search className="w-10 h-10 mb-2 text-gray-300" strokeWidth={1.5} />
-              <p className="text-sm">No sales summary found for this product.</p>
-            </div>
+            {/* Data State */}
+            {!selectedProduct ? (
+              <div className="py-24 flex flex-col items-center justify-center text-slate-400">
+                <Search className="w-10 h-10 mb-2 text-gray-300" strokeWidth={1.5} />
+                <p className="text-sm">Please select a product to view its sales summary.</p>
+              </div>
+            ) : filteredSales.length === 0 ? (
+              <div className="py-24 flex flex-col items-center justify-center text-slate-400">
+                <Search className="w-10 h-10 mb-2 text-gray-300" strokeWidth={1.5} />
+                <p className="text-sm">No sales summary found for this product.</p>
+              </div>
+            ) : (
+              <div className="w-full overflow-x-auto">
+                <table className="w-full text-sm text-left whitespace-nowrap">
+                  <thead className="text-[11px] text-[#1e3a5f] font-bold border-b border-gray-200 bg-white uppercase">
+                    <tr>
+                      <th className="px-4 py-3">Date</th>
+                      <th className="px-4 py-3">Invoice No</th>
+                      <th className="px-4 py-3">Customer</th>
+                      <th className="px-4 py-3 text-right">Quantity</th>
+                      <th className="px-4 py-3 text-right">Amount</th>
+                    </tr>
+                  </thead>
+                  <tbody className="divide-y divide-gray-100 bg-[#f9fafb]">
+                    {filteredSales.map((sale, idx) => (
+                      <tr key={idx} className="hover:bg-gray-50 transition-colors">
+                        <td className="px-4 py-3">{sale.date}</td>
+                        <td className="px-4 py-3 text-[#0088cc]">{sale.invoiceId}</td>
+                        <td className="px-4 py-3">{sale.customer}</td>
+                        <td className="px-4 py-3 text-right font-medium">{sale.qty}</td>
+                        <td className="px-4 py-3 text-right">₹{parseFloat(sale.amount).toFixed(2)}</td>
+                      </tr>
+                    ))}
+                  </tbody>
+                  <tfoot className="bg-white border-t border-gray-200 font-bold text-slate-800">
+                    <tr>
+                      <td colSpan={3} className="px-4 py-3 text-right">Total:</td>
+                      <td className="px-4 py-3 text-right">
+                        {filteredSales.reduce((acc, s) => acc + (Number(s.qty) || 0), 0)}
+                      </td>
+                      <td className="px-4 py-3 text-right">
+                        ₹{filteredSales.reduce((acc, s) => acc + (Number(s.amount) || 0), 0).toFixed(2)}
+                      </td>
+                    </tr>
+                  </tfoot>
+                </table>
+              </div>
+            )}
             
           </div>
         </div>

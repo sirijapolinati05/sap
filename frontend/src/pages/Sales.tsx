@@ -16,28 +16,29 @@ const customersData = [
   { title: 'Mr', firstName: 'Uday', lastName: '', mobile: '+91 7702944483', email: '', orders: 0 },
 ];
 
-const customersData = [
-  { title: 'Mr', firstName: 'Adithya', lastName: '', mobile: '+91 9959993095', email: '', orders: 1 },
-  { title: 'Mr', firstName: 'Biplav', lastName: '', mobile: '+91 9538412155', email: '', orders: 1 },
-  { title: 'Ms', firstName: 'Deepanvitha', lastName: '', mobile: '+91 7205767768', email: '', orders: 1 },
-  { title: 'Ms', firstName: 'Hasini', lastName: 'Muthyalapati', mobile: '+91 9866589905', email: '', orders: 1 },
-  { title: 'Mr', firstName: 'Jena', lastName: 'P.K', mobile: '+91 7978686701', email: '', orders: 1, bg: 'bg-gray-50' },
-  { title: 'Mr', firstName: 'Sdhgsdhn', lastName: 'Dfhdfh', mobile: '+91 7893525665', email: '', orders: 1 },
-  { title: 'Mr', firstName: 'Sharbodeb', lastName: '', mobile: '+91 8825291649', email: '', orders: 1 },
-  { title: 'Mrs', firstName: 'Subhankar', lastName: 'Linda', mobile: '+91 9547042927', email: '', orders: 1 },
-  { title: 'Mr', firstName: 'Uday', lastName: '', mobile: '+91 7702944483', email: '', orders: 0 },
-];
+
 
 const Sales: React.FC = () => {
   const [currentView, setCurrentView] = useState<'invoices' | 'build-invoice'>('invoices');
   const [activeTab, setActiveTab] = useState<'Sales Invoices' | 'Customers'>('Sales Invoices');
   const [isCustomerModalOpen, setIsCustomerModalOpen] = useState(false);
   const [invoicesData, setInvoicesData] = useState<any[]>([]);
+  const [customers, setCustomers] = useState<any[]>([]);
   const [invoiceToPrint, setInvoiceToPrint] = useState<any>(null);
   const [previewMode, setPreviewMode] = useState(false);
   const [posMode, setPosMode] = useState(false);
   const [paymentMixPeriod, setPaymentMixPeriod] = useState<'FY' | 'Month'>('Month');
   const [topProductsCategory, setTopProductsCategory] = useState('All');
+  const [invoiceStatusFilter, setInvoiceStatusFilter] = useState('All');
+
+  const getComputedStatus = (row: any) => {
+    if (row.status === 'Draft') return 'Draft';
+    const amt = parseFloat(row.amount) || 0;
+    const rcvd = (row.payments || []).reduce((acc: number, p: any) => acc + (parseFloat(p.amount) || 0), 0);
+    if (rcvd >= amt && amt > 0) return 'Paid';
+    if (rcvd > 0) return 'Partial';
+    return 'Unpaid';
+  };
 
   useEffect(() => {
     fetch('http://localhost:8000/invoices')
@@ -176,16 +177,24 @@ const Sales: React.FC = () => {
   return (
     <div className="p-4 md:p-6 space-y-6 bg-[#f0f0f3] min-h-[calc(100vh-64px)]">
       {/* Top Tabs */}
-      <div className="flex space-x-6 border-b border-gray-300/50 pb-2">
+      <div className="flex space-x-6 mb-6">
         <button 
           onClick={() => setActiveTab('Sales Invoices')}
-          className={`px-4 py-2 text-sm font-bold rounded-xl transition-all ${activeTab === 'Sales Invoices' ? 'bg-[#f0f0f3] text-blue-600 shadow-[inset_4px_4px_8px_#cbced1,inset_-4px_-4px_8px_#ffffff]' : 'text-slate-500 hover:text-slate-700 hover:shadow-[4px_4px_8px_#cbced1,-4px_-4px_8px_#ffffff]'}`}
+          className={`flex items-center justify-center px-4 py-1.5 font-medium text-sm transition-all rounded-full ${
+            activeTab === 'Sales Invoices' 
+              ? 'bg-[#5a6c8e] text-white shadow-[inset_0_2px_4px_rgba(255,255,255,0.3),0_4px_6px_rgba(0,0,0,0.2)] border border-[#4a5a75] active:scale-95 active:shadow-[inset_0_1px_2px_rgba(0,0,0,0.4)]' 
+              : 'text-slate-500 hover:text-slate-700'
+          }`}
         >
           Sales Invoices
         </button>
         <button 
           onClick={() => setActiveTab('Customers')}
-          className={`px-4 py-2 text-sm font-bold rounded-xl transition-all ${activeTab === 'Customers' ? 'bg-[#f0f0f3] text-blue-600 shadow-[inset_4px_4px_8px_#cbced1,inset_-4px_-4px_8px_#ffffff]' : 'text-slate-500 hover:text-slate-700 hover:shadow-[4px_4px_8px_#cbced1,-4px_-4px_8px_#ffffff]'}`}
+          className={`flex items-center justify-center px-6 py-1.5 font-medium text-sm transition-all rounded-full ${
+            activeTab === 'Customers' 
+              ? 'bg-[#5a6c8e] text-white shadow-[inset_0_2px_4px_rgba(255,255,255,0.3),0_4px_6px_rgba(0,0,0,0.2)] border border-[#4a5a75] active:scale-95 active:shadow-[inset_0_1px_2px_rgba(0,0,0,0.4)]' 
+              : 'text-slate-500 hover:text-slate-700'
+          }`}
         >
           Customers
         </button>
@@ -250,10 +259,22 @@ const Sales: React.FC = () => {
             </div>
             
             <div className="flex items-center space-x-6">
-              <div className="flex items-center space-x-2 text-sm font-medium bg-[#f0f0f3] shadow-[3px_3px_6px_#cbced1,-3px_-3px_6px_#ffffff] hover:shadow-[inset_2px_2px_4px_#cbced1,inset_-2px_-2px_4px_#ffffff] px-4 py-1.5 rounded-lg transition-all cursor-pointer">
-                <span>Actions</span>
-                <ChevronDown className="w-4 h-4" />
-              </div>
+              {activeTab === 'Sales Invoices' && (
+                <div className="flex items-center space-x-2 text-sm text-slate-600">
+                  <span className="font-medium text-slate-700">Status Filter:</span>
+                  <select 
+                    value={invoiceStatusFilter}
+                    onChange={(e) => setInvoiceStatusFilter(e.target.value)}
+                    className="border-none bg-[#f0f0f3] shadow-[inset_4px_4px_8px_#cbced1,inset_-4px_-4px_8px_#ffffff] rounded-lg py-1.5 px-3 focus:outline-none"
+                  >
+                    <option value="All">All</option>
+                    <option value="Paid">Paid</option>
+                    <option value="Unpaid">Unpaid</option>
+                    <option value="Partial">Partial</option>
+                    <option value="Draft">Draft</option>
+                  </select>
+                </div>
+              )}
               {activeTab === 'Customers' && (
                 <button className="text-sm font-bold text-slate-800 hover:text-black">
                   Add New Customer
@@ -280,20 +301,22 @@ const Sales: React.FC = () => {
                   </tr>
                 </thead>
                 <tbody className="divide-y divide-gray-300">
-                  {invoicesData.length === 0 ? (
+                  {invoicesData.filter(row => invoiceStatusFilter === 'All' || getComputedStatus(row) === invoiceStatusFilter).length === 0 ? (
                     <tr>
                       <td colSpan={6} className="px-4 py-8 text-center text-gray-500">
-                        No sales invoices yet. Click 'New Invoice' to create one!
+                        No sales invoices match this filter.
                       </td>
                     </tr>
                   ) : (
-                    invoicesData.map((row, idx) => (
+                    invoicesData.filter(row => invoiceStatusFilter === 'All' || getComputedStatus(row) === invoiceStatusFilter).map((row, idx) => (
                       <tr key={idx} className="bg-transparent hover:bg-[#8ebc7f] hover:text-[#2b4c23] transition-colors cursor-pointer text-slate-600">
                         <td className="px-4 py-3 border-r border-gray-300 font-medium">{row.id}</td>
                         <td className="px-4 py-3 border-r border-gray-300">{row.date}</td>
                         <td className="px-4 py-3 border-r border-gray-300">{row.customer}</td>
                         <td className="px-4 py-3 border-r border-gray-300 text-right font-medium">{row.amount}</td>
-                        <td className="px-4 py-3 border-r border-gray-300">{row.status}</td>
+                        <td className="px-4 py-3 border-r border-gray-300">
+                          {getComputedStatus(row)}
+                        </td>
                         <td className="px-4 py-3">
                           <div className="flex space-x-1 rounded w-fit overflow-hidden border-none shadow-[inset_2px_2px_4px_#cbced1,inset_-2px_-2px_4px_#ffffff] bg-[#f0f0f3] p-1">
                             <button className="p-1.5 transition-colors text-blue-500 hover:bg-blue-100 rounded" onClick={() => { setInvoiceToPrint(row); setPreviewMode(false); setPosMode(true); }}><Edit className="w-3.5 h-3.5" /></button>
