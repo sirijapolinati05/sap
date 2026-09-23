@@ -108,7 +108,7 @@ const Members: React.FC = () => {
           <div className="bg-[#4a84a0] w-10 h-10 rounded text-white flex items-center justify-center mb-4">
             <Users className="w-5 h-5" />
           </div>
-          <div className="text-2xl font-bold text-slate-800">158</div>
+          <div className="text-2xl font-bold text-slate-800">{members.length}</div>
           <div className="text-xs text-slate-500 mt-1 uppercase">Total Members</div>
         </div>
         
@@ -116,7 +116,7 @@ const Members: React.FC = () => {
           <div className="bg-[#5c8b93] w-10 h-10 rounded text-white flex items-center justify-center mb-4">
             <CheckCircle className="w-5 h-5" />
           </div>
-          <div className="text-2xl font-bold text-slate-800">149</div>
+          <div className="text-2xl font-bold text-slate-800">{members.filter(m => !m.membership_ends_on || new Date(m.membership_ends_on) > new Date()).length}</div>
           <div className="text-xs text-slate-500 mt-1 uppercase">Active Members</div>
         </div>
 
@@ -124,7 +124,7 @@ const Members: React.FC = () => {
           <div className="bg-[#59847d] w-10 h-10 rounded text-white flex items-center justify-center mb-4">
             <Star className="w-5 h-5" />
           </div>
-          <div className="text-2xl font-bold text-slate-800">7</div>
+          <div className="text-2xl font-bold text-slate-800">{members.filter(m => (m.membership_category || "").toLowerCase().includes("committee")).length}</div>
           <div className="text-xs text-slate-500 mt-1 uppercase">Committee</div>
         </div>
 
@@ -132,7 +132,7 @@ const Members: React.FC = () => {
           <div className="bg-[#598858] w-10 h-10 rounded text-white flex items-center justify-center mb-4">
             <Clock className="w-5 h-5" />
           </div>
-          <div className="text-2xl font-bold text-slate-800">5</div>
+          <div className="text-2xl font-bold text-slate-800">{members.filter(m => { if (!m.membership_ends_on) return false; const diff = (new Date(m.membership_ends_on).getTime() - Date.now()) / (1000 * 60 * 60 * 24); return diff >= 0 && diff <= 30; }).length}</div>
           <div className="text-xs text-slate-500 mt-1 uppercase">Expiring Soon</div>
         </div>
 
@@ -140,7 +140,7 @@ const Members: React.FC = () => {
           <div className="bg-[#6c915f] w-10 h-10 rounded text-white flex items-center justify-center mb-4">
             <UserPlus className="w-5 h-5" />
           </div>
-          <div className="text-2xl font-bold text-slate-800">8</div>
+          <div className="text-2xl font-bold text-slate-800">{members.filter(m => { if (!m.joining_date) return false; const d = new Date(m.joining_date); const now = new Date(); return d.getMonth() === now.getMonth() && d.getFullYear() === now.getFullYear(); }).length}</div>
           <div className="text-xs text-slate-500 mt-1 uppercase">New This Month</div>
         </div>
       </div>
@@ -421,4 +421,3 @@ const Members: React.FC = () => {
 };
 
 export default Members;
-
