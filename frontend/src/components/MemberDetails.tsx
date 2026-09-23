@@ -7,6 +7,8 @@ interface MemberDetailsProps {
 }
 
 const MemberDetails: React.FC<MemberDetailsProps> = ({ member, onBack }) => {
+  const [activeTab, setActiveTab] = React.useState('Personal Details');
+
   const getInitials = (firstName: string, lastName: string) => {
     return `${(firstName || '').charAt(0)}${(lastName || '').charAt(0)}`.toUpperCase() || 'M';
   };
@@ -47,14 +49,15 @@ const MemberDetails: React.FC<MemberDetailsProps> = ({ member, onBack }) => {
       </div>
 
       {/* Navigation Tabs */}
-      <div className="bg-[#9ba1b4] rounded flex overflow-x-auto text-sm font-medium hide-scrollbar">
-        {['Show All', 'Personal Details', 'Current Membership', 'Sale/Purchase History', 'Visiting History'].map((tab, idx) => (
+      <div className="bg-[#9ba1b4] rounded flex overflow-x-auto text-sm font-medium hide-scrollbar mt-4">
+        {['Show All', 'Personal Details', 'Current Membership', 'Sale/Purchase History', 'Visiting History'].map((tab) => (
           <button 
-            key={idx}
-            className={`px-6 py-3 whitespace-nowrap transition-colors relative ${idx === 0 ? 'text-slate-900' : 'text-slate-700 hover:text-slate-900'}`}
+            key={tab}
+            onClick={() => setActiveTab(tab)}
+            className={`px-6 py-3 whitespace-nowrap transition-colors relative ${activeTab === tab ? 'text-slate-900' : 'text-slate-700 hover:text-slate-900'}`}
           >
             {tab}
-            {idx === 0 && (
+            {activeTab === tab && (
               <div className="absolute bottom-1 left-4 right-4 h-0.5 bg-[#4f46e5] rounded-full"></div>
             )}
           </button>
@@ -62,7 +65,8 @@ const MemberDetails: React.FC<MemberDetailsProps> = ({ member, onBack }) => {
       </div>
 
       <div className="space-y-6">
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+        {(activeTab === 'Show All' || activeTab === 'Personal Details') && (
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
           {/* Address Details */}
           <div className="bg-white rounded-lg border border-gray-200 shadow-sm overflow-hidden">
             <div className="p-4 border-b border-gray-100 bg-gray-50/50">
@@ -90,10 +94,12 @@ const MemberDetails: React.FC<MemberDetailsProps> = ({ member, onBack }) => {
               <DetailRow label="Email" value={member.email} />
             </div>
           </div>
-        </div>
+          </div>
+        )}
 
         {/* Current Membership */}
-        <div className="bg-white rounded-lg border border-gray-200 shadow-sm overflow-hidden">
+        {(activeTab === 'Show All' || activeTab === 'Current Membership') && (
+          <div className="bg-white rounded-lg border border-gray-200 shadow-sm overflow-hidden">
           <div className="p-4 border-b border-gray-100 bg-gray-50/50">
             <h3 className="font-semibold text-slate-800">Current Membership</h3>
           </div>
@@ -108,20 +114,24 @@ const MemberDetails: React.FC<MemberDetailsProps> = ({ member, onBack }) => {
             <DetailRow label="Introduced By" value={member.introduced_by} />
             <DetailRow label="Relation with SAS" value={member.relation_with_sas} />
           </div>
-        </div>
+          </div>
+        )}
 
         {/* History placeholders */}
-        <div className="bg-white rounded-lg border border-gray-200 shadow-sm overflow-hidden">
-          <div className="p-4 border-b border-gray-100 bg-gray-50/50">
+        {(activeTab === 'Show All' || activeTab === 'Sale/Purchase History') && (
+          <div className="bg-white rounded-lg border border-gray-200 shadow-sm overflow-hidden">
+            <div className="p-4 border-b border-gray-100 bg-gray-50/50">
             <h3 className="font-semibold text-slate-800">Sale/Purchase History</h3>
           </div>
           <div className="p-8 text-center text-slate-500 text-sm">
             No sale or purchase history available.
           </div>
-        </div>
+          </div>
+        )}
 
-        <div className="bg-white rounded-lg border border-gray-200 shadow-sm overflow-hidden">
-          <div className="p-4 border-b border-gray-100 bg-gray-50/50">
+        {(activeTab === 'Show All' || activeTab === 'Visiting History') && (
+          <div className="bg-white rounded-lg border border-gray-200 shadow-sm overflow-hidden">
+            <div className="p-4 border-b border-gray-100 bg-gray-50/50">
             <h3 className="font-semibold text-slate-800">Visiting History</h3>
           </div>
           <div className="overflow-x-auto">
@@ -144,7 +154,8 @@ const MemberDetails: React.FC<MemberDetailsProps> = ({ member, onBack }) => {
               </tbody>
             </table>
           </div>
-        </div>
+          </div>
+        )}
       </div>
     </div>
   );

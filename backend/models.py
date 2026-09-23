@@ -43,20 +43,26 @@ class Visitor(Base):
     __tablename__ = "visitors"
     
     id = Column(Integer, primary_key=True, index=True)
-    member_or_visitor = Column(String, nullable=False)
-    visit_date = Column(Date, nullable=False)
-    visit_purpose = Column(String, nullable=False)
+    member_or_visitor = Column(String, nullable=True)
+    visit_date = Column(Date, nullable=True)
+    visit_purpose = Column(String, nullable=True)
     interested_to_become_member = Column(Boolean, default=False)
-    # The list grid uses Title, FirstName, LastName, DOB, Mobile, Email, VisitDate, Purpose, MembershipType.
-    # It seems there's a link to the actual person (Member or just Visitor details)
-    # Since the frontend form (Visitor Register) doesn't have name fields, we'll assume it links or we add them.
-    # For now, let's add basic fields as seen in the grid:
+    
+    country_code = Column(String)
+    mobile = Column(String)
+    email = Column(String)
+    address_1 = Column(String)
+    address_2 = Column(String)
+    address_3 = Column(String)
+    city = Column(String)
+    pincode = Column(String)
+    country = Column(String)
+    state = Column(String)
+    
     title = Column(String)
     first_name = Column(String)
     last_name = Column(String)
     dob = Column(Date)
-    mobile = Column(String)
-    email = Column(String)
 
 class Member(Base):
     __tablename__ = "members"

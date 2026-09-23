@@ -47,16 +47,26 @@ class LocationOut(LocationBase):
         orm_mode = True
 
 class VisitorBase(BaseModel):
-    member_or_visitor: str
-    visit_date: date
-    visit_purpose: str
+    member_or_visitor: Optional[str] = None
+    visit_date: Optional[date] = None
+    visit_purpose: Optional[str] = None
     interested_to_become_member: bool = False
+    
+    country_code: Optional[str] = None
+    mobile: Optional[str] = None
+    email: Optional[str] = None
+    address_1: Optional[str] = None
+    address_2: Optional[str] = None
+    address_3: Optional[str] = None
+    city: Optional[str] = None
+    pincode: Optional[str] = None
+    country: Optional[str] = None
+    state: Optional[str] = None
+    
     title: Optional[str] = None
     first_name: Optional[str] = None
     last_name: Optional[str] = None
     dob: Optional[date] = None
-    mobile: Optional[str] = None
-    email: Optional[str] = None
 
 class VisitorCreate(VisitorBase):
     pass

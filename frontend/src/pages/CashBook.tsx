@@ -3,78 +3,82 @@ import { Search, ChevronDown, Calendar } from 'lucide-react';
 import CashBookForm from '../components/forms/CashBookForm';
 
 const CashBook: React.FC = () => {
-  const [activeTab, setActiveTab] = useState<'cashbook' | 'expenses'>('expenses');
+  const [activeTab, setActiveTab] = useState<'cashbook' | 'expenses'>('cashbook');
   const [isAddExpenseModalOpen, setIsAddExpenseModalOpen] = useState(false);
 
   return (
     <div className="p-4 md:p-6 space-y-4 flex flex-col h-[calc(100vh-3.5rem)]">
       {/* Tabs */}
-      <div className="flex space-x-6 border-b border-transparent">
+      <div className="flex space-x-6 mb-2">
         <button 
           onClick={() => setActiveTab('cashbook')}
-          className={`px-6 py-1.5 rounded-full shadow-sm font-medium text-sm transition-colors ${
-            activeTab === 'cashbook' ? 'bg-[#4a6b93] text-white' : 'text-slate-600 hover:text-slate-800'
+          className={`flex items-center justify-center px-4 py-1.5 font-medium text-sm transition-all rounded-full ${
+            activeTab === 'cashbook' 
+              ? 'bg-[#5a6c8e] text-white shadow-[inset_0_2px_4px_rgba(255,255,255,0.3),0_4px_6px_rgba(0,0,0,0.2)] border border-[#4a5a75] active:scale-95 active:shadow-[inset_0_1px_2px_rgba(0,0,0,0.4)]' 
+              : 'text-[#3c7ab7] hover:text-[#2d6195]'
           }`}
         >
           Cash Book
         </button>
         <button 
           onClick={() => setActiveTab('expenses')}
-          className={`px-6 py-1.5 rounded-full shadow-sm font-medium text-sm transition-colors ${
-            activeTab === 'expenses' ? 'bg-[#4a6b93] text-white' : 'text-slate-600 hover:text-slate-800'
+          className={`flex items-center justify-center px-4 py-1.5 font-medium text-sm transition-all rounded-full ${
+            activeTab === 'expenses' 
+              ? 'bg-[#5a6c8e] text-white shadow-[inset_0_2px_4px_rgba(255,255,255,0.3),0_4px_6px_rgba(0,0,0,0.2)] border border-[#4a5a75] active:scale-95 active:shadow-[inset_0_1px_2px_rgba(0,0,0,0.4)]' 
+              : 'text-[#3c7ab7] hover:text-[#2d6195]'
           }`}
         >
           Expenses
         </button>
       </div>
 
-      <div className="flex-1 bg-white rounded shadow-sm border border-gray-100 flex flex-col overflow-hidden">
+      <div className="flex-1 bg-[#f0f0f3] rounded-xl shadow-[10px_10px_20px_#cbced1,-10px_-10px_20px_#ffffff] border-none flex flex-col overflow-hidden mb-2">
         
         {activeTab === 'cashbook' ? (
           <>
             {/* Toolbar */}
-            <div className="p-3 border-b border-gray-100 flex flex-wrap items-center justify-between gap-4 bg-white">
+            <div className="p-4 border-none flex flex-wrap items-center justify-between gap-4 bg-[#f0f0f3]">
               <div className="flex items-center space-x-4">
-                <div className="flex items-center space-x-2 border border-gray-300 rounded px-2 bg-white">
-                  <Search className="w-4 h-4 text-gray-400" />
-                  <input type="text" placeholder="Search" className="border-none py-1 focus:ring-0 text-sm w-48 outline-none" />
+                <div className="flex items-center space-x-2 border-none bg-[#f0f0f3] shadow-[inset_4px_4px_8px_#cbced1,inset_-4px_-4px_8px_#ffffff] rounded-lg px-2">
+                  <Search className="w-4 h-4 text-gray-400 ml-2" />
+                  <input type="text" placeholder="Search" className="border-none py-2 px-2 text-sm w-48 bg-transparent focus:outline-none" />
                 </div>
-                <button className="bg-gray-100 px-3 py-1.5 text-sm font-medium rounded hover:bg-gray-200">Go</button>
+                <button className="bg-[#f0f0f3] hover:shadow-[inset_2px_2px_5px_#cbced1,inset_-2px_-2px_5px_#ffffff] text-black px-4 py-1.5 rounded-lg font-semibold text-sm transition-all shadow-[4px_4px_8px_#cbced1,-4px_-4px_8px_#ffffff] border-none">Go</button>
                 
-                <div className="flex items-center space-x-2 text-sm text-slate-600 ml-4">
-                  <span>Rows</span>
-                  <select className="border border-gray-300 rounded py-1 px-2 focus:outline-none bg-white">
+                <div className="flex items-center space-x-2 ml-4">
+                  <span className="text-sm text-slate-600 font-medium">Rows</span>
+                  <select className="appearance-none border-none bg-[#f0f0f3] shadow-[inset_4px_4px_8px_#cbced1,inset_-4px_-4px_8px_#ffffff] rounded-lg px-4 py-1.5 text-sm focus:outline-none">
                     <option>50</option>
                   </select>
                 </div>
               </div>
               
-              <div className="flex items-center space-x-1 text-sm font-medium cursor-pointer text-slate-700">
-                <span>Actions</span>
-                <ChevronDown className="w-4 h-4" />
+              <div className="flex items-center space-x-2 text-sm font-medium bg-[#f0f0f3] shadow-[3px_3px_6px_#cbced1,-3px_-3px_6px_#ffffff] hover:shadow-[inset_2px_2px_4px_#cbced1,inset_-2px_-2px_4px_#ffffff] px-4 py-1.5 rounded-lg transition-all cursor-pointer">
+                <span className="text-slate-800">Actions</span>
+                <ChevronDown className="w-4 h-4 text-slate-800" />
               </div>
             </div>
 
             {/* Data Table */}
-            <div className="flex-1 overflow-auto">
-              <table className="w-full text-sm text-left whitespace-nowrap">
-                <thead className="text-xs text-[#2b4c7e] font-bold border-b border-gray-200 bg-white sticky top-0 z-10">
+            <div className="flex-1 overflow-auto mx-4 mb-4 p-4 shadow-[inset_5px_5px_10px_#cbced1,inset_-5px_-5px_10px_#ffffff] bg-[#f0f0f3] rounded-xl">
+              <table className="w-full text-sm text-left whitespace-nowrap border border-gray-300">
+                <thead className="text-[11px] font-bold text-gray-500 uppercase tracking-wider border-b border-gray-300">
                   <tr>
-                    <th className="px-4 py-3 flex items-center space-x-1">
+                    <th className="px-4 py-3 flex items-center space-x-1 border-r border-gray-300">
                       <span>Transaction Date</span>
-                      <svg className="w-3 h-3 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M3 4h13M3 8h9m-9 4h6m4 0l4-4m0 0l4 4m-4-4v12"></path></svg>
+                      <svg className="w-3 h-3 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M3 4h13M3 8h9m-9 4h6m4 0l4-4m0 0l4 4m-4-4v12"></path></svg>
                     </th>
-                    <th className="px-4 py-3">DR/CR</th>
-                    <th className="px-4 py-3 text-right">Amount</th>
-                    <th className="px-4 py-3">Source</th>
-                    <th className="px-4 py-3">Ref ID</th>
-                    <th className="px-4 py-3">Note</th>
-                    <th className="px-4 py-3">Description</th>
-                    <th className="px-4 py-3">Created By</th>
+                    <th className="px-4 py-3 border-r border-gray-300">DR/CR</th>
+                    <th className="px-4 py-3 text-right border-r border-gray-300">Amount</th>
+                    <th className="px-4 py-3 border-r border-gray-300">Source</th>
+                    <th className="px-4 py-3 border-r border-gray-300">Ref ID</th>
+                    <th className="px-4 py-3 border-r border-gray-300">Note</th>
+                    <th className="px-4 py-3 border-r border-gray-300">Description</th>
+                    <th className="px-4 py-3 border-r border-gray-300">Created By</th>
                     <th className="px-4 py-3">Created Date</th>
                   </tr>
                 </thead>
-                <tbody className="divide-y divide-gray-100 text-slate-700">
+                <tbody className="divide-y divide-gray-300 text-slate-600">
                   {[
                     { date: '21-Sep-2026', type: 'CR', amt: '203', source: 'SALES', ref: '154876', note: 'UPI', by: 'SILPA', cdate: '21 hours ago' },
                     { date: '21-Sep-2026', type: 'CR', amt: '530', source: 'SALES', ref: '154369', note: 'UPI', by: 'SILPA', cdate: '21 hours ago' },
@@ -89,15 +93,15 @@ const CashBook: React.FC = () => {
                     { date: '12-Sep-2026', type: 'CR', amt: '720', source: 'SALES', ref: '132843', note: 'UPI', by: 'SILPA', cdate: '9 days ago' },
                     { date: '12-Sep-2026', type: 'CR', amt: '855', source: 'SALES', ref: '135180', note: 'UPI', by: 'SILPA', cdate: '9 days ago' },
                   ].map((row, idx) => (
-                    <tr key={idx} className="hover:bg-gray-50 transition-colors">
-                      <td className="px-4 py-3">{row.date}</td>
-                      <td className="px-4 py-3">{row.type}</td>
-                      <td className="px-4 py-3 text-right font-medium">{row.amt}</td>
-                      <td className="px-4 py-3">{row.source}</td>
-                      <td className="px-4 py-3">{row.ref}</td>
-                      <td className="px-4 py-3">{row.note}</td>
-                      <td className="px-4 py-3"></td>
-                      <td className="px-4 py-3">{row.by}</td>
+                    <tr key={idx} className="bg-transparent hover:bg-[#8ebc7f] hover:text-[#2b4c23] transition-colors">
+                      <td className="px-4 py-3 border-r border-gray-300">{row.date}</td>
+                      <td className="px-4 py-3 border-r border-gray-300">{row.type}</td>
+                      <td className="px-4 py-3 text-right font-medium border-r border-gray-300">{row.amt}</td>
+                      <td className="px-4 py-3 border-r border-gray-300">{row.source}</td>
+                      <td className="px-4 py-3 border-r border-gray-300">{row.ref}</td>
+                      <td className="px-4 py-3 border-r border-gray-300">{row.note}</td>
+                      <td className="px-4 py-3 border-r border-gray-300"></td>
+                      <td className="px-4 py-3 border-r border-gray-300">{row.by}</td>
                       <td className="px-4 py-3">{row.cdate}</td>
                     </tr>
                   ))}
@@ -108,29 +112,29 @@ const CashBook: React.FC = () => {
         ) : (
           <>
             {/* Expenses Toolbar */}
-            <div className="p-3 border-b border-gray-100 flex flex-wrap items-center gap-4 bg-white">
-              <div className="flex items-center space-x-2 border border-gray-300 rounded px-2 bg-white">
-                <Search className="w-4 h-4 text-gray-400" />
-                <input type="text" placeholder="Search" className="border-none py-1 focus:ring-0 text-sm w-48 outline-none" />
+            <div className="p-4 border-none flex flex-wrap items-center gap-4 bg-[#f0f0f3]">
+              <div className="flex items-center space-x-2 border-none bg-[#f0f0f3] shadow-[inset_4px_4px_8px_#cbced1,inset_-4px_-4px_8px_#ffffff] rounded-lg px-2">
+                <Search className="w-4 h-4 text-gray-400 ml-2" />
+                <input type="text" placeholder="Search" className="border-none py-2 px-2 text-sm w-48 bg-transparent focus:outline-none" />
               </div>
-              <button className="font-semibold text-sm text-slate-800 hover:text-black">Go</button>
+              <button className="bg-[#f0f0f3] hover:shadow-[inset_2px_2px_5px_#cbced1,inset_-2px_-2px_5px_#ffffff] text-black px-4 py-1.5 rounded-lg font-semibold text-sm transition-all shadow-[4px_4px_8px_#cbced1,-4px_-4px_8px_#ffffff] border-none">Go</button>
               
-              <div className="flex items-center space-x-2 text-sm text-slate-600 ml-4">
-                <span>Rows</span>
-                <select className="border border-gray-300 rounded py-1 px-2 focus:outline-none bg-white">
+              <div className="flex items-center space-x-2 ml-4">
+                <span className="text-sm text-slate-600 font-medium">Rows</span>
+                <select className="appearance-none border-none bg-[#f0f0f3] shadow-[inset_4px_4px_8px_#cbced1,inset_-4px_-4px_8px_#ffffff] rounded-lg px-4 py-1.5 text-sm focus:outline-none">
                   <option>50</option>
                 </select>
               </div>
 
-              <div className="flex items-center space-x-1 text-sm font-medium ml-4 cursor-pointer">
-                <span>Actions</span>
+              <div className="flex items-center space-x-2 text-sm font-medium ml-4 bg-[#f0f0f3] shadow-[3px_3px_6px_#cbced1,-3px_-3px_6px_#ffffff] hover:shadow-[inset_2px_2px_4px_#cbced1,inset_-2px_-2px_4px_#ffffff] px-4 py-1.5 rounded-lg transition-all cursor-pointer">
+                <span className="text-slate-800">Actions</span>
                 <ChevronDown className="w-4 h-4 text-slate-800" />
               </div>
 
               <div className="ml-auto">
                 <button 
                   onClick={() => setIsAddExpenseModalOpen(true)}
-                  className="bg-[#2a2a2a] text-white font-medium text-sm px-4 py-1.5 rounded hover:bg-black transition-colors"
+                  className="bg-[#f0f0f3] shadow-[3px_3px_6px_#cbced1,-3px_-3px_6px_#ffffff] hover:shadow-[inset_2px_2px_4px_#cbced1,inset_-2px_-2px_4px_#ffffff] px-4 py-1.5 rounded-lg font-semibold text-sm text-slate-800 transition-all border-none"
                 >
                   Create
                 </button>

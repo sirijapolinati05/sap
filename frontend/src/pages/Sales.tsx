@@ -21,25 +21,29 @@ const paymentMixData = [
 ];
 
 const Sales: React.FC = () => {
-  const [activeTab, setActiveTab] = useState<'invoices' | 'customers'>('customers');
+  const [activeTab, setActiveTab] = useState<'invoices' | 'customers'>('invoices');
   const [isCustomerModalOpen, setIsCustomerModalOpen] = useState(false);
 
   return (
     <div className="p-4 md:p-6 space-y-6">
       {/* Tabs */}
-      <div className="flex space-x-4 border-b border-gray-200">
+      <div className="flex space-x-6 mb-2">
         <button 
           onClick={() => setActiveTab('invoices')}
-          className={`pb-2 font-medium text-sm px-2 transition-colors ${
-            activeTab === 'invoices' ? 'text-slate-800 border-b-2 border-[#54976a]' : 'text-slate-500 hover:text-slate-700'
+          className={`flex items-center justify-center px-4 py-1.5 font-medium text-sm transition-all rounded-full ${
+            activeTab === 'invoices' 
+              ? 'bg-[#5a6c8e] text-white shadow-[inset_0_2px_4px_rgba(255,255,255,0.3),0_4px_6px_rgba(0,0,0,0.2)] border border-[#4a5a75] active:scale-95 active:shadow-[inset_0_1px_2px_rgba(0,0,0,0.4)]' 
+              : 'text-[#3c7ab7] hover:text-[#2d6195]'
           }`}
         >
           Sales Invoices
         </button>
         <button 
           onClick={() => setActiveTab('customers')}
-          className={`pb-2 font-medium text-sm px-2 transition-colors ${
-            activeTab === 'customers' ? 'text-slate-800 border-b-2 border-[#54976a]' : 'text-slate-500 hover:text-slate-700'
+          className={`flex items-center justify-center px-6 py-1.5 font-medium text-sm transition-all rounded-full ${
+            activeTab === 'customers' 
+              ? 'bg-[#5a6c8e] text-white shadow-[inset_0_2px_4px_rgba(255,255,255,0.3),0_4px_6px_rgba(0,0,0,0.2)] border border-[#4a5a75] active:scale-95 active:shadow-[inset_0_1px_2px_rgba(0,0,0,0.4)]' 
+              : 'text-[#3c7ab7] hover:text-[#2d6195]'
           }`}
         >
           Customers
@@ -77,46 +81,46 @@ const Sales: React.FC = () => {
         <div className="flex-1 space-y-4">
           
           {/* Toolbar */}
-          <div className="flex flex-wrap items-center justify-between gap-4 bg-white p-3 rounded shadow-sm border border-gray-100">
+          <div className="flex flex-wrap items-center justify-between gap-4 bg-[#f0f0f3] shadow-[5px_5px_10px_#cbced1,-5px_-5px_10px_#ffffff] p-4 rounded-xl border-none">
             <div className="flex items-center space-x-4">
-              <div className="flex items-center space-x-2 border border-gray-300 rounded px-2 bg-white">
-                <svg className="w-4 h-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path></svg>
-                <input type="text" placeholder="Search" className="border-none py-1.5 focus:ring-0 text-sm w-48 outline-none" />
+              <div className="flex items-center space-x-2 border-none bg-[#f0f0f3] shadow-[inset_4px_4px_8px_#cbced1,inset_-4px_-4px_8px_#ffffff] rounded-lg px-2">
+                <Search className="w-4 h-4 text-gray-400" />
+                <input type="text" placeholder="Search" className="border-none py-1.5 focus:ring-0 text-sm w-48 bg-transparent outline-none" />
               </div>
-              <button className="bg-gray-100 px-3 py-1.5 text-sm font-medium rounded hover:bg-gray-200">Go</button>
+              <button className="bg-[#f0f0f3] hover:shadow-[inset_2px_2px_5px_#cbced1,inset_-2px_-2px_5px_#ffffff] text-black px-4 py-1.5 rounded-lg font-semibold text-sm transition-all shadow-[4px_4px_8px_#cbced1,-4px_-4px_8px_#ffffff] border-none">Go</button>
               
               <div className="flex items-center space-x-2 text-sm text-slate-600">
                 <span>Rows</span>
-                <select className="border border-gray-300 rounded py-1 px-2 focus:outline-none">
+                <select className="border-none bg-[#f0f0f3] shadow-[inset_4px_4px_8px_#cbced1,inset_-4px_-4px_8px_#ffffff] rounded-lg py-1 px-2 focus:outline-none">
                   <option>25</option>
                   <option>50</option>
                 </select>
               </div>
             </div>
             
-            <div className="flex items-center space-x-2 text-sm font-medium">
+            <div className="flex items-center space-x-2 text-sm font-medium bg-[#f0f0f3] shadow-[3px_3px_6px_#cbced1,-3px_-3px_6px_#ffffff] hover:shadow-[inset_2px_2px_4px_#cbced1,inset_-2px_-2px_4px_#ffffff] px-4 py-1.5 rounded-lg transition-all cursor-pointer">
               <span>Actions</span>
-              <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 9l-7 7-7-7"></path></svg>
+              <ChevronDown className="w-4 h-4" />
             </div>
           </div>
 
           {/* Data Table */}
-          <div className="bg-white rounded shadow-sm border border-gray-100 overflow-x-auto">
-            <table className="w-full text-sm text-left whitespace-nowrap">
-              <thead className="text-xs text-[#2b4c7e] font-bold border-b border-gray-200 bg-white">
+          <div className="bg-[#f0f0f3] shadow-[inset_5px_5px_10px_#cbced1,inset_-5px_-5px_10px_#ffffff] rounded-xl overflow-x-auto p-4 mt-4">
+            <table className="w-full text-sm text-left whitespace-nowrap border border-gray-300">
+              <thead className="text-[11px] font-bold text-gray-500 uppercase tracking-wider border-b border-gray-300">
                 <tr>
-                  <th className="px-4 py-3">Invoice No</th>
-                  <th className="px-4 py-3 flex items-center space-x-1">
+                  <th className="px-4 py-3 border-r border-gray-300">Invoice No</th>
+                  <th className="px-4 py-3 border-r border-gray-300 flex items-center justify-between">
                     <span>Invoice Date</span>
-                    <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M3 4h13M3 8h9m-9 4h6m4 0l4-4m0 0l4 4m-4-4v12"></path></svg>
+                    <ArrowUp className="w-3 h-3" />
                   </th>
-                  <th className="px-4 py-3">Customer</th>
-                  <th className="px-4 py-3 text-right">Total Amount</th>
-                  <th className="px-4 py-3">Invoice Status</th>
+                  <th className="px-4 py-3 border-r border-gray-300">Customer</th>
+                  <th className="px-4 py-3 border-r border-gray-300 text-right">Total Amount</th>
+                  <th className="px-4 py-3 border-r border-gray-300">Invoice Status</th>
                   <th className="px-4 py-3">Action</th>
                 </tr>
               </thead>
-              <tbody className="divide-y divide-gray-100 text-slate-700">
+              <tbody className="divide-y divide-gray-300">
                 {[
                   { id: '0025', date: '21-Sep-2026', customer: 'Adithya', amount: '203', status: 'Paid' },
                   { id: '0024', date: '21-Sep-2026', customer: 'Jena P.K', amount: '530', status: 'Paid' },
@@ -127,17 +131,17 @@ const Sales: React.FC = () => {
                   { id: '0019', date: '16-Sep-2026', customer: 'Biplav', amount: '578', status: 'Paid' },
                   { id: '0018', date: '14-Sep-2026', customer: 'Sharbodeb', amount: '604', status: 'Paid' },
                 ].map((row, idx) => (
-                  <tr key={idx} className="bg-white transition-colors group hover:bg-[#dd7a7a] hover:text-white cursor-pointer">
-                    <td className="px-4 py-3 font-medium">{row.id}</td>
-                    <td className="px-4 py-3">{row.date}</td>
-                    <td className="px-4 py-3">{row.customer}</td>
-                    <td className="px-4 py-3 text-right font-medium">{row.amount}</td>
-                    <td className="px-4 py-3">{row.status}</td>
+                  <tr key={idx} className="bg-transparent hover:bg-[#8ebc7f] hover:text-[#2b4c23] transition-colors cursor-pointer text-slate-600">
+                    <td className="px-4 py-3 border-r border-gray-300 font-medium">{row.id}</td>
+                    <td className="px-4 py-3 border-r border-gray-300">{row.date}</td>
+                    <td className="px-4 py-3 border-r border-gray-300">{row.customer}</td>
+                    <td className="px-4 py-3 border-r border-gray-300 text-right font-medium">{row.amount}</td>
+                    <td className="px-4 py-3 border-r border-gray-300">{row.status}</td>
                     <td className="px-4 py-3">
-                      <div className="flex space-x-1 rounded w-fit overflow-hidden border transition-colors bg-gray-100 group-hover:bg-white/20 border-gray-200 group-hover:border-white/30">
-                        <button className="p-1.5 transition-colors text-slate-600 group-hover:text-white hover:bg-white/30"><Edit className="w-3.5 h-3.5" /></button>
-                        <button className="p-1.5 border-l border-r transition-colors border-gray-200 group-hover:border-white/30 text-slate-600 group-hover:text-white hover:bg-white/30"><Printer className="w-3.5 h-3.5" /></button>
-                        <button className="p-1.5 transition-colors text-slate-600 group-hover:text-white hover:bg-white/30"><List className="w-3.5 h-3.5" /></button>
+                      <div className="flex space-x-1 rounded w-fit overflow-hidden border-none shadow-[inset_2px_2px_4px_#cbced1,inset_-2px_-2px_4px_#ffffff] bg-[#f0f0f3] p-1">
+                        <button className="p-1.5 transition-colors text-blue-500 hover:bg-blue-100 rounded"><Edit className="w-3.5 h-3.5" /></button>
+                        <button className="p-1.5 transition-colors text-green-600 hover:bg-green-100 rounded"><Printer className="w-3.5 h-3.5" /></button>
+                        <button className="p-1.5 transition-colors text-purple-600 hover:bg-purple-100 rounded"><List className="w-3.5 h-3.5" /></button>
                       </div>
                     </td>
                   </tr>
@@ -218,40 +222,40 @@ const Sales: React.FC = () => {
       </div>
       </>
       ) : (
-        <div className="bg-white border border-gray-200 rounded-lg shadow-sm overflow-hidden flex flex-col min-h-[500px]">
+        <div className="bg-[#f0f0f3] rounded-xl shadow-[10px_10px_20px_#cbced1,-10px_-10px_20px_#ffffff] border-none overflow-hidden flex flex-col min-h-[500px]">
           {/* Toolbar */}
-          <div className="flex flex-wrap items-center gap-4 p-3 border-b border-gray-200 bg-gray-50">
-            <div className="flex items-center">
-              <Search className="w-4 h-4 text-gray-500 mr-2" />
+          <div className="flex flex-wrap items-center gap-4 p-4 border-none bg-[#f0f0f3]">
+            <div className="flex items-center space-x-2 border-none bg-[#f0f0f3] shadow-[inset_4px_4px_8px_#cbced1,inset_-4px_-4px_8px_#ffffff] rounded-lg px-2">
+              <Search className="w-4 h-4 text-gray-400 ml-2" />
               <input 
                 type="text" 
                 placeholder="Search" 
-                className="border border-gray-300 rounded-md px-3 py-1.5 text-sm focus:outline-none focus:ring-1 focus:ring-blue-500 min-w-[200px]"
+                className="border-none bg-transparent py-2 px-2 text-sm focus:outline-none min-w-[200px]"
               />
             </div>
-            <button className="font-semibold text-sm text-slate-800 hover:text-black">
+            <button className="bg-[#f0f0f3] hover:shadow-[inset_2px_2px_5px_#cbced1,inset_-2px_-2px_5px_#ffffff] text-black px-4 py-1.5 rounded-lg font-semibold text-sm transition-all shadow-[4px_4px_8px_#cbced1,-4px_-4px_8px_#ffffff] border-none">
               Go
             </button>
             
             <div className="flex items-center ml-4 space-x-2">
-              <span className="text-sm text-slate-600">Rows</span>
+              <span className="text-sm text-slate-600 font-medium">Rows</span>
               <div className="relative">
-                <select className="appearance-none border border-gray-300 rounded-md px-3 py-1.5 pr-8 text-sm bg-white focus:outline-none focus:ring-1 focus:ring-blue-500">
+                <select className="appearance-none border-none bg-[#f0f0f3] shadow-[inset_4px_4px_8px_#cbced1,inset_-4px_-4px_8px_#ffffff] rounded-lg px-4 py-1.5 pr-8 text-sm focus:outline-none">
                   <option>50</option>
                 </select>
                 <ChevronDown className="w-4 h-4 text-gray-500 absolute right-2 top-2 pointer-events-none" />
               </div>
             </div>
 
-            <div className="flex items-center ml-4 space-x-1 cursor-pointer hover:bg-gray-200 p-1.5 rounded-md transition-colors">
-              <span className="text-sm text-slate-800 font-medium">Actions</span>
+            <div className="flex items-center ml-4 space-x-2 text-sm font-medium bg-[#f0f0f3] shadow-[3px_3px_6px_#cbced1,-3px_-3px_6px_#ffffff] hover:shadow-[inset_2px_2px_4px_#cbced1,inset_-2px_-2px_4px_#ffffff] px-4 py-1.5 rounded-lg transition-all cursor-pointer">
+              <span className="text-slate-800">Actions</span>
               <ChevronDown className="w-4 h-4 text-slate-800" />
             </div>
             
             <div className="ml-auto">
               <button 
                 onClick={() => setIsCustomerModalOpen(true)}
-                className="font-semibold text-sm text-slate-800 hover:text-black transition-colors"
+                className="bg-[#f0f0f3] shadow-[3px_3px_6px_#cbced1,-3px_-3px_6px_#ffffff] hover:shadow-[inset_2px_2px_4px_#cbced1,inset_-2px_-2px_4px_#ffffff] px-4 py-1.5 rounded-lg font-semibold text-sm text-slate-800 transition-all border-none"
               >
                 Add New Customer
               </button>
@@ -259,35 +263,35 @@ const Sales: React.FC = () => {
           </div>
 
           {/* Data Table */}
-          <div className="overflow-x-auto flex-1">
-            <table className="w-full text-sm text-left whitespace-nowrap">
-              <thead className="text-[11px] font-bold text-[#1e293b] border-b border-gray-200">
+          <div className="overflow-x-auto flex-1 mx-4 mb-4 p-4 shadow-[inset_5px_5px_10px_#cbced1,inset_-5px_-5px_10px_#ffffff] bg-[#f0f0f3] rounded-xl">
+            <table className="w-full text-sm text-left whitespace-nowrap border border-gray-300">
+              <thead className="text-[11px] font-bold text-gray-500 uppercase tracking-wider border-b border-gray-300">
                 <tr>
-                  <th className="px-4 py-3 w-10"></th>
-                  <th className="px-4 py-3">Title</th>
-                  <th className="px-4 py-3 flex items-center space-x-1 cursor-pointer hover:text-blue-600">
+                  <th className="px-4 py-3 w-10 border-r border-gray-300"></th>
+                  <th className="px-4 py-3 border-r border-gray-300">Title</th>
+                  <th className="px-4 py-3 border-r border-gray-300 flex items-center justify-between">
                     <span>First Name</span>
                     <ArrowUp className="w-3 h-3" />
                   </th>
-                  <th className="px-4 py-3">Last Name</th>
-                  <th className="px-4 py-3">Mobile Number</th>
-                  <th className="px-4 py-3">Email</th>
+                  <th className="px-4 py-3 border-r border-gray-300">Last Name</th>
+                  <th className="px-4 py-3 border-r border-gray-300">Mobile Number</th>
+                  <th className="px-4 py-3 border-r border-gray-300">Email</th>
                   <th className="px-4 py-3">#No Of<br/>Orders</th>
                 </tr>
               </thead>
-              <tbody className="divide-y divide-gray-100">
+              <tbody className="divide-y divide-gray-300">
                 {customersData.map((customer, index) => (
-                  <tr key={index} className={`${customer.bg || 'bg-white'} text-slate-700 hover:bg-gray-50 transition-colors`}>
-                    <td className="px-4 py-3 border-r border-gray-100">
-                      <button className="p-1 rounded text-blue-500 hover:bg-blue-50">
-                        <Edit className="w-4 h-4" />
+                  <tr key={index} className="bg-transparent hover:bg-[#8ebc7f] hover:text-[#2b4c23] transition-colors text-slate-600">
+                    <td className="px-4 py-2 border-r border-gray-300">
+                      <button className="p-1.5 rounded-md bg-[#f0f0f3] shadow-[3px_3px_6px_#cbced1,-3px_-3px_6px_#ffffff] hover:shadow-[inset_2px_2px_4px_#cbced1,inset_-2px_-2px_4px_#ffffff] text-blue-500">
+                        <Edit className="w-3.5 h-3.5" />
                       </button>
                     </td>
-                    <td className="px-4 py-3 border-r border-gray-100">{customer.title}</td>
-                    <td className="px-4 py-3 border-r border-gray-100">{customer.firstName}</td>
-                    <td className="px-4 py-3 border-r border-gray-100">{customer.lastName}</td>
-                    <td className="px-4 py-3 border-r border-gray-100">{customer.mobile}</td>
-                    <td className="px-4 py-3 border-r border-gray-100">{customer.email}</td>
+                    <td className="px-4 py-3 border-r border-gray-300">{customer.title}</td>
+                    <td className="px-4 py-3 border-r border-gray-300">{customer.firstName}</td>
+                    <td className="px-4 py-3 border-r border-gray-300">{customer.lastName}</td>
+                    <td className="px-4 py-3 border-r border-gray-300">{customer.mobile}</td>
+                    <td className="px-4 py-3 border-r border-gray-300">{customer.email}</td>
                     <td className="px-4 py-3">{customer.orders}</td>
                   </tr>
                 ))}
@@ -295,7 +299,7 @@ const Sales: React.FC = () => {
             </table>
           </div>
           
-          <div className="p-3 border-t border-gray-200 text-xs font-medium text-slate-600 flex justify-end">
+          <div className="p-4 mx-4 mb-4 rounded-xl shadow-[inset_4px_4px_8px_#cbced1,inset_-4px_-4px_8px_#ffffff] text-xs font-semibold text-slate-600 flex justify-end">
             1 - 9
           </div>
         </div>

@@ -1,4 +1,4 @@
-﻿import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Search, Edit, ChevronDown, Search as SearchIcon } from 'lucide-react';
 import { useSearchParams } from 'react-router-dom';
 import VendorForm from '../components/forms/VendorForm';
@@ -13,7 +13,7 @@ const vendorsData = [
 
 const Purchase: React.FC = () => {
   const [searchParams] = useSearchParams();
-  const initialTab = (searchParams.get('tab') as Tab) || 'vendors';
+  const initialTab = (searchParams.get('tab') as Tab) || 'dashboard';
   const [activeTab, setActiveTab] = useState<Tab>(initialTab);
   const [isVendorModalOpen, setIsVendorModalOpen] = useState(false);
 
@@ -26,40 +26,40 @@ const Purchase: React.FC = () => {
     switch(activeTab) {
       case 'vendors':
         return (
-          <div className="bg-white border border-gray-200 rounded-lg shadow-sm overflow-hidden flex flex-col min-h-[500px]">
+          <div className="bg-[#f0f0f3] rounded-xl shadow-[10px_10px_20px_#cbced1,-10px_-10px_20px_#ffffff] border-none overflow-hidden flex flex-col min-h-[500px]">
             {/* Toolbar */}
-            <div className="flex flex-wrap items-center gap-4 p-3 border-b border-gray-200 bg-white">
-              <div className="flex items-center">
-                <Search className="w-4 h-4 text-gray-500 mr-2" />
+            <div className="flex flex-wrap items-center gap-4 p-4 border-none bg-[#f0f0f3]">
+              <div className="flex items-center space-x-2 border-none bg-[#f0f0f3] shadow-[inset_4px_4px_8px_#cbced1,inset_-4px_-4px_8px_#ffffff] rounded-lg px-2">
+                <Search className="w-4 h-4 text-gray-400 ml-2" />
                 <input 
                   type="text" 
                   placeholder="Search" 
-                  className="border border-gray-300 rounded-md px-3 py-1.5 text-sm focus:outline-none focus:ring-1 focus:ring-blue-500 min-w-[200px]"
+                  className="border-none bg-transparent py-2 px-2 text-sm focus:outline-none min-w-[200px]"
                 />
               </div>
-              <button className="font-semibold text-sm text-slate-800 hover:text-black">
+              <button className="bg-[#f0f0f3] hover:shadow-[inset_2px_2px_5px_#cbced1,inset_-2px_-2px_5px_#ffffff] text-black px-4 py-1.5 rounded-lg font-semibold text-sm transition-all shadow-[4px_4px_8px_#cbced1,-4px_-4px_8px_#ffffff] border-none">
                 Go
               </button>
               
               <div className="flex items-center ml-4 space-x-2">
-                <span className="text-sm text-slate-600">Rows</span>
+                <span className="text-sm text-slate-600 font-medium">Rows</span>
                 <div className="relative">
-                  <select className="appearance-none border border-gray-300 rounded-md px-3 py-1.5 pr-8 text-sm bg-white focus:outline-none focus:ring-1 focus:ring-blue-500">
+                  <select className="appearance-none border-none bg-[#f0f0f3] shadow-[inset_4px_4px_8px_#cbced1,inset_-4px_-4px_8px_#ffffff] rounded-lg px-4 py-1.5 pr-8 text-sm focus:outline-none">
                     <option>50</option>
                   </select>
                   <ChevronDown className="w-4 h-4 text-gray-500 absolute right-2 top-2 pointer-events-none" />
                 </div>
               </div>
 
-              <div className="flex items-center ml-4 space-x-1 cursor-pointer hover:bg-gray-200 p-1.5 rounded-md transition-colors">
-                <span className="text-sm text-slate-800 font-medium">Actions</span>
+              <div className="flex items-center ml-4 space-x-2 text-sm font-medium bg-[#f0f0f3] shadow-[3px_3px_6px_#cbced1,-3px_-3px_6px_#ffffff] hover:shadow-[inset_2px_2px_4px_#cbced1,inset_-2px_-2px_4px_#ffffff] px-4 py-1.5 rounded-lg transition-all cursor-pointer">
+                <span className="text-slate-800">Actions</span>
                 <ChevronDown className="w-4 h-4 text-slate-800" />
               </div>
               
               <div className="ml-auto">
                 <button 
                   onClick={() => setIsVendorModalOpen(true)}
-                  className="bg-[#467f92] hover:bg-[#3a6878] text-white px-5 py-2.5 rounded-lg font-medium text-sm transition-all shadow-[inset_0_2px_4px_rgba(255,255,255,0.3),0_4px_6px_rgba(0,0,0,0.2)] border border-[#2d525e] active:scale-95 active:shadow-[inset_0_1px_2px_rgba(0,0,0,0.4)]"
+                  className="bg-[#f0f0f3] shadow-[3px_3px_6px_#cbced1,-3px_-3px_6px_#ffffff] hover:shadow-[inset_2px_2px_4px_#cbced1,inset_-2px_-2px_4px_#ffffff] px-4 py-1.5 rounded-lg font-semibold text-sm text-slate-800 transition-all border-none"
                 >
                   Create
                 </button>
@@ -67,38 +67,38 @@ const Purchase: React.FC = () => {
             </div>
 
             {/* Data Table */}
-            <div className="overflow-x-auto flex-1">
-              <table className="w-full text-sm text-left whitespace-nowrap">
-                <thead className="text-[11px] font-bold text-[#1e293b] border-b border-gray-200">
+            <div className="overflow-x-auto flex-1 mx-4 mb-4 p-4 shadow-[inset_5px_5px_10px_#cbced1,inset_-5px_-5px_10px_#ffffff] bg-[#f0f0f3] rounded-xl">
+              <table className="w-full text-sm text-left whitespace-nowrap border border-gray-300">
+                <thead className="text-[11px] font-bold text-gray-500 uppercase tracking-wider border-b border-gray-300">
                   <tr>
-                    <th className="px-4 py-3 w-10"></th>
-                    <th className="px-4 py-3">Vendor Name</th>
-                    <th className="px-4 py-3">GSTIN</th>
-                    <th className="px-4 py-3">Address 1</th>
-                    <th className="px-4 py-3">Address 2</th>
-                    <th className="px-4 py-3">Address 3</th>
-                    <th className="px-4 py-3">City</th>
-                    <th className="px-4 py-3">Pincode</th>
-                    <th className="px-4 py-3">State</th>
+                    <th className="px-4 py-3 w-10 border-r border-gray-300"></th>
+                    <th className="px-4 py-3 border-r border-gray-300">Vendor Name</th>
+                    <th className="px-4 py-3 border-r border-gray-300">GSTIN</th>
+                    <th className="px-4 py-3 border-r border-gray-300">Address 1</th>
+                    <th className="px-4 py-3 border-r border-gray-300">Address 2</th>
+                    <th className="px-4 py-3 border-r border-gray-300">Address 3</th>
+                    <th className="px-4 py-3 border-r border-gray-300">City</th>
+                    <th className="px-4 py-3 border-r border-gray-300">Pincode</th>
+                    <th className="px-4 py-3 border-r border-gray-300">State</th>
                     <th className="px-4 py-3">Country</th>
                   </tr>
                 </thead>
-                <tbody className="divide-y divide-gray-100">
+                <tbody className="divide-y divide-gray-300">
                   {vendorsData.map((vendor, index) => (
-                    <tr key={index} className="bg-white text-slate-700 hover:bg-gray-50 transition-colors">
-                      <td className="px-4 py-3 border-r border-gray-100">
-                        <button className="p-1 rounded text-blue-500 hover:bg-blue-50">
-                          <Edit className="w-4 h-4" />
+                    <tr key={index} className="bg-transparent hover:bg-[#8ebc7f] hover:text-[#2b4c23] transition-colors text-slate-600">
+                      <td className="px-4 py-3 border-r border-gray-300">
+                        <button className="p-1.5 rounded-md bg-[#f0f0f3] shadow-[3px_3px_6px_#cbced1,-3px_-3px_6px_#ffffff] hover:shadow-[inset_2px_2px_4px_#cbced1,inset_-2px_-2px_4px_#ffffff] text-blue-500">
+                          <Edit className="w-3.5 h-3.5" />
                         </button>
                       </td>
-                      <td className="px-4 py-3 border-r border-gray-100">{vendor.name}</td>
-                      <td className="px-4 py-3 border-r border-gray-100">{vendor.gstin}</td>
-                      <td className="px-4 py-3 border-r border-gray-100">{vendor.addr1}</td>
-                      <td className="px-4 py-3 border-r border-gray-100">{vendor.addr2}</td>
-                      <td className="px-4 py-3 border-r border-gray-100">{vendor.addr3}</td>
-                      <td className="px-4 py-3 border-r border-gray-100">{vendor.city}</td>
-                      <td className="px-4 py-3 border-r border-gray-100">{vendor.pin}</td>
-                      <td className="px-4 py-3 border-r border-gray-100">{vendor.state}</td>
+                      <td className="px-4 py-3 border-r border-gray-300">{vendor.name}</td>
+                      <td className="px-4 py-3 border-r border-gray-300">{vendor.gstin}</td>
+                      <td className="px-4 py-3 border-r border-gray-300">{vendor.addr1}</td>
+                      <td className="px-4 py-3 border-r border-gray-300">{vendor.addr2}</td>
+                      <td className="px-4 py-3 border-r border-gray-300">{vendor.addr3}</td>
+                      <td className="px-4 py-3 border-r border-gray-300">{vendor.city}</td>
+                      <td className="px-4 py-3 border-r border-gray-300">{vendor.pin}</td>
+                      <td className="px-4 py-3 border-r border-gray-300">{vendor.state}</td>
                       <td className="px-4 py-3">{vendor.country}</td>
                     </tr>
                   ))}
@@ -106,37 +106,37 @@ const Purchase: React.FC = () => {
               </table>
             </div>
             
-            <div className="p-3 border-t border-gray-200 text-xs font-medium text-slate-600 flex justify-end">
+            <div className="p-4 mx-4 mb-4 rounded-xl shadow-[inset_4px_4px_8px_#cbced1,inset_-4px_-4px_8px_#ffffff] text-xs font-semibold text-slate-600 flex justify-end">
               1 - 3
             </div>
           </div>
         );
       case 'invoice':
         return (
-          <div className="bg-white border border-gray-200 rounded-lg shadow-sm overflow-hidden flex flex-col min-h-[500px]">
+          <div className="bg-[#f0f0f3] rounded-xl shadow-[10px_10px_20px_#cbced1,-10px_-10px_20px_#ffffff] border-none overflow-hidden flex flex-col min-h-[500px]">
             {/* Toolbar */}
-            <div className="flex flex-wrap items-center gap-4 p-3 border-b border-gray-200 bg-gray-50">
-              <div className="flex items-center">
-                <Search className="w-4 h-4 text-gray-500 mr-2" />
+            <div className="flex flex-wrap items-center gap-4 p-4 border-none bg-[#f0f0f3]">
+              <div className="flex items-center space-x-2 border-none bg-[#f0f0f3] shadow-[inset_4px_4px_8px_#cbced1,inset_-4px_-4px_8px_#ffffff] rounded-lg px-2">
+                <Search className="w-4 h-4 text-gray-400 ml-2" />
                 <input 
                   type="text" 
                   placeholder="Search" 
-                  className="border border-gray-300 rounded-md px-3 py-1.5 text-sm focus:outline-none focus:ring-1 focus:ring-blue-500 min-w-[200px]"
+                  className="border-none bg-transparent py-2 px-2 text-sm focus:outline-none min-w-[200px]"
                 />
               </div>
-              <button className="font-semibold text-sm text-slate-800 hover:text-black">
+              <button className="bg-[#f0f0f3] hover:shadow-[inset_2px_2px_5px_#cbced1,inset_-2px_-2px_5px_#ffffff] text-black px-4 py-1.5 rounded-lg font-semibold text-sm transition-all shadow-[4px_4px_8px_#cbced1,-4px_-4px_8px_#ffffff] border-none">
                 Go
               </button>
               
-              <div className="flex items-center ml-4 space-x-1 cursor-pointer hover:bg-gray-200 p-1.5 rounded-md transition-colors">
-                <span className="text-sm text-slate-800 font-medium">Actions</span>
+              <div className="flex items-center ml-4 space-x-2 text-sm font-medium bg-[#f0f0f3] shadow-[3px_3px_6px_#cbced1,-3px_-3px_6px_#ffffff] hover:shadow-[inset_2px_2px_4px_#cbced1,inset_-2px_-2px_4px_#ffffff] px-4 py-1.5 rounded-lg transition-all cursor-pointer">
+                <span className="text-slate-800">Actions</span>
                 <ChevronDown className="w-4 h-4 text-slate-800" />
               </div>
               
               <div className="ml-auto">
                 <button 
                   onClick={() => setActiveTab('add-invoice')}
-                  className="bg-[#467f92] hover:bg-[#3a6878] text-white px-5 py-2.5 rounded-lg font-medium text-sm transition-all shadow-[inset_0_2px_4px_rgba(255,255,255,0.3),0_4px_6px_rgba(0,0,0,0.2)] border border-[#2d525e] active:scale-95 active:shadow-[inset_0_1px_2px_rgba(0,0,0,0.4)]"
+                  className="bg-[#f0f0f3] shadow-[3px_3px_6px_#cbced1,-3px_-3px_6px_#ffffff] hover:shadow-[inset_2px_2px_4px_#cbced1,inset_-2px_-2px_4px_#ffffff] px-4 py-1.5 rounded-lg font-semibold text-sm text-slate-800 transition-all border-none"
                 >
                   Add New
                 </button>
@@ -152,40 +152,40 @@ const Purchase: React.FC = () => {
         );
       case 'po':
         return (
-          <div className="bg-white border border-gray-200 rounded-lg shadow-sm overflow-hidden flex flex-col min-h-[500px]">
+          <div className="bg-[#f0f0f3] rounded-xl shadow-[10px_10px_20px_#cbced1,-10px_-10px_20px_#ffffff] border-none overflow-hidden flex flex-col min-h-[500px]">
             {/* Toolbar */}
-            <div className="flex flex-wrap items-center gap-4 p-3 border-b border-gray-200 bg-gray-50">
-              <div className="flex items-center">
-                <Search className="w-4 h-4 text-gray-500 mr-2" />
+            <div className="flex flex-wrap items-center gap-4 p-4 border-none bg-[#f0f0f3]">
+              <div className="flex items-center space-x-2 border-none bg-[#f0f0f3] shadow-[inset_4px_4px_8px_#cbced1,inset_-4px_-4px_8px_#ffffff] rounded-lg px-2">
+                <Search className="w-4 h-4 text-gray-400 ml-2" />
                 <input 
                   type="text" 
                   placeholder="Search" 
-                  className="border border-gray-300 rounded-md px-3 py-1.5 text-sm focus:outline-none focus:ring-1 focus:ring-blue-500 min-w-[200px]"
+                  className="border-none bg-transparent py-2 px-2 text-sm focus:outline-none min-w-[200px]"
                 />
               </div>
-              <button className="font-semibold text-sm text-slate-800 hover:text-black">
+              <button className="bg-[#f0f0f3] hover:shadow-[inset_2px_2px_5px_#cbced1,inset_-2px_-2px_5px_#ffffff] text-black px-4 py-1.5 rounded-lg font-semibold text-sm transition-all shadow-[4px_4px_8px_#cbced1,-4px_-4px_8px_#ffffff] border-none">
                 Go
               </button>
               
               <div className="flex items-center ml-4 space-x-2">
-                <span className="text-sm text-slate-600">Rows</span>
+                <span className="text-sm text-slate-600 font-medium">Rows</span>
                 <div className="relative">
-                  <select className="appearance-none border border-gray-300 rounded-md px-3 py-1.5 pr-8 text-sm bg-white focus:outline-none focus:ring-1 focus:ring-blue-500">
+                  <select className="appearance-none border-none bg-[#f0f0f3] shadow-[inset_4px_4px_8px_#cbced1,inset_-4px_-4px_8px_#ffffff] rounded-lg px-4 py-1.5 pr-8 text-sm focus:outline-none">
                     <option>50</option>
                   </select>
                   <ChevronDown className="w-4 h-4 text-gray-500 absolute right-2 top-2 pointer-events-none" />
                 </div>
               </div>
 
-              <div className="flex items-center ml-4 space-x-1 cursor-pointer hover:bg-gray-200 p-1.5 rounded-md transition-colors">
-                <span className="text-sm text-slate-800 font-medium">Actions</span>
+              <div className="flex items-center ml-4 space-x-2 text-sm font-medium bg-[#f0f0f3] shadow-[3px_3px_6px_#cbced1,-3px_-3px_6px_#ffffff] hover:shadow-[inset_2px_2px_4px_#cbced1,inset_-2px_-2px_4px_#ffffff] px-4 py-1.5 rounded-lg transition-all cursor-pointer">
+                <span className="text-slate-800">Actions</span>
                 <ChevronDown className="w-4 h-4 text-slate-800" />
               </div>
               
               <div className="ml-auto">
                 <button 
                   onClick={() => setActiveTab('add-purchase')}
-                  className="bg-[#467f92] hover:bg-[#3a6878] text-white px-5 py-2.5 rounded-lg font-medium text-sm transition-all shadow-[inset_0_2px_4px_rgba(255,255,255,0.3),0_4px_6px_rgba(0,0,0,0.2)] border border-[#2d525e] active:scale-95 active:shadow-[inset_0_1px_2px_rgba(0,0,0,0.4)]"
+                  className="bg-[#f0f0f3] shadow-[3px_3px_6px_#cbced1,-3px_-3px_6px_#ffffff] hover:shadow-[inset_2px_2px_4px_#cbced1,inset_-2px_-2px_4px_#ffffff] px-4 py-1.5 rounded-lg font-semibold text-sm text-slate-800 transition-all border-none"
                 >
                   Add Purchase
                 </button>
@@ -256,61 +256,61 @@ const Purchase: React.FC = () => {
             </div>
 
             {/* Data Table Section */}
-            <div className="bg-white border border-gray-200 rounded-lg shadow-sm overflow-hidden flex flex-col flex-1">
+            <div className="bg-[#f0f0f3] rounded-xl shadow-[10px_10px_20px_#cbced1,-10px_-10px_20px_#ffffff] border-none overflow-hidden flex flex-col flex-1">
               {/* Toolbar */}
-              <div className="flex flex-wrap items-center gap-4 p-3 border-b border-gray-200 bg-white">
-                <div className="flex items-center">
-                  <Search className="w-4 h-4 text-gray-500 mr-2" />
+              <div className="flex flex-wrap items-center gap-4 p-4 border-none bg-[#f0f0f3]">
+                <div className="flex items-center space-x-2 border-none bg-[#f0f0f3] shadow-[inset_4px_4px_8px_#cbced1,inset_-4px_-4px_8px_#ffffff] rounded-lg px-2">
+                  <Search className="w-4 h-4 text-gray-400 ml-2" />
                   <input 
                     type="text" 
                     placeholder="Search: All Text Columns" 
-                    className="border border-gray-300 rounded-md px-3 py-1.5 text-sm focus:outline-none focus:ring-1 focus:ring-blue-500 min-w-[200px]"
+                    className="border-none bg-transparent py-2 px-2 text-sm focus:outline-none min-w-[200px]"
                   />
                 </div>
-                <button className="font-semibold text-sm text-slate-800 hover:text-black">Go</button>
-                <div className="flex items-center space-x-1 cursor-pointer hover:bg-gray-200 p-1.5 rounded-md transition-colors ml-4">
-                  <span className="text-sm text-slate-800 font-medium">Actions</span>
+                <button className="bg-[#f0f0f3] hover:shadow-[inset_2px_2px_5px_#cbced1,inset_-2px_-2px_5px_#ffffff] text-black px-4 py-1.5 rounded-lg font-semibold text-sm transition-all shadow-[4px_4px_8px_#cbced1,-4px_-4px_8px_#ffffff] border-none">Go</button>
+                <div className="flex items-center space-x-2 text-sm font-medium bg-[#f0f0f3] shadow-[3px_3px_6px_#cbced1,-3px_-3px_6px_#ffffff] hover:shadow-[inset_2px_2px_4px_#cbced1,inset_-2px_-2px_4px_#ffffff] px-4 py-1.5 rounded-lg transition-all cursor-pointer ml-4">
+                  <span className="text-slate-800">Actions</span>
                   <ChevronDown className="w-4 h-4 text-slate-800" />
                 </div>
-                <button className="font-semibold text-sm text-slate-800 hover:text-black">Edit</button>
-                <button className="font-semibold text-sm text-slate-800 hover:text-black">Add Row</button>
-                <div className="ml-auto flex items-center text-gray-400 cursor-pointer hover:text-gray-600 transition-colors">
+                <button className="bg-[#f0f0f3] shadow-[3px_3px_6px_#cbced1,-3px_-3px_6px_#ffffff] hover:shadow-[inset_2px_2px_4px_#cbced1,inset_-2px_-2px_4px_#ffffff] px-4 py-1.5 rounded-lg font-semibold text-sm text-slate-800 transition-all border-none">Edit</button>
+                <button className="bg-[#f0f0f3] shadow-[3px_3px_6px_#cbced1,-3px_-3px_6px_#ffffff] hover:shadow-[inset_2px_2px_4px_#cbced1,inset_-2px_-2px_4px_#ffffff] px-4 py-1.5 rounded-lg font-semibold text-sm text-slate-800 transition-all border-none">Add Row</button>
+                <div className="ml-auto flex items-center text-gray-500 cursor-pointer hover:text-gray-700 transition-colors bg-[#f0f0f3] shadow-[3px_3px_6px_#cbced1,-3px_-3px_6px_#ffffff] hover:shadow-[inset_2px_2px_4px_#cbced1,inset_-2px_-2px_4px_#ffffff] px-4 py-1.5 rounded-lg font-semibold text-sm border-none">
                   <svg className="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"></path></svg>
-                  <span className="text-sm">Reset</span>
+                  <span>Reset</span>
                 </div>
               </div>
 
               {/* Table */}
-              <div className="overflow-x-auto">
-                <table className="w-full text-sm text-left whitespace-nowrap">
-                  <thead className="text-[11px] font-bold text-[#1e293b] border-b border-gray-200">
+              <div className="overflow-x-auto mx-4 mb-4 p-4 shadow-[inset_5px_5px_10px_#cbced1,inset_-5px_-5px_10px_#ffffff] bg-[#f0f0f3] rounded-xl">
+                <table className="w-full text-sm text-left whitespace-nowrap border border-gray-300">
+                  <thead className="text-[11px] font-bold text-gray-500 uppercase tracking-wider border-b border-gray-300">
                     <tr>
-                      <th className="px-4 py-3 w-10">
+                      <th className="px-4 py-3 w-10 border-r border-gray-300">
                         <input type="checkbox" className="rounded text-blue-600 focus:ring-blue-500" defaultChecked />
                       </th>
-                      <th className="px-2 py-3 w-10"><svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4 6h16M4 12h16M4 18h16"></path></svg></th>
-                      <th className="px-4 py-3">Item</th>
-                      <th className="px-4 py-3 text-right">Quantity</th>
-                      <th className="px-4 py-3 text-right">Purchase Price</th>
+                      <th className="px-2 py-3 w-10 border-r border-gray-300"><svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4 6h16M4 12h16M4 18h16"></path></svg></th>
+                      <th className="px-4 py-3 border-r border-gray-300">Item</th>
+                      <th className="px-4 py-3 text-right border-r border-gray-300">Quantity</th>
+                      <th className="px-4 py-3 text-right border-r border-gray-300">Purchase Price</th>
                       <th className="px-4 py-3 text-right">Total Amount</th>
                     </tr>
                   </thead>
-                  <tbody className="divide-y divide-gray-100">
-                    <tr className="bg-[#eef8f1] text-slate-700">
-                      <td className="px-4 py-3 border-r border-gray-200">
+                  <tbody className="divide-y divide-gray-300">
+                    <tr className="bg-transparent hover:bg-[#8ebc7f] hover:text-[#2b4c23] transition-colors text-slate-600">
+                      <td className="px-4 py-3 border-r border-gray-300">
                         <input type="checkbox" className="rounded text-blue-600 focus:ring-blue-500" defaultChecked />
                       </td>
-                      <td className="px-2 py-3 border-r border-gray-200"><svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4 6h16M4 12h16M4 18h16"></path></svg></td>
-                      <td className="px-4 py-3 border-r border-gray-200 text-gray-500">--Select--</td>
-                      <td className="px-4 py-3 border-r border-gray-200 text-right"></td>
-                      <td className="px-4 py-3 border-r border-gray-200 text-right"></td>
+                      <td className="px-2 py-3 border-r border-gray-300"><svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4 6h16M4 12h16M4 18h16"></path></svg></td>
+                      <td className="px-4 py-3 border-r border-gray-300 text-gray-500">--Select--</td>
+                      <td className="px-4 py-3 border-r border-gray-300 text-right"></td>
+                      <td className="px-4 py-3 border-r border-gray-300 text-right"></td>
                       <td className="px-4 py-3 text-right"></td>
                     </tr>
                   </tbody>
                 </table>
               </div>
               
-              <div className="p-3 border-t border-gray-200 text-xs text-slate-500 flex justify-between items-center bg-white mt-auto">
+              <div className="p-4 mx-4 mb-4 rounded-xl shadow-[inset_4px_4px_8px_#cbced1,inset_-4px_-4px_8px_#ffffff] text-xs font-semibold text-slate-600 flex justify-between items-center bg-[#f0f0f3] mt-auto">
                 <span>1 rows selected</span>
                 <span className="font-semibold text-slate-800">Total 1</span>
               </div>
@@ -391,71 +391,71 @@ const Purchase: React.FC = () => {
             </div>
 
             {/* Data Table Section */}
-            <div className="bg-white border border-gray-200 rounded-lg shadow-sm overflow-hidden flex flex-col flex-1">
+            <div className="bg-[#f0f0f3] rounded-xl shadow-[10px_10px_20px_#cbced1,-10px_-10px_20px_#ffffff] border-none overflow-hidden flex flex-col flex-1">
               {/* Toolbar */}
-              <div className="flex flex-wrap items-center gap-4 p-3 border-b border-gray-200 bg-white">
-                <div className="flex items-center">
-                  <Search className="w-4 h-4 text-gray-500 mr-2" />
+              <div className="flex flex-wrap items-center gap-4 p-4 border-none bg-[#f0f0f3]">
+                <div className="flex items-center space-x-2 border-none bg-[#f0f0f3] shadow-[inset_4px_4px_8px_#cbced1,inset_-4px_-4px_8px_#ffffff] rounded-lg px-2">
+                  <Search className="w-4 h-4 text-gray-400 ml-2" />
                   <input 
                     type="text" 
                     placeholder="Search: All Text Columns" 
-                    className="border border-gray-300 rounded-md px-3 py-1.5 text-sm focus:outline-none focus:ring-1 focus:ring-blue-500 min-w-[200px]"
+                    className="border-none bg-transparent py-2 px-2 text-sm focus:outline-none min-w-[200px]"
                   />
                 </div>
-                <button className="font-semibold text-sm text-slate-800 hover:text-black">Go</button>
-                <div className="flex items-center space-x-1 cursor-pointer hover:bg-gray-200 p-1.5 rounded-md transition-colors ml-4">
-                  <span className="text-sm text-slate-800 font-medium">Actions</span>
+                <button className="bg-[#f0f0f3] hover:shadow-[inset_2px_2px_5px_#cbced1,inset_-2px_-2px_5px_#ffffff] text-black px-4 py-1.5 rounded-lg font-semibold text-sm transition-all shadow-[4px_4px_8px_#cbced1,-4px_-4px_8px_#ffffff] border-none">Go</button>
+                <div className="flex items-center space-x-2 text-sm font-medium bg-[#f0f0f3] shadow-[3px_3px_6px_#cbced1,-3px_-3px_6px_#ffffff] hover:shadow-[inset_2px_2px_4px_#cbced1,inset_-2px_-2px_4px_#ffffff] px-4 py-1.5 rounded-lg transition-all cursor-pointer ml-4">
+                  <span className="text-slate-800">Actions</span>
                   <ChevronDown className="w-4 h-4 text-slate-800" />
                 </div>
-                <button className="font-semibold text-sm text-slate-800 hover:text-black">Edit</button>
-                <button className="font-semibold text-sm text-slate-800 hover:text-black">Add Row</button>
-                <div className="ml-auto flex items-center text-gray-400 cursor-pointer hover:text-gray-600 transition-colors">
+                <button className="bg-[#f0f0f3] shadow-[3px_3px_6px_#cbced1,-3px_-3px_6px_#ffffff] hover:shadow-[inset_2px_2px_4px_#cbced1,inset_-2px_-2px_4px_#ffffff] px-4 py-1.5 rounded-lg font-semibold text-sm text-slate-800 transition-all border-none">Edit</button>
+                <button className="bg-[#f0f0f3] shadow-[3px_3px_6px_#cbced1,-3px_-3px_6px_#ffffff] hover:shadow-[inset_2px_2px_4px_#cbced1,inset_-2px_-2px_4px_#ffffff] px-4 py-1.5 rounded-lg font-semibold text-sm text-slate-800 transition-all border-none">Add Row</button>
+                <div className="ml-auto flex items-center text-gray-500 cursor-pointer hover:text-gray-700 transition-colors bg-[#f0f0f3] shadow-[3px_3px_6px_#cbced1,-3px_-3px_6px_#ffffff] hover:shadow-[inset_2px_2px_4px_#cbced1,inset_-2px_-2px_4px_#ffffff] px-4 py-1.5 rounded-lg font-semibold text-sm border-none">
                   <svg className="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"></path></svg>
-                  <span className="text-sm">Reset</span>
+                  <span>Reset</span>
                 </div>
               </div>
 
               {/* Table */}
-              <div className="overflow-x-auto">
-                <table className="w-full text-sm text-left whitespace-nowrap">
-                  <thead className="text-[11px] font-bold text-[#1e293b] border-b border-gray-200">
+              <div className="overflow-x-auto mx-4 mb-4 p-4 shadow-[inset_5px_5px_10px_#cbced1,inset_-5px_-5px_10px_#ffffff] bg-[#f0f0f3] rounded-xl">
+                <table className="w-full text-sm text-left whitespace-nowrap border border-gray-300">
+                  <thead className="text-[11px] font-bold text-gray-500 uppercase tracking-wider border-b border-gray-300">
                     <tr>
-                      <th className="px-4 py-3 w-10">
+                      <th className="px-4 py-3 w-10 border-r border-gray-300">
                         <input type="checkbox" className="rounded text-blue-600 focus:ring-blue-500" defaultChecked />
                       </th>
-                      <th className="px-2 py-3 w-10"><svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4 6h16M4 12h16M4 18h16"></path></svg></th>
-                      <th className="px-4 py-3">Item Name</th>
-                      <th className="px-4 py-3 text-right">Quantity</th>
-                      <th className="px-4 py-3 text-right">MRP</th>
-                      <th className="px-4 py-3 text-right">Purchase<br/>Price</th>
-                      <th className="px-4 py-3 text-right">Discount<br/>Type</th>
-                      <th className="px-4 py-3 text-right">Discount<br/>Value</th>
-                      <th className="px-4 py-3 text-right">Net Price</th>
-                      <th className="px-4 py-3 text-right">Tax</th>
+                      <th className="px-2 py-3 w-10 border-r border-gray-300"><svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4 6h16M4 12h16M4 18h16"></path></svg></th>
+                      <th className="px-4 py-3 border-r border-gray-300">Item Name</th>
+                      <th className="px-4 py-3 text-right border-r border-gray-300">Quantity</th>
+                      <th className="px-4 py-3 text-right border-r border-gray-300">MRP</th>
+                      <th className="px-4 py-3 text-right border-r border-gray-300">Purchase<br/>Price</th>
+                      <th className="px-4 py-3 text-right border-r border-gray-300">Discount<br/>Type</th>
+                      <th className="px-4 py-3 text-right border-r border-gray-300">Discount<br/>Value</th>
+                      <th className="px-4 py-3 text-right border-r border-gray-300">Net Price</th>
+                      <th className="px-4 py-3 text-right border-r border-gray-300">Tax</th>
                       <th className="px-4 py-3 text-right">Total Price</th>
                     </tr>
                   </thead>
-                  <tbody className="divide-y divide-gray-100">
-                    <tr className="bg-[#eef8f1] text-slate-700">
-                      <td className="px-4 py-3 border-r border-gray-200">
+                  <tbody className="divide-y divide-gray-300">
+                    <tr className="bg-transparent hover:bg-[#8ebc7f] hover:text-[#2b4c23] transition-colors text-slate-600">
+                      <td className="px-4 py-3 border-r border-gray-300">
                         <input type="checkbox" className="rounded text-blue-600 focus:ring-blue-500" defaultChecked />
                       </td>
-                      <td className="px-2 py-3 border-r border-gray-200"><svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4 6h16M4 12h16M4 18h16"></path></svg></td>
-                      <td className="px-4 py-3 border-r border-gray-200 text-gray-500">--Select--</td>
-                      <td className="px-4 py-3 border-r border-gray-200 text-right"></td>
-                      <td className="px-4 py-3 border-r border-gray-200 text-right"></td>
-                      <td className="px-4 py-3 border-r border-gray-200 text-right"></td>
-                      <td className="px-4 py-3 border-r border-gray-200 text-right">P</td>
-                      <td className="px-4 py-3 border-r border-gray-200 text-right"></td>
-                      <td className="px-4 py-3 border-r border-gray-200 text-right"></td>
-                      <td className="px-4 py-3 border-r border-gray-200 text-gray-500 text-right">--Select--</td>
+                      <td className="px-2 py-3 border-r border-gray-300"><svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4 6h16M4 12h16M4 18h16"></path></svg></td>
+                      <td className="px-4 py-3 border-r border-gray-300 text-gray-500">--Select--</td>
+                      <td className="px-4 py-3 border-r border-gray-300 text-right"></td>
+                      <td className="px-4 py-3 border-r border-gray-300 text-right"></td>
+                      <td className="px-4 py-3 border-r border-gray-300 text-right"></td>
+                      <td className="px-4 py-3 border-r border-gray-300 text-right">P</td>
+                      <td className="px-4 py-3 border-r border-gray-300 text-right"></td>
+                      <td className="px-4 py-3 border-r border-gray-300 text-right"></td>
+                      <td className="px-4 py-3 border-r border-gray-300 text-gray-500 text-right">--Select--</td>
                       <td className="px-4 py-3 text-right"></td>
                     </tr>
                   </tbody>
                 </table>
               </div>
               
-              <div className="p-3 border-t border-gray-200 text-xs text-slate-500 flex justify-between items-center bg-white mt-auto">
+              <div className="p-4 mx-4 mb-4 rounded-xl shadow-[inset_4px_4px_8px_#cbced1,inset_-4px_-4px_8px_#ffffff] text-xs font-semibold text-slate-600 flex justify-between items-center bg-[#f0f0f3] mt-auto">
                 <span>1 rows selected</span>
                 <span className="font-semibold text-slate-800">Total 1</span>
               </div>
@@ -476,35 +476,43 @@ const Purchase: React.FC = () => {
     <div className="p-4 md:p-6 space-y-6">
       {/* Tabs - Only show when not in add-purchase or add-invoice view */}
       {activeTab !== 'add-purchase' && activeTab !== 'add-invoice' && (
-        <div className="flex space-x-6 mb-6">
+        <div className="flex space-x-6 mb-2">
           <button 
             onClick={() => setActiveTab('dashboard')}
-            className={`px-4 py-1.5 font-medium text-sm transition-colors rounded-full ${
-              activeTab === 'dashboard' ? 'bg-[#5a6c8e] text-white' : 'text-slate-500 hover:text-slate-700'
+            className={`flex items-center justify-center px-4 py-1.5 font-medium text-sm transition-all rounded-full ${
+              activeTab === 'dashboard' 
+                ? 'bg-[#5a6c8e] text-white shadow-[inset_0_2px_4px_rgba(255,255,255,0.3),0_4px_6px_rgba(0,0,0,0.2)] border border-[#4a5a75] active:scale-95 active:shadow-[inset_0_1px_2px_rgba(0,0,0,0.4)]' 
+                : 'text-[#3c7ab7] hover:text-[#2d6195]'
             }`}
           >
             Dashboard
           </button>
           <button 
             onClick={() => setActiveTab('vendors')}
-            className={`px-4 py-1.5 font-medium text-sm transition-colors rounded-full ${
-              activeTab === 'vendors' ? 'bg-[#5a6c8e] text-white' : 'text-slate-500 hover:text-slate-700'
+            className={`flex items-center justify-center px-4 py-1.5 font-medium text-sm transition-all rounded-full ${
+              activeTab === 'vendors' 
+                ? 'bg-[#5a6c8e] text-white shadow-[inset_0_2px_4px_rgba(255,255,255,0.3),0_4px_6px_rgba(0,0,0,0.2)] border border-[#4a5a75] active:scale-95 active:shadow-[inset_0_1px_2px_rgba(0,0,0,0.4)]' 
+                : 'text-[#3c7ab7] hover:text-[#2d6195]'
             }`}
           >
             Vendors
           </button>
           <button 
             onClick={() => setActiveTab('po')}
-            className={`px-4 py-1.5 font-medium text-sm transition-colors rounded-full ${
-              activeTab === 'po' ? 'bg-[#5a6c8e] text-white' : 'text-slate-500 hover:text-slate-700'
+            className={`flex items-center justify-center px-4 py-1.5 font-medium text-sm transition-all rounded-full ${
+              activeTab === 'po' 
+                ? 'bg-[#5a6c8e] text-white shadow-[inset_0_2px_4px_rgba(255,255,255,0.3),0_4px_6px_rgba(0,0,0,0.2)] border border-[#4a5a75] active:scale-95 active:shadow-[inset_0_1px_2px_rgba(0,0,0,0.4)]' 
+                : 'text-[#3c7ab7] hover:text-[#2d6195]'
             }`}
           >
             PO List
           </button>
           <button 
             onClick={() => setActiveTab('invoice')}
-            className={`px-4 py-1.5 font-medium text-sm transition-colors rounded-full ${
-              activeTab === 'invoice' ? 'bg-[#5a6c8e] text-white' : 'text-slate-500 hover:text-slate-700'
+            className={`flex items-center justify-center px-4 py-1.5 font-medium text-sm transition-all rounded-full ${
+              activeTab === 'invoice' 
+                ? 'bg-[#5a6c8e] text-white shadow-[inset_0_2px_4px_rgba(255,255,255,0.3),0_4px_6px_rgba(0,0,0,0.2)] border border-[#4a5a75] active:scale-95 active:shadow-[inset_0_1px_2px_rgba(0,0,0,0.4)]' 
+                : 'text-[#3c7ab7] hover:text-[#2d6195]'
             }`}
           >
             Purchase Invoice/GRN

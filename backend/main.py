@@ -25,6 +25,10 @@ app.add_middleware(
 
 @app.on_event("startup")
 def seed_user():
+    # Auto-fix: Drop and recreate visitors table to ensure schema matches
+    models.Visitor.__table__.drop(engine, checkfirst=True)
+    models.Visitor.__table__.create(engine)
+
     db = next(get_db())
     existing_user = db.query(models.User).filter(models.User.username == "sharada").first()
     if not existing_user:
@@ -98,6 +102,12 @@ def delete_location(location_id: int, db: Session = Depends(get_db)):
     db.commit()
 
 # --- Visitor Endpoints ---
+@app.get("/reset-visitors-db", tags=["Visitors"])
+def reset_visitors_db():
+    models.Visitor.__table__.drop(engine, checkfirst=True)
+    models.Visitor.__table__.create(engine)
+    return {"message": "Visitors table dropped and recreated"}
+
 @app.get("/visitors", response_model=List[schemas.VisitorOut], tags=["Visitors"])
 def get_visitors(skip: int = 0, limit: int = 100, db: Session = Depends(get_db)):
     return db.query(models.Visitor).offset(skip).limit(limit).all()
