@@ -1,7 +1,8 @@
 import React, { useState } from 'react';
 import { BarChart, Bar, XAxis as RechartsXAxis, YAxis, Tooltip, ResponsiveContainer, Cell } from 'recharts';
-import { Printer, Edit, List, Search, ChevronDown, ArrowUp } from 'lucide-react';
+import { Printer, Edit, List, Search, ChevronDown, ArrowUp, ShoppingCart } from 'lucide-react';
 import SalesForm from '../components/forms/SalesForm';
+import BuildInvoice from './BuildInvoice';
 
 const customersData = [
   { title: 'Mr', firstName: 'Adithya', lastName: '', mobile: '+91 9959993095', email: '', orders: 1 },
@@ -21,37 +22,27 @@ const paymentMixData = [
 ];
 
 const Sales: React.FC = () => {
-  const [activeTab, setActiveTab] = useState<'invoices' | 'customers'>('invoices');
+  const [currentView, setCurrentView] = useState<'invoices' | 'build-invoice'>('invoices');
   const [isCustomerModalOpen, setIsCustomerModalOpen] = useState(false);
+
+  if (currentView === 'build-invoice') {
+    return <BuildInvoice onBack={() => setCurrentView('invoices')} />;
+  }
 
   return (
     <div className="p-4 md:p-6 space-y-6">
-      {/* Tabs */}
-      <div className="flex space-x-6 mb-2">
+      {/* Header */}
+      <div className="flex justify-between items-center mb-2">
+        <h1 className="text-2xl font-bold text-slate-800">Sales Invoices</h1>
         <button 
-          onClick={() => setActiveTab('invoices')}
-          className={`flex items-center justify-center px-4 py-1.5 font-medium text-sm transition-all rounded-full ${
-            activeTab === 'invoices' 
-              ? 'bg-[#5a6c8e] text-white shadow-[inset_0_2px_4px_rgba(255,255,255,0.3),0_4px_6px_rgba(0,0,0,0.2)] border border-[#4a5a75] active:scale-95 active:shadow-[inset_0_1px_2px_rgba(0,0,0,0.4)]' 
-              : 'text-[#3c7ab7] hover:text-[#2d6195]'
-          }`}
+          onClick={() => setCurrentView('build-invoice')}
+          className="flex items-center space-x-1.5 bg-[#232f4e] hover:bg-slate-800 text-white px-4 py-2 rounded text-sm font-medium transition-colors shadow-sm"
         >
-          Sales Invoices
-        </button>
-        <button 
-          onClick={() => setActiveTab('customers')}
-          className={`flex items-center justify-center px-6 py-1.5 font-medium text-sm transition-all rounded-full ${
-            activeTab === 'customers' 
-              ? 'bg-[#5a6c8e] text-white shadow-[inset_0_2px_4px_rgba(255,255,255,0.3),0_4px_6px_rgba(0,0,0,0.2)] border border-[#4a5a75] active:scale-95 active:shadow-[inset_0_1px_2px_rgba(0,0,0,0.4)]' 
-              : 'text-[#3c7ab7] hover:text-[#2d6195]'
-          }`}
-        >
-          Customers
+          <ShoppingCart className="w-4 h-4" />
+          <span>New Invoice</span>
         </button>
       </div>
 
-      {activeTab === 'invoices' ? (
-        <>
       {/* Summary Cards */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
         <div className="bg-[#65b98b] text-white p-4 rounded shadow-sm">
@@ -220,90 +211,6 @@ const Sales: React.FC = () => {
           
         </div>
       </div>
-      </>
-      ) : (
-        <div className="bg-[#f0f0f3] rounded-xl shadow-[10px_10px_20px_#cbced1,-10px_-10px_20px_#ffffff] border-none overflow-hidden flex flex-col min-h-[500px]">
-          {/* Toolbar */}
-          <div className="flex flex-wrap items-center gap-4 p-4 border-none bg-[#f0f0f3]">
-            <div className="flex items-center space-x-2 border-none bg-[#f0f0f3] shadow-[inset_4px_4px_8px_#cbced1,inset_-4px_-4px_8px_#ffffff] rounded-lg px-2">
-              <Search className="w-4 h-4 text-gray-400 ml-2" />
-              <input 
-                type="text" 
-                placeholder="Search" 
-                className="border-none bg-transparent py-2 px-2 text-sm focus:outline-none min-w-[200px]"
-              />
-            </div>
-            <button className="bg-[#f0f0f3] hover:shadow-[inset_2px_2px_5px_#cbced1,inset_-2px_-2px_5px_#ffffff] text-black px-4 py-1.5 rounded-lg font-semibold text-sm transition-all shadow-[4px_4px_8px_#cbced1,-4px_-4px_8px_#ffffff] border-none">
-              Go
-            </button>
-            
-            <div className="flex items-center ml-4 space-x-2">
-              <span className="text-sm text-slate-600 font-medium">Rows</span>
-              <div className="relative">
-                <select className="appearance-none border-none bg-[#f0f0f3] shadow-[inset_4px_4px_8px_#cbced1,inset_-4px_-4px_8px_#ffffff] rounded-lg px-4 py-1.5 pr-8 text-sm focus:outline-none">
-                  <option>50</option>
-                </select>
-                <ChevronDown className="w-4 h-4 text-gray-500 absolute right-2 top-2 pointer-events-none" />
-              </div>
-            </div>
-
-            <div className="flex items-center ml-4 space-x-2 text-sm font-medium bg-[#f0f0f3] shadow-[3px_3px_6px_#cbced1,-3px_-3px_6px_#ffffff] hover:shadow-[inset_2px_2px_4px_#cbced1,inset_-2px_-2px_4px_#ffffff] px-4 py-1.5 rounded-lg transition-all cursor-pointer">
-              <span className="text-slate-800">Actions</span>
-              <ChevronDown className="w-4 h-4 text-slate-800" />
-            </div>
-            
-            <div className="ml-auto">
-              <button 
-                onClick={() => setIsCustomerModalOpen(true)}
-                className="bg-[#f0f0f3] shadow-[3px_3px_6px_#cbced1,-3px_-3px_6px_#ffffff] hover:shadow-[inset_2px_2px_4px_#cbced1,inset_-2px_-2px_4px_#ffffff] px-4 py-1.5 rounded-lg font-semibold text-sm text-slate-800 transition-all border-none"
-              >
-                Add New Customer
-              </button>
-            </div>
-          </div>
-
-          {/* Data Table */}
-          <div className="overflow-x-auto flex-1 mx-4 mb-4 p-4 shadow-[inset_5px_5px_10px_#cbced1,inset_-5px_-5px_10px_#ffffff] bg-[#f0f0f3] rounded-xl">
-            <table className="w-full text-sm text-left whitespace-nowrap border border-gray-300">
-              <thead className="text-[11px] font-bold text-gray-500 uppercase tracking-wider border-b border-gray-300">
-                <tr>
-                  <th className="px-4 py-3 w-10 border-r border-gray-300"></th>
-                  <th className="px-4 py-3 border-r border-gray-300">Title</th>
-                  <th className="px-4 py-3 border-r border-gray-300 flex items-center justify-between">
-                    <span>First Name</span>
-                    <ArrowUp className="w-3 h-3" />
-                  </th>
-                  <th className="px-4 py-3 border-r border-gray-300">Last Name</th>
-                  <th className="px-4 py-3 border-r border-gray-300">Mobile Number</th>
-                  <th className="px-4 py-3 border-r border-gray-300">Email</th>
-                  <th className="px-4 py-3">#No Of<br/>Orders</th>
-                </tr>
-              </thead>
-              <tbody className="divide-y divide-gray-300">
-                {customersData.map((customer, index) => (
-                  <tr key={index} className="bg-transparent hover:bg-[#8ebc7f] hover:text-[#2b4c23] transition-colors text-slate-600">
-                    <td className="px-4 py-2 border-r border-gray-300">
-                      <button className="p-1.5 rounded-md bg-[#f0f0f3] shadow-[3px_3px_6px_#cbced1,-3px_-3px_6px_#ffffff] hover:shadow-[inset_2px_2px_4px_#cbced1,inset_-2px_-2px_4px_#ffffff] text-blue-500">
-                        <Edit className="w-3.5 h-3.5" />
-                      </button>
-                    </td>
-                    <td className="px-4 py-3 border-r border-gray-300">{customer.title}</td>
-                    <td className="px-4 py-3 border-r border-gray-300">{customer.firstName}</td>
-                    <td className="px-4 py-3 border-r border-gray-300">{customer.lastName}</td>
-                    <td className="px-4 py-3 border-r border-gray-300">{customer.mobile}</td>
-                    <td className="px-4 py-3 border-r border-gray-300">{customer.email}</td>
-                    <td className="px-4 py-3">{customer.orders}</td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
-          
-          <div className="p-4 mx-4 mb-4 rounded-xl shadow-[inset_4px_4px_8px_#cbced1,inset_-4px_-4px_8px_#ffffff] text-xs font-semibold text-slate-600 flex justify-end">
-            1 - 9
-          </div>
-        </div>
-      )}
 
       {/* Customer Modal */}
       <SalesForm 

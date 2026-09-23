@@ -2,8 +2,8 @@ import React, { useState } from 'react';
 import { NavLink, Outlet, useNavigate } from 'react-router-dom';
 import { 
   Menu, HelpCircle, User,
-  Home as HomeIcon, Users, UserCheck, TrendingUp, ShoppingCart, 
-  Package, BookOpen, FileBarChart, Settings, Key, LogOut
+  Home as HomeIcon, Users, UserCheck, TrendingUp, ShoppingCart, Package,
+  BookOpen, FileBarChart, Settings, Key, LogOut
 } from 'lucide-react';
 
 const Layout: React.FC = () => {
@@ -19,7 +19,7 @@ const Layout: React.FC = () => {
     <div className="min-h-screen bg-slate-50 flex flex-col font-sans text-slate-800">
       
       {/* Top Navbar */}
-      <header className="bg-white border-b border-gray-200 h-14 flex items-center justify-between px-4 sticky top-0 z-10 shadow-sm">
+      <header className="bg-white border-b border-gray-200 h-14 flex items-center justify-between px-4 sticky top-0 z-10 shadow-sm print:hidden">
         <div className="flex items-center space-x-4">
           <button 
             onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
@@ -41,16 +41,7 @@ const Layout: React.FC = () => {
         </div>
 
         <div className="flex items-center space-x-4 sm:space-x-6 text-sm">
-          <button className="hidden md:flex items-center space-x-1.5 bg-[#232f4e] hover:bg-slate-800 text-white px-4 py-1.5 rounded text-sm font-medium transition-colors shadow-sm">
-            <ShoppingCart className="w-4 h-4" />
-            <span>New Invoice</span>
-          </button>
-          
-          <button className="hidden sm:flex items-center space-x-1 text-slate-600 hover:text-slate-900 transition-colors">
-            <Package className="w-4 h-4" />
-            <span>Install App</span>
-          </button>
-          
+
           <button className="text-slate-600 hover:text-slate-900 transition-colors">
             <HelpCircle className="w-5 h-5" />
           </button>
@@ -89,7 +80,7 @@ const Layout: React.FC = () => {
         )}
 
         {/* Sidebar */}
-        <aside className={`absolute md:static inset-y-0 left-0 transform ${isMobileMenuOpen ? 'translate-x-0' : '-translate-x-full'} md:translate-x-0 transition-transform duration-200 ease-in-out z-50 w-56 bg-white border-r border-gray-200 flex flex-col py-4 h-full`}>
+        <aside className={`absolute md:static inset-y-0 left-0 transform ${isMobileMenuOpen ? 'translate-x-0' : '-translate-x-full'} md:translate-x-0 transition-transform duration-200 ease-in-out z-50 w-56 bg-white border-r border-gray-200 flex flex-col py-4 h-full print:hidden`}>
           <nav className="flex-1 space-y-1 px-3">
             {[
               { icon: HomeIcon, label: 'Home', path: '/home' },

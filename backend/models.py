@@ -166,4 +166,3 @@ class InventoryItem(Base):
     dimension_h = Column(Float)
     area = Column(Float)
     weight = Column(Float)
-

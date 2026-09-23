@@ -1,22 +1,10 @@
-import React, { useState, useEffect } from 'react';
-import { Users, CheckCircle, Star, Clock, UserPlus, Calendar, Search, MoreVertical, Edit, Eye, RotateCcw, Grid, LayoutDashboard, Trash2 } from 'lucide-react';
+import React, { useState, useEffect, useMemo } from 'react';
+import { Users, CheckCircle, Star, Clock, UserPlus, Calendar, Cake, Search, MoreVertical, Edit, Eye, RotateCcw, Grid, LayoutDashboard, Trash2 } from 'lucide-react';
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
 import MemberForm from '../components/forms/MemberForm';
 import MemberDetails from '../components/MemberDetails';
 
-const chartData = [
-  { name: 'Dec 2025', members: 1 },
-  { name: 'Jan 2026', members: 1 },
-  { name: 'Feb 2026', members: 4 },
-  { name: 'Mar 2026', members: 7 },
-  { name: 'Apr 2026', members: 3 },
-  { name: 'May 2026', members: 9 },
-  { name: 'Jun 2026', members: 5 },
-  { name: 'Jul 2026', members: 1 },
-  { name: 'Aug 2026', members: 7 },
-  { name: 'Sep 2026', members: 2 },
-  { name: 'Oct 2026', members: 8 },
-];
+
 
 const Members: React.FC = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -24,12 +12,60 @@ const Members: React.FC = () => {
   const [members, setMembers] = useState<any[]>([]);
   const [selectedMember, setSelectedMember] = useState<any | null>(null);
   const [editingMember, setEditingMember] = useState<any | null>(null);
+  const [interestedVisitors, setInterestedVisitors] = useState<any[]>([]);
+  const [memberStats, setMemberStats] = useState<any>({
+    membership_status: { Active: 0, Inactive: 0 },
+    profile_completeness: { Complete: 0, Incomplete: 0 },
+    relation_with_sas: {},
+    membership_category: {}
+  });
+
+  const dynamicChartData = useMemo(() => {
+    const data: {name: string, month: number, year: number, members: number}[] = [];
+    const now = new Date();
+    for (let i = 11; i >= 0; i--) {
+      const d = new Date(now.getFullYear(), now.getMonth() - i, 1);
+      const monthStr = d.toLocaleDateString('en-US', { month: 'short' });
+      const yearStr = d.getFullYear();
+      data.push({
+        name: `${monthStr} ${yearStr}`,
+        month: d.getMonth(),
+        year: d.getFullYear(),
+        members: 0
+      });
+    }
+
+    members.forEach(m => {
+      if (m.joining_date) {
+        const jd = new Date(m.joining_date);
+        const point = data.find(d => d.month === jd.getMonth() && d.year === jd.getFullYear());
+        if (point) {
+          point.members += 1;
+        }
+      }
+    });
+
+    return data.map(d => ({ name: d.name, members: d.members }));
+  }, [members]);
 
   useEffect(() => {
     fetch('http://localhost:8000/members')
       .then(res => res.json())
       .then(data => setMembers(data))
       .catch(err => console.error("Error fetching members:", err));
+
+    fetch('http://localhost:8000/visitors')
+      .then(res => res.json())
+      .then(data => {
+        const interested = data.filter((v: any) => v.interested_to_become_member === true);
+        setInterestedVisitors(interested);
+      })
+      .catch(err => console.error("Error fetching visitors:", err));
+      
+    fetch('http://localhost:8000/members/stats')
+      .then(res => res.json())
+      .then(data => setMemberStats(data))
+      .catch(err => console.error("Error fetching member stats:", err));
   }, []);
 
   const handleAddMember = (newMember: any) => {
@@ -163,18 +199,20 @@ const Members: React.FC = () => {
                   </tr>
                 </thead>
                 <tbody className="divide-y divide-gray-100">
-                  {[
-                    { name: 'Ashok Ravulapati', date: '01-Oct-2026' },
-                    { name: 'Chakrapani Nadimpally', date: '30-Sep-2026' },
-                    { name: 'Kiranjeet Kaur', date: '30-Sep-2026' },
-                    { name: 'Padmaja', date: '30-Sep-2026' },
-                    { name: 'SRIDHAR R', date: '01-Oct-2026' },
-                  ].map((item, idx) => (
-                    <tr key={idx} className="hover:bg-slate-50/50">
-                      <td className="px-4 py-3 text-[#467f92]">{item.name}</td>
-                      <td className="px-4 py-3 text-slate-600">{item.date}</td>
-                    </tr>
-                  ))}
+                  {members
+                    .filter(m => {
+                      if (!m.membership_ends_on) return false;
+                      const diff = (new Date(m.membership_ends_on).getTime() - Date.now()) / (1000 * 60 * 60 * 24);
+                      return diff >= 0 && diff <= 30;
+                    })
+                    .map((m, idx) => (
+                      <tr key={idx} className="hover:bg-slate-50/50">
+                        <td className="px-4 py-3 text-[#467f92]">{[m.title, m.first_name, m.last_name].filter(Boolean).join(' ')}</td>
+                        <td className="px-4 py-3 text-slate-600">
+                          {new Date(m.membership_ends_on).toLocaleDateString(undefined, { day: '2-digit', month: 'short', year: 'numeric' })}
+                        </td>
+                      </tr>
+                    ))}
                 </tbody>
               </table>
             </div>
@@ -183,8 +221,34 @@ const Members: React.FC = () => {
             </div>
           </div>
 
-          <div className="bg-[#6b7c84] px-4 py-3 text-white font-medium text-sm rounded-lg shadow-sm">
-            Visitors interested for membership
+          <div className="bg-white rounded-lg shadow-sm border border-gray-100 overflow-hidden mt-6">
+            <div className="bg-[#6b7c84] px-4 py-3 text-white font-medium text-sm flex justify-between items-center">
+              Visitors interested for membership
+            </div>
+            <div className="p-0">
+              <table className="w-full text-sm text-left">
+                <thead className="text-xs text-slate-500 uppercase bg-slate-50 border-b border-gray-100">
+                  <tr>
+                    <th className="px-4 py-3 font-medium">Visitor Name</th>
+                    <th className="px-4 py-3 font-medium">Mobile</th>
+                    <th className="px-4 py-3 font-medium">Visit Date</th>
+                  </tr>
+                </thead>
+                <tbody className="divide-y divide-gray-100">
+                  {interestedVisitors.length > 0 ? interestedVisitors.map((v, idx) => (
+                    <tr key={idx} className="hover:bg-slate-50/50">
+                      <td className="px-4 py-3 text-[#6b7c84] font-medium">{[v.title, v.first_name, v.last_name].filter(Boolean).join(' ')}</td>
+                      <td className="px-4 py-3 text-slate-600">{v.mobile}</td>
+                      <td className="px-4 py-3 text-slate-600">{v.visit_date}</td>
+                    </tr>
+                  )) : (
+                    <tr>
+                      <td colSpan={3} className="px-4 py-4 text-center text-slate-500">No visitors interested in membership yet.</td>
+                    </tr>
+                  )}
+                </tbody>
+              </table>
+            </div>
           </div>
         </div>
 
@@ -194,10 +258,10 @@ const Members: React.FC = () => {
             <h3 className="text-slate-800 font-semibold mb-6">New Member Registrations</h3>
             <div className="h-64 w-full">
               <ResponsiveContainer width="100%" height="100%">
-                <LineChart data={chartData} margin={{ top: 5, right: 20, bottom: 5, left: -20 }}>
+                <LineChart data={dynamicChartData} margin={{ top: 5, right: 20, bottom: 5, left: -20 }}>
                   <CartesianGrid strokeDasharray="3 3" vertical={true} horizontal={true} stroke="#f0f0f0" />
                   <XAxis dataKey="name" tick={{fontSize: 10}} tickLine={false} axisLine={{stroke: '#e2e8f0'}} />
-                  <YAxis tick={{fontSize: 10}} tickLine={false} axisLine={false} domain={[0, 10]} ticks={[0, 2, 4, 6, 8, 10]} />
+                  <YAxis tick={{fontSize: 10}} tickLine={false} axisLine={false} />
                   <Tooltip />
                   <Line type="stepAfter" dataKey="members" stroke="#4a84a0" strokeWidth={2} dot={{r: 2, fill: '#4a84a0'}} activeDot={{ r: 4 }} />
                 </LineChart>
@@ -251,11 +315,11 @@ const Members: React.FC = () => {
                 <div className="space-y-2">
                   <label className="flex items-center space-x-2 text-sm text-slate-600 cursor-pointer">
                     <input type="radio" name="status" className="w-4 h-4 text-blue-600 border-gray-300 focus:ring-blue-500" />
-                    <span>Active <span className="text-gray-400 text-xs">(150)</span></span>
+                    <span>Active <span className="text-gray-400 text-xs">({memberStats.membership_status?.Active || 0})</span></span>
                   </label>
                   <label className="flex items-center space-x-2 text-sm text-slate-600 cursor-pointer">
                     <input type="radio" name="status" className="w-4 h-4 text-blue-600 border-gray-300 focus:ring-blue-500" />
-                    <span>Inactive <span className="text-gray-400 text-xs">(9)</span></span>
+                    <span>Inactive <span className="text-gray-400 text-xs">({memberStats.membership_status?.Inactive || 0})</span></span>
                   </label>
                 </div>
               </div>
@@ -269,11 +333,11 @@ const Members: React.FC = () => {
                 <div className="space-y-2">
                   <label className="flex items-center space-x-2 text-sm text-slate-600 cursor-pointer">
                     <input type="checkbox" className="w-4 h-4 rounded text-blue-600 border-gray-300 focus:ring-blue-500" />
-                    <span>Complete <span className="text-gray-400 text-xs">(125)</span></span>
+                    <span>Complete <span className="text-gray-400 text-xs">({memberStats.profile_completeness?.Complete || 0})</span></span>
                   </label>
                   <label className="flex items-center space-x-2 text-sm text-slate-600 cursor-pointer">
                     <input type="checkbox" className="w-4 h-4 rounded text-blue-600 border-gray-300 focus:ring-blue-500" />
-                    <span>Incomplete <span className="text-gray-400 text-xs">(34)</span></span>
+                    <span>Incomplete <span className="text-gray-400 text-xs">({memberStats.profile_completeness?.Incomplete || 0})</span></span>
                   </label>
                 </div>
               </div>
@@ -285,14 +349,12 @@ const Members: React.FC = () => {
                   <MoreVertical className="w-4 h-4 text-gray-400" />
                 </div>
                 <div className="space-y-2">
-                  <label className="flex items-center space-x-2 text-sm text-slate-600 cursor-pointer">
-                    <input type="checkbox" className="w-4 h-4 rounded text-blue-600 border-gray-300 focus:ring-blue-500" />
-                    <span>SAS Members <span className="text-gray-400 text-xs">(149)</span></span>
-                  </label>
-                  <label className="flex items-center space-x-2 text-sm text-slate-600 cursor-pointer">
-                    <input type="checkbox" className="w-4 h-4 rounded text-blue-600 border-gray-300 focus:ring-blue-500" />
-                    <span>SAS MC Member <span className="text-gray-400 text-xs">(7)</span></span>
-                  </label>
+                  {Object.entries(memberStats.relation_with_sas || {}).map(([key, count]: [string, any]) => (
+                    <label key={key} className="flex items-center space-x-2 text-sm text-slate-600 cursor-pointer">
+                      <input type="checkbox" className="w-4 h-4 rounded text-blue-600 border-gray-300 focus:ring-blue-500" />
+                      <span>{key} <span className="text-gray-400 text-xs">({count})</span></span>
+                    </label>
+                  ))}
                 </div>
               </div>
 
@@ -303,34 +365,12 @@ const Members: React.FC = () => {
                   <MoreVertical className="w-4 h-4 text-gray-400" />
                 </div>
                 <div className="space-y-2">
-                  <label className="flex items-center space-x-2 text-sm text-slate-600 cursor-pointer whitespace-nowrap">
-                    <input type="checkbox" className="w-4 h-4 rounded text-blue-600 border-gray-300 focus:ring-blue-500" />
-                    <span>Member with Magazine-3 Year <span className="text-gray-400 text-xs">(55)</span></span>
-                  </label>
-                  <label className="flex items-center space-x-2 text-sm text-slate-600 cursor-pointer whitespace-nowrap">
-                    <input type="checkbox" className="w-4 h-4 rounded text-blue-600 border-gray-300 focus:ring-blue-500" />
-                    <span>Member with Magazine-5 Year <span className="text-gray-400 text-xs">(36)</span></span>
-                  </label>
-                  <label className="flex items-center space-x-2 text-sm text-slate-600 cursor-pointer whitespace-nowrap">
-                    <input type="checkbox" className="w-4 h-4 rounded text-blue-600 border-gray-300 focus:ring-blue-500" />
-                    <span>Member with Magazine-10 Year <span className="text-gray-400 text-xs">(29)</span></span>
-                  </label>
-                  <label className="flex items-center space-x-2 text-sm text-slate-600 cursor-pointer whitespace-nowrap">
-                    <input type="checkbox" className="w-4 h-4 rounded text-blue-600 border-gray-300 focus:ring-blue-500" />
-                    <span>Member without Magazine-3 Year <span className="text-gray-400 text-xs">(13)</span></span>
-                  </label>
-                  <label className="flex items-center space-x-2 text-sm text-slate-600 cursor-pointer whitespace-nowrap">
-                    <input type="checkbox" className="w-4 h-4 rounded text-blue-600 border-gray-300 focus:ring-blue-500" />
-                    <span>Lifetime Members-99 Year <span className="text-gray-400 text-xs">(11)</span></span>
-                  </label>
-                  <label className="flex items-center space-x-2 text-sm text-slate-600 cursor-pointer whitespace-nowrap">
-                    <input type="checkbox" className="w-4 h-4 rounded text-blue-600 border-gray-300 focus:ring-blue-500" />
-                    <span>Member without Magazine-1 Year <span className="text-gray-400 text-xs">(9)</span></span>
-                  </label>
-                  <label className="flex items-center space-x-2 text-sm text-slate-600 cursor-pointer whitespace-nowrap">
-                    <input type="checkbox" className="w-4 h-4 rounded text-blue-600 border-gray-300 focus:ring-blue-500" />
-                    <span>Member with Magazine-1 Year <span className="text-gray-400 text-xs">(5)</span></span>
-                  </label>
+                  {Object.entries(memberStats.membership_category || {}).map(([key, count]: [string, any]) => (
+                    <label key={key} className="flex items-center space-x-2 text-sm text-slate-600 cursor-pointer whitespace-nowrap">
+                      <input type="checkbox" className="w-4 h-4 rounded text-blue-600 border-gray-300 focus:ring-blue-500" />
+                      <span>{key} <span className="text-gray-400 text-xs">({count})</span></span>
+                    </label>
+                  ))}
                 </div>
               </div>
 

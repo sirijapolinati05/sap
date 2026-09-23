@@ -6,7 +6,7 @@ from database import engine, Base, get_db
 import models
 import schemas
 import auth
-from datetime import datetime, timedelta
+from datetime import datetime, timedelta, date
 import schemas
 import auth
 
@@ -25,10 +25,6 @@ app.add_middleware(
 
 @app.on_event("startup")
 def seed_user():
-    # Auto-fix: Drop and recreate visitors table to ensure schema matches
-    models.Visitor.__table__.drop(engine, checkfirst=True)
-    models.Visitor.__table__.create(engine)
-
     db = next(get_db())
     existing_user = db.query(models.User).filter(models.User.username == "sharada").first()
     if not existing_user:
@@ -102,12 +98,6 @@ def delete_location(location_id: int, db: Session = Depends(get_db)):
     db.commit()
 
 # --- Visitor Endpoints ---
-@app.get("/reset-visitors-db", tags=["Visitors"])
-def reset_visitors_db():
-    models.Visitor.__table__.drop(engine, checkfirst=True)
-    models.Visitor.__table__.create(engine)
-    return {"message": "Visitors table dropped and recreated"}
-
 @app.get("/visitors", response_model=List[schemas.VisitorOut], tags=["Visitors"])
 def get_visitors(skip: int = 0, limit: int = 100, db: Session = Depends(get_db)):
     return db.query(models.Visitor).offset(skip).limit(limit).all()
@@ -120,10 +110,136 @@ def create_visitor(visitor: schemas.VisitorCreate, db: Session = Depends(get_db)
     db.refresh(new_visitor)
     return new_visitor
 
+@app.put("/visitors/{visitor_id}", response_model=schemas.VisitorOut, tags=["Visitors"])
+def update_visitor(visitor_id: int, visitor: schemas.VisitorCreate, db: Session = Depends(get_db)):
+    db_visitor = db.query(models.Visitor).filter(models.Visitor.id == visitor_id).first()
+    if not db_visitor:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Visitor not found")
+    for key, value in visitor.dict().items():
+        setattr(db_visitor, key, value)
+    db.commit()
+    db.refresh(db_visitor)
+    return db_visitor
+
 # --- Member Endpoints ---
+@app.get("/members/stats", tags=["Members"])
+def get_members_stats(db: Session = Depends(get_db)):
+    members = db.query(models.Member).all()
+    today = date.today()
+    
+    stats = {
+        "membership_status": {"Active": 0, "Inactive": 0},
+        "profile_completeness": {"Complete": 0, "Incomplete": 0},
+        "relation_with_sas": {"SAS Members": 0, "SAS MC Member": 0},
+        "membership_category": {
+            "Member with Magazine-3 Year": 0,
+            "Member with Magazine-5 Year": 0,
+            "Member with Magazine-10 Year": 0,
+            "Member without Magazine-3 Year": 0,
+            "Lifetime Members-99 Year": 0,
+            "Member without Magazine-1 Year": 0,
+            "Member with Magazine-1 Year": 0
+        }
+    }
+    
+    for m in members:
+        # Membership Status
+        if not m.membership_ends_on or m.membership_ends_on >= today:
+            stats["membership_status"]["Active"] += 1
+        else:
+            stats["membership_status"]["Inactive"] += 1
+            
+        # Profile Completeness
+        if m.first_name and m.last_name and m.contact_number and m.email:
+            stats["profile_completeness"]["Complete"] += 1
+        else:
+            stats["profile_completeness"]["Incomplete"] += 1
+            
+        # Relation with SAS
+        if m.relation_with_sas == "SAS Member":
+            stats["relation_with_sas"]["SAS Members"] += 1
+        elif m.relation_with_sas == "SAS MC Member":
+            stats["relation_with_sas"]["SAS MC Member"] += 1
+        else:
+            if m.relation_with_sas:
+                if m.relation_with_sas not in stats["relation_with_sas"]:
+                    stats["relation_with_sas"][m.relation_with_sas] = 0
+                stats["relation_with_sas"][m.relation_with_sas] += 1
+                
+        # Membership Category
+        cat = m.membership_category
+        if cat:
+            if cat not in stats["membership_category"]:
+                stats["membership_category"][cat] = 0
+            stats["membership_category"][cat] += 1
+            
+    return stats
+
 @app.get("/members", response_model=List[schemas.MemberOut], tags=["Members"])
 def get_members(skip: int = 0, limit: int = 100, db: Session = Depends(get_db)):
     return db.query(models.Member).offset(skip).limit(limit).all()
+
+# --- Home Screen Widgets ---
+@app.get("/home/upcoming-birthdays", tags=["Home"])
+def get_upcoming_birthdays(days: int = 30, db: Session = Depends(get_db)):
+    """
+    Returns members whose birthday (month/day) falls within the next `days` days.
+    """
+    today = date.today()
+    results = []
+    members = db.query(models.Member).filter(models.Member.dob != None).all()
+    for m in members:
+        dob = m.dob
+        # Compute the birthday this year; if already passed, check next year
+        try:
+            birthday_this_year = dob.replace(year=today.year)
+        except ValueError:
+            # Feb 29 on non-leap year -> use Mar 1
+            birthday_this_year = date(today.year, 3, 1)
+        if birthday_this_year < today:
+            try:
+                birthday_this_year = dob.replace(year=today.year + 1)
+            except ValueError:
+                birthday_this_year = date(today.year + 1, 3, 1)
+        delta = (birthday_this_year - today).days
+        if 0 <= delta <= days:
+            name_parts = [p for p in [m.title, m.first_name, m.last_name] if p]
+            full_name = " ".join(name_parts)
+            results.append({
+                "name": full_name,
+                "dob": dob.strftime("%d-%b"),
+                "days_away": delta,
+            })
+    results.sort(key=lambda x: x["days_away"])
+    return results
+
+@app.get("/home/membership-renewals", tags=["Home"])
+def get_membership_renewals(days: int = 30, db: Session = Depends(get_db)):
+    """
+    Returns members whose membership expires within the next `days` days.
+    """
+    today = date.today()
+    cutoff = today + timedelta(days=days)
+    members = (
+        db.query(models.Member)
+        .filter(
+            models.Member.membership_ends_on != None,
+            models.Member.membership_ends_on >= today,
+            models.Member.membership_ends_on <= cutoff,
+        )
+        .order_by(models.Member.membership_ends_on)
+        .all()
+    )
+    results = []
+    for m in members:
+        name_parts = [p for p in [m.title, m.first_name, m.last_name] if p]
+        full_name = " ".join(name_parts)
+        results.append({
+            "name": full_name,
+            "membership_ends_on": m.membership_ends_on.strftime("%d-%b-%Y"),
+            "days_remaining": (m.membership_ends_on - today).days,
+        })
+    return results
 
 @app.post("/members", response_model=schemas.MemberOut, status_code=status.HTTP_201_CREATED, tags=["Members"])
 def create_member(member: schemas.MemberCreate, db: Session = Depends(get_db)):
@@ -203,4 +319,3 @@ def create_inventory_item(item: schemas.InventoryItemCreate, db: Session = Depen
     db.commit()
     db.refresh(new_item)
     return new_item
-
