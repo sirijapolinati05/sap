@@ -1,4 +1,4 @@
-from sqlalchemy import Column, Integer, String, Boolean, Date, Float, ForeignKey
+from sqlalchemy import Column, Integer, String, Boolean, Date, Float, ForeignKey, JSON
 from database import Base
 
 class User(Base):
@@ -166,3 +166,19 @@ class InventoryItem(Base):
     dimension_h = Column(Float)
     area = Column(Float)
     weight = Column(Float)
+
+class Invoice(Base):
+    __tablename__ = "invoices"
+
+    id = Column(String, primary_key=True, index=True)
+    date = Column(String, nullable=False)
+    customer = Column(String, nullable=False)
+    amount = Column(String, nullable=False)
+    status = Column(String, nullable=False)
+    items = Column(JSON, default=list)
+    customerPhone = Column(String)
+    customerAddress = Column(String)
+    customerState = Column(String)
+    otherCharges = Column(String)
+    payments = Column(JSON, default=list)
+    documentType = Column(String, default="Tax invoice")

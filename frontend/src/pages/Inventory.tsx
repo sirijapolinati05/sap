@@ -1,10 +1,18 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Settings, Moon, BarChart2, Star, CheckSquare, Edit, Menu, Image as ImageIcon, Search, ChevronDown, Filter, ArrowUp, X } from 'lucide-react';
 import InventoryForm from '../components/forms/InventoryForm';
 
 const Inventory: React.FC = () => {
   const [activeTab, setActiveTab] = useState<'summary' | 'products' | 'categories' | 'opening-stock'>('summary');
   const [isAddItemModalOpen, setIsAddItemModalOpen] = useState(false);
+  const [inventoryItems, setInventoryItems] = useState<any[]>([]);
+
+  useEffect(() => {
+    fetch('http://localhost:8000/inventory')
+      .then(res => res.json())
+      .then(data => setInventoryItems(data))
+      .catch(console.error);
+  }, []);
 
   return (
     <div className="p-4 md:p-6 space-y-4 flex flex-col h-[calc(100vh-3.5rem)]">
@@ -110,17 +118,14 @@ const Inventory: React.FC = () => {
                   </tr>
                 </thead>
                 <tbody className="divide-y divide-gray-300 text-slate-600">
-                  {[
-                    { cat: 'Cottage - Long Sticks', item: '16" 5 sticks Jasmine Long Sticks', in: '4', out: '4', bal: '0', reorder: '0' },
-                    { cat: 'Cottage - Long Sticks', item: '16" 5 sticks Mattipal Cottage Long Sticks', in: '0', out: '', bal: '0', reorder: '0' },
-                  ].map((row, idx) => (
+                  {inventoryItems.map((row, idx) => (
                     <tr key={idx} className="bg-transparent hover:bg-[#8ebc7f] hover:text-[#2b4c23] transition-colors">
-                      <td className="px-4 py-3 border-r border-gray-300">{row.cat}</td>
-                      <td className="px-4 py-3 border-r border-gray-300">{row.item}</td>
-                      <td className="px-4 py-3 text-right border-r border-gray-300">{row.in}</td>
-                      <td className="px-4 py-3 text-right border-r border-gray-300">{row.out}</td>
-                      <td className="px-4 py-3 text-right font-medium border-r border-gray-300">{row.bal}</td>
-                      <td className="px-4 py-3 text-right border-r border-gray-300">{row.reorder}</td>
+                      <td className="px-4 py-3 border-r border-gray-300">{row.item_category}</td>
+                      <td className="px-4 py-3 border-r border-gray-300">{row.item_name}</td>
+                      <td className="px-4 py-3 text-right border-r border-gray-300">{row.opening_qty || 0}</td>
+                      <td className="px-4 py-3 text-right border-r border-gray-300">0</td>
+                      <td className="px-4 py-3 text-right font-medium border-r border-gray-300">{row.opening_qty || 0}</td>
+                      <td className="px-4 py-3 text-right border-r border-gray-300">{row.reorder_level || 0}</td>
                       <td className="px-4 py-3">
                         <div className="flex justify-center space-x-1.5">
                           <button className="p-1.5 rounded-lg bg-[#f0f0f3] shadow-[2px_2px_4px_#cbced1,-2px_-2px_4px_#ffffff] hover:shadow-[inset_2px_2px_4px_#cbced1,inset_-2px_-2px_4px_#ffffff] text-slate-600 transition-all border-none"><Settings className="w-3.5 h-3.5" /></button>
@@ -189,40 +194,25 @@ const Inventory: React.FC = () => {
                   </tr>
                 </thead>
                 <tbody className="divide-y divide-gray-300 text-slate-600">
-                  {[
-                    { cat: 'Cottage - Long Sticks', hsn: '-', item: '16" 5 sticks Jasmine Long Sticks', mrp: '135', uom: '', tax: '', lang: '', active: true, img: 'img1' },
-                    { cat: 'Cottage - Long Sticks', hsn: '-', item: '16" 5 sticks Mattipal Cottage Long Sticks', mrp: '163', uom: 'Nos', tax: '5% GST', lang: '', active: true, img: '' },
-                    { cat: 'Cottage - Long Sticks', hsn: '-', item: '16" 5 sticks Parijat Long Sticks', mrp: '135', uom: '', tax: '', lang: '', active: true, img: '' },
-                    { cat: 'Books', hsn: '-', item: 'A 60-Year Voyage twixt Matter and Spirit: Sri Aurobindo Ashram--Delhi Branch', mrp: '150', uom: '', tax: '', lang: 'English', active: true, img: '' },
-                    { cat: 'Books', hsn: '-', item: 'A Call to the Youth of India', mrp: '85', uom: '', tax: '', lang: 'English', active: true, img: 'img2' },
-                    { cat: 'Books', hsn: '-', item: 'A Commentary on Sri Aurobindos Poem Ilion', mrp: '250', uom: '', tax: '', lang: 'English', active: true, img: '' },
-                    { cat: 'Books', hsn: '-', item: 'A Dual Power of God', mrp: '60', uom: '', tax: '', lang: 'English', active: true, img: 'img3' },
-                  ].map((row, idx) => (
+                  {inventoryItems.map((row, idx) => (
                     <tr key={idx} className="bg-transparent hover:bg-[#8ebc7f] hover:text-[#2b4c23] transition-colors">
                       <td className="px-4 py-3 text-center border-r border-gray-300">
                         <button className="text-[#3c7ab7] hover:text-[#2d6195]"><Edit className="w-4 h-4" /></button>
                       </td>
                       <td className="px-4 py-3 border-r border-gray-300">
-                        <div className="font-semibold text-slate-700">{row.cat}</div>
-                        <div className="text-xs text-slate-500 opacity-70">HSN/SAC {row.hsn}</div>
+                        <div className="font-semibold text-slate-700">{row.item_category}</div>
+                        <div className="text-xs text-slate-500 opacity-70">HSN/SAC {row.hsn_code || '-'}</div>
                       </td>
-                      <td className="px-4 py-3 border-r border-gray-300">{row.item}</td>
-                      <td className="px-4 py-3 text-right border-r border-gray-300">{row.mrp}</td>
-                      <td className="px-4 py-3 border-r border-gray-300">{row.uom}</td>
-                      <td className="px-4 py-3 border-r border-gray-300">{row.tax}</td>
-                      <td className="px-4 py-3 border-r border-gray-300">{row.lang}</td>
+                      <td className="px-4 py-3 border-r border-gray-300">{row.item_name}</td>
+                      <td className="px-4 py-3 text-right border-r border-gray-300">{row.opening_rate || 0}</td>
+                      <td className="px-4 py-3 border-r border-gray-300">{row.measure_unit}</td>
+                      <td className="px-4 py-3 border-r border-gray-300">-</td>
+                      <td className="px-4 py-3 border-r border-gray-300">-</td>
                       <td className="px-4 py-3 border-r border-gray-300">
-                        {row.active ? (
-                          <span className="bg-[#8ebc7f] text-[#2b4c23] px-2 py-0.5 rounded text-[11px] font-semibold shadow-sm border border-[#7ca96d]">Active</span>
-                        ) : (
-                          <span className="bg-[#cbced1] text-slate-600 px-2 py-0.5 rounded text-[11px] font-medium">Inactive</span>
-                        )}
+                        <span className="bg-[#8ebc7f] text-[#2b4c23] px-2 py-0.5 rounded text-[11px] font-semibold shadow-sm border border-[#7ca96d]">Active</span>
                       </td>
                       <td className="px-4 py-3 text-center">
-                        {row.img === 'img1' && <div className="w-10 h-10 border border-gray-300 rounded-full flex items-center justify-center mx-auto shadow-[inset_2px_2px_4px_#cbced1,inset_-2px_-2px_4px_#ffffff]"><ImageIcon className="w-5 h-5 text-gray-400" /></div>}
-                        {row.img === 'img2' && <div className="w-8 h-10 bg-red-400 mx-auto rounded shadow-[2px_2px_4px_#cbced1]"></div>}
-                        {row.img === 'img3' && <div className="w-8 h-10 bg-yellow-400 mx-auto rounded shadow-[2px_2px_4px_#cbced1]"></div>}
-                        {!row.img && <div className="w-10 h-10 mx-auto"></div>}
+                        <div className="w-10 h-10 border border-gray-300 rounded-full flex items-center justify-center mx-auto shadow-[inset_2px_2px_4px_#cbced1,inset_-2px_-2px_4px_#ffffff]"><ImageIcon className="w-5 h-5 text-gray-400" /></div>
                       </td>
                     </tr>
                   ))}

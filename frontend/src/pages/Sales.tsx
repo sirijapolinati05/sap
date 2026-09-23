@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { BarChart, Bar, XAxis as RechartsXAxis, YAxis, Tooltip, ResponsiveContainer, Cell } from 'recharts';
 import { Printer, Edit, List, Search, ChevronDown, ArrowUp, ShoppingCart } from 'lucide-react';
 import SalesForm from '../components/forms/SalesForm';
@@ -23,17 +23,111 @@ const paymentMixData = [
 
 const Sales: React.FC = () => {
   const [currentView, setCurrentView] = useState<'invoices' | 'build-invoice'>('invoices');
+  const [activeTab, setActiveTab] = useState<'Sales Invoices' | 'Customers'>('Sales Invoices');
   const [isCustomerModalOpen, setIsCustomerModalOpen] = useState(false);
+  const [invoicesData, setInvoicesData] = useState<any[]>([]);
+  const [invoiceToPrint, setInvoiceToPrint] = useState<any>(null);
+  const [previewMode, setPreviewMode] = useState(false);
+  const [posMode, setPosMode] = useState(false);
 
-  if (currentView === 'build-invoice') {
-    return <BuildInvoice onBack={() => setCurrentView('invoices')} />;
+  useEffect(() => {
+    fetch('http://localhost:8000/invoices')
+      .then(res => res.json())
+      .then(data => {
+        // sort by newest first (descending ID usually works if ID format is INV-0001, but date/time is better)
+        setInvoicesData(data.reverse());
+      })
+      .catch(console.error);
+
+    fetch('http://localhost:8000/members')
+      .then(res => res.json())
+      .then(data => {
+        setCustomers(data);
+      })
+      .catch(console.error);
+  }, []);
+
+  if (currentView === 'build-invoice' || invoiceToPrint) {
+    return (
+      <BuildInvoice 
+        initialInvoice={invoiceToPrint}
+        openInPreview={previewMode}
+        openInPosMode={posMode}
+        onBack={() => {
+          setCurrentView('invoices');
+          setInvoiceToPrint(null);
+        }} 
+        onSave={(newInvoice, returnToInvoices) => {
+          if (!invoiceToPrint) {
+            fetch('http://localhost:8000/invoices', {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify(newInvoice)
+            })
+            .then(res => res.json())
+            .then(saved => setInvoicesData(prev => [saved, ...prev]))
+            .catch(console.error);
+          } else {
+            fetch(`http://localhost:8000/invoices/${newInvoice.id}`, {
+              method: 'PUT',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify(newInvoice)
+            })
+            .then(res => res.json())
+            .then(saved => setInvoicesData(prev => prev.map(inv => inv.id === saved.id ? saved : inv)))
+            .catch(console.error);
+          }
+          
+          if (returnToInvoices) {
+            setCurrentView('invoices');
+            setInvoiceToPrint(null);
+          } else {
+            setInvoiceToPrint(newInvoice);
+          }
+        }}
+      />
+    );
   }
 
+  const currentYear = new Date().getFullYear();
+  const currentMonth = new Date().getMonth();
+
+  const annualInvoices = invoicesData.filter(inv => {
+    const d = new Date(inv.date);
+    return d.getFullYear() === currentYear;
+  });
+
+  const monthlyInvoices = annualInvoices.filter(inv => {
+    const d = new Date(inv.date);
+    return d.getMonth() === currentMonth;
+  });
+
+  const annualSales = annualInvoices.reduce((acc, inv) => acc + parseFloat(inv.amount || '0'), 0);
+  const monthlySales = monthlyInvoices.reduce((acc, inv) => acc + parseFloat(inv.amount || '0'), 0);
+  const annualTransactions = annualInvoices.length;
+  const monthlyTransactions = monthlyInvoices.length;
+
   return (
-    <div className="p-4 md:p-6 space-y-6">
+    <div className="p-4 md:p-6 space-y-6 bg-[#f0f0f3] min-h-[calc(100vh-64px)]">
+      {/* Top Tabs */}
+      <div className="flex space-x-6 border-b border-gray-300/50 pb-2">
+        <button 
+          onClick={() => setActiveTab('Sales Invoices')}
+          className={`px-4 py-2 text-sm font-bold rounded-xl transition-all ${activeTab === 'Sales Invoices' ? 'bg-[#f0f0f3] text-blue-600 shadow-[inset_4px_4px_8px_#cbced1,inset_-4px_-4px_8px_#ffffff]' : 'text-slate-500 hover:text-slate-700 hover:shadow-[4px_4px_8px_#cbced1,-4px_-4px_8px_#ffffff]'}`}
+        >
+          Sales Invoices
+        </button>
+        <button 
+          onClick={() => setActiveTab('Customers')}
+          className={`px-4 py-2 text-sm font-bold rounded-xl transition-all ${activeTab === 'Customers' ? 'bg-[#f0f0f3] text-blue-600 shadow-[inset_4px_4px_8px_#cbced1,inset_-4px_-4px_8px_#ffffff]' : 'text-slate-500 hover:text-slate-700 hover:shadow-[4px_4px_8px_#cbced1,-4px_-4px_8px_#ffffff]'}`}
+        >
+          Customers
+        </button>
+      </div>
+
       {/* Header */}
       <div className="flex justify-between items-center mb-2">
-        <h1 className="text-2xl font-bold text-slate-800">Sales Invoices</h1>
+        <h1 className="text-2xl font-bold text-slate-800">{activeTab}</h1>
         <button 
           onClick={() => setCurrentView('build-invoice')}
           className="flex items-center space-x-1.5 bg-[#232f4e] hover:bg-slate-800 text-white px-4 py-2 rounded text-sm font-medium transition-colors shadow-sm"
@@ -47,22 +141,22 @@ const Sales: React.FC = () => {
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
         <div className="bg-[#65b98b] text-white p-4 rounded shadow-sm">
           <div className="text-xs font-semibold uppercase tracking-wide mb-1 opacity-90">Total Annual Sales</div>
-          <div className="text-3xl font-light">7908</div>
+          <div className="text-3xl font-light">₹{annualSales.toFixed(2)}</div>
         </div>
         
         <div className="bg-[#c2ce64] text-white p-4 rounded shadow-sm">
           <div className="text-xs font-semibold uppercase tracking-wide mb-1 opacity-90">Monthly Sales</div>
-          <div className="text-3xl font-light">7908</div>
+          <div className="text-3xl font-light">₹{monthlySales.toFixed(2)}</div>
         </div>
         
         <div className="bg-[#5c98ce] text-white p-4 rounded shadow-sm">
           <div className="text-xs font-semibold uppercase tracking-wide mb-1 opacity-90">Annual Transactions</div>
-          <div className="text-3xl font-light">18</div>
+          <div className="text-3xl font-light">{annualTransactions}</div>
         </div>
         
         <div className="bg-[#dd5c63] text-white p-4 rounded shadow-sm">
           <div className="text-xs font-semibold uppercase tracking-wide mb-1 opacity-90">Monthly Transactions</div>
-          <div className="text-3xl font-light">18</div>
+          <div className="text-3xl font-light">{monthlyTransactions}</div>
         </div>
       </div>
 
@@ -89,56 +183,114 @@ const Sales: React.FC = () => {
               </div>
             </div>
             
-            <div className="flex items-center space-x-2 text-sm font-medium bg-[#f0f0f3] shadow-[3px_3px_6px_#cbced1,-3px_-3px_6px_#ffffff] hover:shadow-[inset_2px_2px_4px_#cbced1,inset_-2px_-2px_4px_#ffffff] px-4 py-1.5 rounded-lg transition-all cursor-pointer">
-              <span>Actions</span>
-              <ChevronDown className="w-4 h-4" />
+            <div className="flex items-center space-x-6">
+              <div className="flex items-center space-x-2 text-sm font-medium bg-[#f0f0f3] shadow-[3px_3px_6px_#cbced1,-3px_-3px_6px_#ffffff] hover:shadow-[inset_2px_2px_4px_#cbced1,inset_-2px_-2px_4px_#ffffff] px-4 py-1.5 rounded-lg transition-all cursor-pointer">
+                <span>Actions</span>
+                <ChevronDown className="w-4 h-4" />
+              </div>
+              {activeTab === 'Customers' && (
+                <button className="text-sm font-bold text-slate-800 hover:text-black">
+                  Add New Customer
+                </button>
+              )}
             </div>
           </div>
 
           {/* Data Table */}
           <div className="bg-[#f0f0f3] shadow-[inset_5px_5px_10px_#cbced1,inset_-5px_-5px_10px_#ffffff] rounded-xl overflow-x-auto p-4 mt-4">
-            <table className="w-full text-sm text-left whitespace-nowrap border border-gray-300">
-              <thead className="text-[11px] font-bold text-gray-500 uppercase tracking-wider border-b border-gray-300">
-                <tr>
-                  <th className="px-4 py-3 border-r border-gray-300">Invoice No</th>
-                  <th className="px-4 py-3 border-r border-gray-300 flex items-center justify-between">
-                    <span>Invoice Date</span>
-                    <ArrowUp className="w-3 h-3" />
-                  </th>
-                  <th className="px-4 py-3 border-r border-gray-300">Customer</th>
-                  <th className="px-4 py-3 border-r border-gray-300 text-right">Total Amount</th>
-                  <th className="px-4 py-3 border-r border-gray-300">Invoice Status</th>
-                  <th className="px-4 py-3">Action</th>
-                </tr>
-              </thead>
-              <tbody className="divide-y divide-gray-300">
-                {[
-                  { id: '0025', date: '21-Sep-2026', customer: 'Adithya', amount: '203', status: 'Paid' },
-                  { id: '0024', date: '21-Sep-2026', customer: 'Jena P.K', amount: '530', status: 'Paid' },
-                  { id: '0023', date: '21-Sep-2026', customer: 'Srivalli Teja', amount: '718', status: 'Paid' },
-                  { id: '0022', date: '16-Sep-2026', customer: 'Sdhgsdhn Dfhdfh', amount: '135', status: 'Cancel' },
-                  { id: '0021', date: '16-Sep-2026', customer: 'A Mangamma', amount: '85', status: 'Paid' },
-                  { id: '0020', date: '16-Sep-2026', customer: 'Harish', amount: '775', status: 'Paid' },
-                  { id: '0019', date: '16-Sep-2026', customer: 'Biplav', amount: '578', status: 'Paid' },
-                  { id: '0018', date: '14-Sep-2026', customer: 'Sharbodeb', amount: '604', status: 'Paid' },
-                ].map((row, idx) => (
-                  <tr key={idx} className="bg-transparent hover:bg-[#8ebc7f] hover:text-[#2b4c23] transition-colors cursor-pointer text-slate-600">
-                    <td className="px-4 py-3 border-r border-gray-300 font-medium">{row.id}</td>
-                    <td className="px-4 py-3 border-r border-gray-300">{row.date}</td>
-                    <td className="px-4 py-3 border-r border-gray-300">{row.customer}</td>
-                    <td className="px-4 py-3 border-r border-gray-300 text-right font-medium">{row.amount}</td>
-                    <td className="px-4 py-3 border-r border-gray-300">{row.status}</td>
-                    <td className="px-4 py-3">
-                      <div className="flex space-x-1 rounded w-fit overflow-hidden border-none shadow-[inset_2px_2px_4px_#cbced1,inset_-2px_-2px_4px_#ffffff] bg-[#f0f0f3] p-1">
-                        <button className="p-1.5 transition-colors text-blue-500 hover:bg-blue-100 rounded"><Edit className="w-3.5 h-3.5" /></button>
-                        <button className="p-1.5 transition-colors text-green-600 hover:bg-green-100 rounded"><Printer className="w-3.5 h-3.5" /></button>
-                        <button className="p-1.5 transition-colors text-purple-600 hover:bg-purple-100 rounded"><List className="w-3.5 h-3.5" /></button>
-                      </div>
-                    </td>
+            {activeTab === 'Sales Invoices' ? (
+              <table className="w-full text-sm text-left whitespace-nowrap border border-gray-300">
+                <thead className="text-[11px] font-bold text-gray-500 uppercase tracking-wider border-b border-gray-300">
+                  <tr>
+                    <th className="px-4 py-3 border-r border-gray-300">Invoice No</th>
+                    <th className="px-4 py-3 border-r border-gray-300 flex items-center justify-between">
+                      <span>Invoice Date</span>
+                      <ArrowUp className="w-3 h-3" />
+                    </th>
+                    <th className="px-4 py-3 border-r border-gray-300">Customer</th>
+                    <th className="px-4 py-3 border-r border-gray-300 text-right">Total Amount</th>
+                    <th className="px-4 py-3 border-r border-gray-300">Invoice Status</th>
+                    <th className="px-4 py-3">Action</th>
                   </tr>
-                ))}
-              </tbody>
-            </table>
+                </thead>
+                <tbody className="divide-y divide-gray-300">
+                  {invoicesData.length === 0 ? (
+                    <tr>
+                      <td colSpan={6} className="px-4 py-8 text-center text-gray-500">
+                        No sales invoices yet. Click 'New Invoice' to create one!
+                      </td>
+                    </tr>
+                  ) : (
+                    invoicesData.map((row, idx) => (
+                      <tr key={idx} className="bg-transparent hover:bg-[#8ebc7f] hover:text-[#2b4c23] transition-colors cursor-pointer text-slate-600">
+                        <td className="px-4 py-3 border-r border-gray-300 font-medium">{row.id}</td>
+                        <td className="px-4 py-3 border-r border-gray-300">{row.date}</td>
+                        <td className="px-4 py-3 border-r border-gray-300">{row.customer}</td>
+                        <td className="px-4 py-3 border-r border-gray-300 text-right font-medium">{row.amount}</td>
+                        <td className="px-4 py-3 border-r border-gray-300">{row.status}</td>
+                        <td className="px-4 py-3">
+                          <div className="flex space-x-1 rounded w-fit overflow-hidden border-none shadow-[inset_2px_2px_4px_#cbced1,inset_-2px_-2px_4px_#ffffff] bg-[#f0f0f3] p-1">
+                            <button className="p-1.5 transition-colors text-blue-500 hover:bg-blue-100 rounded" onClick={() => { setInvoiceToPrint(row); setPreviewMode(false); setPosMode(true); }}><Edit className="w-3.5 h-3.5" /></button>
+                            <button className="p-1.5 transition-colors text-green-600 hover:bg-green-100 rounded" onClick={() => { setInvoiceToPrint(row); setPreviewMode(true); setPosMode(false); }}><Printer className="w-3.5 h-3.5" /></button>
+                            <button className="p-1.5 transition-colors text-purple-600 hover:bg-purple-100 rounded" onClick={() => { setInvoiceToPrint(row); setPreviewMode(false); setPosMode(true); }}><List className="w-3.5 h-3.5" /></button>
+                          </div>
+                        </td>
+                      </tr>
+                    ))
+                  )}
+                </tbody>
+              </table>
+            ) : (
+              <table className="w-full text-sm text-left whitespace-nowrap border border-gray-300">
+                <thead className="text-[11px] font-bold text-gray-800 uppercase tracking-wider border-b border-gray-300">
+                  <tr>
+                    <th className="px-4 py-3 border-r border-gray-300 w-12 text-center"></th>
+                    <th className="px-4 py-3 border-r border-gray-300">Title</th>
+                    <th className="px-4 py-3 border-r border-gray-300 flex items-center justify-between">
+                      <span>First Name</span>
+                      <ArrowUp className="w-3 h-3 text-slate-400" />
+                    </th>
+                    <th className="px-4 py-3 border-r border-gray-300">Last Name</th>
+                    <th className="px-4 py-3 border-r border-gray-300">Mobile Number</th>
+                    <th className="px-4 py-3 border-r border-gray-300">Email</th>
+                    <th className="px-4 py-3">#No Of Orders</th>
+                  </tr>
+                </thead>
+                <tbody className="divide-y divide-gray-300">
+                  {(() => {
+                    const actualCustomers = customers.map(c => {
+                      const fullName = [c.first_name, c.last_name].filter(Boolean).join(' ').trim();
+                      const ordersCount = invoicesData.filter(inv => inv.customer === fullName).length;
+                      return { ...c, ordersCount };
+                    }).filter(c => c.ordersCount > 0);
+
+                    if (actualCustomers.length === 0) {
+                      return (
+                        <tr>
+                          <td colSpan={7} className="px-4 py-8 text-center text-gray-500">
+                            No customers yet. Customers will appear here when they have a sales invoice.
+                          </td>
+                        </tr>
+                      );
+                    }
+
+                    return actualCustomers.map((row, idx) => (
+                      <tr key={idx} className="bg-transparent hover:bg-gray-50 transition-colors text-slate-800">
+                        <td className="px-4 py-3 border-r border-gray-300 text-center">
+                          <button className="text-[#3b82f6] hover:text-blue-700 transition-colors"><Edit className="w-4 h-4 mx-auto" /></button>
+                        </td>
+                        <td className="px-4 py-3 border-r border-gray-300">{row.title || ''}</td>
+                        <td className="px-4 py-3 border-r border-gray-300">{row.first_name || ''}</td>
+                        <td className="px-4 py-3 border-r border-gray-300">{row.last_name || ''}</td>
+                        <td className="px-4 py-3 border-r border-gray-300">{row.isd_code ? `${row.isd_code} ${row.contact_number}` : row.contact_number || ''}</td>
+                        <td className="px-4 py-3 border-r border-gray-300">{row.email || ''}</td>
+                        <td className="px-4 py-3">{row.ordersCount}</td>
+                      </tr>
+                    ));
+                  })()}
+                </tbody>
+              </table>
+            )}
           </div>
         </div>
 

@@ -319,3 +319,30 @@ def create_inventory_item(item: schemas.InventoryItemCreate, db: Session = Depen
     db.commit()
     db.refresh(new_item)
     return new_item
+
+@app.get("/invoices", response_model=List[schemas.InvoiceOut], tags=["Invoices"])
+def get_invoices(skip: int = 0, limit: int = 100, db: Session = Depends(get_db)):
+    invoices = db.query(models.Invoice).offset(skip).limit(limit).all()
+    return invoices
+
+@app.post("/invoices", response_model=schemas.InvoiceOut, tags=["Invoices"])
+def create_invoice(invoice: schemas.InvoiceCreate, db: Session = Depends(get_db)):
+    db_invoice = models.Invoice(**invoice.dict())
+    db.add(db_invoice)
+    db.commit()
+    db.refresh(db_invoice)
+    return db_invoice
+
+@app.put("/invoices/{invoice_id}", response_model=schemas.InvoiceOut, tags=["Invoices"])
+def update_invoice(invoice_id: str, invoice: schemas.InvoiceCreate, db: Session = Depends(get_db)):
+    db_invoice = db.query(models.Invoice).filter(models.Invoice.id == invoice_id).first()
+    if not db_invoice:
+        raise HTTPException(status_code=404, detail="Invoice not found")
+    
+    update_data = invoice.dict(exclude_unset=True)
+    for key, value in update_data.items():
+        setattr(db_invoice, key, value)
+        
+    db.commit()
+    db.refresh(db_invoice)
+    return db_invoice

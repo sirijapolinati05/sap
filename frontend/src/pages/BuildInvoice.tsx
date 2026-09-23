@@ -1,17 +1,18 @@
 import React, { useState, useEffect } from 'react';
-import { Search, ChevronDown, Plus, Trash2 } from 'lucide-react';
+import { Search, ChevronDown, Plus, Trash2, Package, Users, Minus } from 'lucide-react';
 
-const DUMMY_PRODUCTS = [
-  { id: 1, type: 'ITEM', name: '16" 5 sticks Jasmine Long Sticks', sku: 'STK-001 - Incense sticks', stock: 42, price: 135.00 },
-  { id: 2, type: 'ITEM', name: '16" 5 sticks Mattipal Cottage Long Sticks', sku: 'STK-002 - Incense sticks', stock: 17, price: 163.00 },
-  { id: 3, type: 'ITEM', name: '16" 5 sticks Parijat Long Sticks', sku: 'STK-003 - Incense sticks', stock: 26, price: 135.00 },
-  { id: 4, type: 'BOOK', name: 'A Call to the Youth of India', sku: 'BK-104 - Compiled from the writings of Sri Aurobindo and the Mother - Books', stock: 28, price: 85.00 },
-  { id: 5, type: 'BOOK', name: "A Commentary on Sri Aurobindo's Poem Ilion", sku: 'BK-105 - Books', stock: 12, price: 250.00 },
-];
+interface Product {
+  id: number;
+  type: string;
+  name: string;
+  sku: string;
+  stock: number;
+  price: number;
+}
 
 interface InvoiceItem {
   id: number;
-  product: typeof DUMMY_PRODUCTS[0];
+  product: Product;
   qty: number;
   price: number;
   disc: number;
@@ -21,24 +22,28 @@ interface InvoiceItem {
 
 interface BuildInvoiceProps {
   onBack?: () => void;
+  onSave?: (invoice: any, returnToInvoices?: boolean) => void;
+  initialInvoice?: any;
+  openInPreview?: boolean;
+  openInPosMode?: boolean;
 }
 
-const BuildInvoice: React.FC<BuildInvoiceProps> = ({ onBack }) => {
-  const [invoiceItems, setInvoiceItems] = useState<InvoiceItem[]>([]);
+const BuildInvoice: React.FC<BuildInvoiceProps> = ({ onBack, onSave, initialInvoice, openInPreview, openInPosMode }) => {
+  const [invoiceItems, setInvoiceItems] = useState<InvoiceItem[]>(initialInvoice?.items || []);
   const [isCustomerModalOpen, setIsCustomerModalOpen] = useState(false);
   const [members, setMembers] = useState<any[]>([]);
-  const [showPreview, setShowPreview] = useState(false);
+  const [showPreview, setShowPreview] = useState(!!openInPreview);
   
-  const [documentType, setDocumentType] = useState('Tax invoice');
-  const [invoiceDate, setInvoiceDate] = useState('2026-09-23');
-  const [customerName, setCustomerName] = useState('Walk-in customer');
-  const [customerPhone, setCustomerPhone] = useState('');
-  const [customerAddress, setCustomerAddress] = useState('');
-  const [customerState, setCustomerState] = useState('');
+  const [documentType, setDocumentType] = useState(initialInvoice?.documentType || 'Tax invoice');
+  const [invoiceDate, setInvoiceDate] = useState(initialInvoice?.date || new Date().toISOString().split('T')[0]);
+  const [customerName, setCustomerName] = useState(initialInvoice?.customer || 'Walk-in customer');
+  const [customerPhone, setCustomerPhone] = useState(initialInvoice?.customerPhone || '');
+  const [customerAddress, setCustomerAddress] = useState(initialInvoice?.customerAddress || '');
+  const [customerState, setCustomerState] = useState(initialInvoice?.customerState || '');
   
   const [billDiscount, setBillDiscount] = useState<string>('0');
-  const [otherCharges, setOtherCharges] = useState<string>('0');
-  const [payments, setPayments] = useState<{id: number, method: string, amount: string, ref: string}[]>([{
+  const [otherCharges, setOtherCharges] = useState<string>(initialInvoice?.otherCharges || '0');
+  const [payments, setPayments] = useState<{id: number, method: string, amount: string, ref: string}[]>(initialInvoice?.payments || [{
     id: Date.now(),
     method: 'UPI',
     amount: '',
@@ -48,8 +53,10 @@ const BuildInvoice: React.FC<BuildInvoiceProps> = ({ onBack }) => {
   const [productSearchQuery, setProductSearchQuery] = useState('');
   const [selectedCategory, setSelectedCategory] = useState('All categories');
 
+  const [products, setProducts] = useState<Product[]>([]);
+
   // Extract unique categories (text after the last ' - ')
-  const categories = Array.from(new Set(DUMMY_PRODUCTS.map(p => {
+  const categories = Array.from(new Set(products.map(p => {
     const parts = p.sku.split(' - ');
     return parts.length > 1 ? parts[parts.length - 1].trim() : p.sku;
   })));
@@ -61,9 +68,24 @@ const BuildInvoice: React.FC<BuildInvoiceProps> = ({ onBack }) => {
         setMembers(data);
       })
       .catch(console.error);
+      
+    fetch('http://localhost:8000/inventory')
+      .then(res => res.json())
+      .then(data => {
+        const mappedProducts = data.map((item: any) => ({
+          id: item.id,
+          type: item.item_type || 'ITEM',
+          name: item.item_name || '',
+          sku: `${item.item_code} - ${item.item_category}`,
+          stock: item.opening_qty || 0,
+          price: item.opening_rate || 0,
+        }));
+        setProducts(mappedProducts);
+      })
+      .catch(console.error);
   }, []);
 
-  const handleAddItem = (product: typeof DUMMY_PRODUCTS[0]) => {
+  const handleAddItem = (product: Product) => {
     setInvoiceItems(prev => {
       const existing = prev.find(item => item.product.id === product.id);
       if (existing) {
@@ -89,8 +111,27 @@ const BuildInvoice: React.FC<BuildInvoiceProps> = ({ onBack }) => {
 
   const itemSubtotal = invoiceItems.reduce((acc, item) => acc + (item.qty * item.price), 0);
   const totalAmount = invoiceItems.reduce((acc, item) => acc + item.amount, 0) + parseFloat(otherCharges || '0');
-  const totalReceived = payments.reduce((acc, p) => acc + parseFloat(p.amount || '0'), 0);
+  const totalReceived = payments.reduce((acc, p) => acc + (parseFloat(p.amount) || 0), 0);
   const balance = totalAmount - totalReceived;
+
+  const handleSave = (status: string, returnToInvoices: boolean = true) => {
+    if (onSave) {
+      onSave({
+        id: initialInvoice?.id || `INV-${Math.floor(Math.random() * 10000).toString().padStart(4, '0')}`,
+        date: invoiceDate,
+        customer: customerName || 'Walk-in customer',
+        amount: totalAmount.toFixed(2),
+        status: status,
+        items: invoiceItems,
+        customerPhone,
+        customerAddress,
+        customerState,
+        otherCharges,
+        payments,
+        documentType
+      }, returnToInvoices);
+    }
+  };
 
   if (showPreview) {
     return (
@@ -116,14 +157,12 @@ const BuildInvoice: React.FC<BuildInvoiceProps> = ({ onBack }) => {
           {/* Invoice Header */}
           <div className="flex justify-between items-start mb-6">
             <div>
-              <div className="text-[11px] text-slate-500 mb-6">9/23/26, 3:19 PM</div>
-              <h1 className="text-xl font-bold text-[#1a2b4b] mb-1">SAS Hyderabad</h1>
+              <h1 className="text-xl font-bold text-[#1a2b4b] mb-1 mt-6">SAS Hyderabad</h1>
               <div className="text-sm text-slate-600">Hyderabad</div>
               <div className="text-sm text-slate-600">Hyderabad, Telangana</div>
             </div>
             <div className="text-right">
-              <div className="text-[11px] text-slate-500 mb-6 mr-10">SAS Hyderabad</div>
-              <h2 className="text-2xl font-bold text-[#1a2b4b] mb-2">{documentType}</h2>
+              <h2 className="text-2xl font-bold text-[#1a2b4b] mb-2 mt-6">{documentType}</h2>
               <div className="text-sm text-slate-600 mb-1">No: HYD-INV-0026</div>
               <div className="text-sm text-slate-600">Date: {invoiceDate}</div>
             </div>
@@ -255,90 +294,103 @@ const BuildInvoice: React.FC<BuildInvoiceProps> = ({ onBack }) => {
         </div>
       </div>
 
-      <div className="flex flex-col lg:flex-row gap-6 flex-1 min-h-0">
+      <div className={`flex flex-col ${openInPosMode ? 'lg:flex-row' : ''} gap-6 flex-1 min-h-0 bg-[#f0f0f3] p-2 md:p-6 rounded-2xl ${!openInPosMode ? 'max-w-5xl mx-auto w-full' : ''}`}>
         
-        {/* Left Pane - Products */}
-        <div className="w-full lg:w-[400px] flex-shrink-0 flex flex-col bg-white rounded-xl shadow-[0_2px_8px_rgba(0,0,0,0.04)] border border-gray-100 overflow-hidden">
-          <div className="p-4 border-b border-gray-100">
-            <div className="flex justify-between items-center mb-4">
-              <h2 className="font-bold text-slate-800">Products</h2>
-              <span className="text-xs text-slate-500 font-medium">{DUMMY_PRODUCTS.length} items</span>
-            </div>
-            
-            <div className="relative mb-3">
-              <Search className="absolute left-3 top-2.5 w-4 h-4 text-gray-400" />
-              <input 
-                type="text" 
-                value={productSearchQuery}
-                onChange={(e) => setProductSearchQuery(e.target.value)}
-                placeholder="Search title, author, SKU or barcode" 
-                className="w-full pl-9 pr-3 py-2 border border-gray-200 rounded-lg text-sm focus:outline-none focus:border-blue-400 focus:ring-1 focus:ring-blue-400 placeholder:text-gray-400 transition-shadow"
-              />
-            </div>
-            
-            <div className="flex items-center justify-between">
-              <div className="relative w-48">
-                <select 
-                  value={selectedCategory}
-                  onChange={(e) => setSelectedCategory(e.target.value)}
-                  className="w-full appearance-none border border-gray-200 rounded-lg py-2 pl-3 pr-8 text-sm focus:outline-none focus:border-blue-400 text-slate-700 font-medium bg-white truncate"
-                >
-                  <option value="All categories">All categories</option>
-                  {categories.map((cat, idx) => (
-                    <option key={idx} value={cat}>{cat}</option>
-                  ))}
-                </select>
-                <ChevronDown className="absolute right-3 top-2.5 w-4 h-4 text-gray-400 pointer-events-none" />
+        {/* Left Pane - Products (POS Mode Only) */}
+        {openInPosMode && (
+          <div className="w-full lg:w-[400px] flex-shrink-0 flex flex-col bg-[#f0f0f3] rounded-3xl shadow-[8px_8px_16px_#cbced1,-8px_-8px_16px_#ffffff] border-none overflow-hidden">
+            <div className="p-4 bg-[#f0f0f3] shadow-[0_4px_10px_rgba(0,0,0,0.02)] z-10">
+              <div className="flex justify-between items-center mb-4">
+                <h2 className="font-bold text-slate-700 flex items-center gap-2">
+                  <Package className="w-4 h-4 text-blue-500" /> Products
+                </h2>
+                <span className="text-xs text-slate-500 font-medium">{products.length} items</span>
               </div>
-              <div className="text-[11px] text-slate-400">Click Add or press Enter</div>
-            </div>
-          </div>
-          
-          <div className="flex-1 overflow-y-auto p-2">
-            <div className="space-y-1">
-              {DUMMY_PRODUCTS.filter(product => {
-                const searchLower = productSearchQuery.toLowerCase();
-                const matchesSearch = product.name.toLowerCase().includes(searchLower) || 
-                                      product.sku.toLowerCase().includes(searchLower);
-                const parts = product.sku.split(' - ');
-                const productCategory = parts.length > 1 ? parts[parts.length - 1].trim() : product.sku;
-                const matchesCategory = selectedCategory === 'All categories' || productCategory === selectedCategory;
-                return matchesSearch && matchesCategory;
-              }).map(product => (
-                <div key={product.id} className="flex gap-3 p-3 rounded-lg hover:bg-slate-50 transition-colors border border-transparent hover:border-gray-100 group">
-                  <div className={`w-12 h-12 flex-shrink-0 rounded-md flex items-center justify-center text-[10px] font-bold ${
-                    product.type === 'ITEM' ? 'bg-amber-100 text-amber-800' : 'bg-blue-100 text-blue-800'
-                  }`}>
-                    {product.type}
-                  </div>
-                  <div className="flex-1 min-w-0">
-                    <h3 className="text-sm font-semibold text-slate-800 truncate mb-0.5" title={product.name}>{product.name}</h3>
-                    <p className="text-[11px] text-slate-500 truncate mb-1" title={product.sku}>{product.sku.replace(' - ', ' . ')}</p>
-                    <div className="text-[11px] font-medium text-emerald-600">{product.stock} available</div>
-                  </div>
-                  <div className="flex flex-col items-end justify-between flex-shrink-0">
-                    <div className="font-bold text-slate-900 text-sm">₹{product.price.toFixed(2)}</div>
-                    <button 
-                      onClick={() => handleAddItem(product)}
-                      className="flex items-center gap-1 text-[11px] font-bold text-slate-700 bg-white border border-gray-200 hover:border-gray-300 hover:bg-gray-50 px-2 py-1 rounded shadow-sm transition-all active:scale-95"
-                    >
-                      <Plus className="w-3 h-3" /> Add
-                    </button>
-                  </div>
+              
+              <div className="relative mb-3">
+                <Search className="absolute left-3 top-2.5 w-4 h-4 text-slate-400 group-focus-within:text-blue-500 transition-colors" />
+                <input 
+                  type="text" 
+                  value={productSearchQuery}
+                  onChange={(e) => setProductSearchQuery(e.target.value)}
+                  placeholder="Search title, author, SKU or barcode" 
+                  className="w-full pl-9 pr-3 py-2 bg-[#f0f0f3] rounded-xl text-sm focus:outline-none focus:ring-0 placeholder:text-gray-400 transition-all shadow-[inset_4px_4px_8px_#cbced1,inset_-4px_-4px_8px_#ffffff] border-none text-slate-600 font-medium"
+                />
+              </div>
+              
+              <div className="flex items-center justify-between">
+                <div className="relative w-48 group">
+                  <select 
+                    value={selectedCategory}
+                    onChange={(e) => setSelectedCategory(e.target.value)}
+                    className="w-full appearance-none bg-[#f0f0f3] rounded-xl py-2 pl-3 pr-8 text-sm focus:outline-none focus:ring-0 text-slate-600 font-medium truncate transition-all shadow-[inset_4px_4px_8px_#cbced1,inset_-4px_-4px_8px_#ffffff] border-none"
+                  >
+                    <option value="All categories">All categories</option>
+                    {categories.map((cat, idx) => (
+                      <option key={idx} value={cat}>{cat}</option>
+                    ))}
+                  </select>
+                  <ChevronDown className="absolute right-3 top-2.5 w-4 h-4 text-gray-400 pointer-events-none" />
                 </div>
-              ))}
+                <div className="text-[11px] text-slate-400">Click Add</div>
+              </div>
+            </div>
+            
+            <div className="flex-1 overflow-y-auto p-2">
+              <div className="space-y-1">
+                {products.filter(product => {
+                  const searchLower = productSearchQuery.toLowerCase();
+                  const matchesSearch = product.name.toLowerCase().includes(searchLower) || 
+                                        product.sku.toLowerCase().includes(searchLower);
+                  const parts = product.sku.split(' - ');
+                  const productCategory = parts.length > 1 ? parts[parts.length - 1].trim() : product.sku;
+                  const matchesCategory = selectedCategory === 'All categories' || productCategory === selectedCategory;
+                  return matchesSearch && matchesCategory;
+                }).map(product => (
+                  <div key={product.id} className="flex gap-3 p-3 rounded-2xl hover:shadow-[4px_4px_8px_#cbced1,-4px_-4px_8px_#ffffff] transition-all group cursor-pointer bg-[#f0f0f3]">
+                    <div className={`w-12 h-12 flex-shrink-0 rounded-xl flex items-center justify-center text-[10px] font-bold shadow-[inset_2px_2px_4px_#cbced1,inset_-2px_-2px_4px_#ffffff] ${
+                      product.type === 'ITEM' ? 'text-amber-600' : 'text-blue-600'
+                    }`}>
+                      {product.type}
+                    </div>
+                    <div className="flex-1 min-w-0">
+                      <h3 className="text-sm font-semibold text-slate-800 truncate mb-0.5" title={product.name}>{product.name}</h3>
+                      <p className="text-[11px] text-slate-500 truncate mb-1" title={product.sku}>{product.sku.replace(' - ', ' . ')}</p>
+                      <div className="text-[11px] font-medium text-emerald-600">{product.stock} available</div>
+                    </div>
+                    <div className="flex flex-col items-end justify-between flex-shrink-0">
+                      <div className="font-bold text-slate-700 text-sm tracking-tight">₹{product.price.toFixed(2)}</div>
+                      <button 
+                        onClick={() => {
+                          setInvoiceItems([...invoiceItems, {
+                            product: product,
+                            qty: 1,
+                            price: product.price,
+                            disc: 0,
+                            tax: 0,
+                            amount: product.price
+                          }]);
+                        }}
+                        className="flex items-center gap-1 text-[11px] font-bold text-slate-600 bg-[#f0f0f3] shadow-[4px_4px_8px_#cbced1,-4px_-4px_8px_#ffffff] hover:shadow-[inset_2px_2px_4px_#cbced1,inset_-2px_-2px_4px_#ffffff] hover:text-blue-600 px-3 py-1.5 rounded-lg transition-all"
+                      >
+                        <Plus className="w-3 h-3" /> Add
+                      </button>
+                    </div>
+                  </div>
+                ))}
+              </div>
             </div>
           </div>
-        </div>
+        )}
 
-        {/* Right Pane - Invoice Builder */}
-        <div className="flex-1 flex flex-col gap-4 overflow-y-auto pr-2 pb-4">
+        {/* Invoice Builder */}
+        <div className="flex-1 flex flex-col gap-6 overflow-y-auto pb-4">
           
           {/* Top Section */}
-          <div className="bg-white rounded-xl shadow-[0_2px_8px_rgba(0,0,0,0.04)] border border-gray-100 p-5">
-            <div className="flex justify-between items-start mb-6">
+          <div className="bg-[#f0f0f3] rounded-3xl shadow-[8px_8px_16px_#cbced1,-8px_-8px_16px_#ffffff] p-6 relative overflow-hidden">
+            <div className="flex justify-between items-start mb-6 relative z-10">
               <div>
-                <h2 className="text-lg font-bold text-slate-800 mb-1">New invoice</h2>
+                <h2 className="text-xl font-bold text-slate-700 mb-1 tracking-tight">New invoice</h2>
                 <p className="text-xs text-slate-500">Draft · Number assigned when issued</p>
               </div>
               <span className="bg-amber-100 text-amber-800 text-[11px] font-bold px-3 py-1 rounded-full uppercase tracking-wide">
@@ -353,7 +405,7 @@ const BuildInvoice: React.FC<BuildInvoiceProps> = ({ onBack }) => {
                   <select 
                     value={documentType}
                     onChange={(e) => setDocumentType(e.target.value)}
-                    className="w-full appearance-none border border-gray-200 rounded-lg py-2 pl-3 pr-8 text-sm focus:outline-none focus:border-blue-400 text-slate-800 font-medium bg-white"
+                    className="w-full appearance-none bg-[#f0f0f3] rounded-xl py-2.5 pl-3 pr-8 text-sm focus:outline-none focus:ring-0 text-slate-700 font-medium transition-all shadow-[inset_4px_4px_8px_#cbced1,inset_-4px_-4px_8px_#ffffff] border-none"
                   >
                     <option>Tax invoice</option>
                     <option>Bill of supply</option>
@@ -371,34 +423,34 @@ const BuildInvoice: React.FC<BuildInvoiceProps> = ({ onBack }) => {
                     type="date" 
                     value={invoiceDate}
                     onChange={(e) => setInvoiceDate(e.target.value)}
-                    className="w-full border border-gray-200 rounded-lg py-2 px-3 text-sm focus:outline-none focus:border-blue-400 text-slate-800 font-medium bg-white" 
+                    className="w-full bg-[#f0f0f3] rounded-xl py-2.5 px-3 text-sm focus:outline-none focus:ring-0 text-slate-700 font-medium transition-all shadow-[inset_4px_4px_8px_#cbced1,inset_-4px_-4px_8px_#ffffff] border-none" 
                   />
                 </div>
               </div>
               <div>
                 <label className="block text-[11px] font-bold text-slate-500 mb-1.5">Branch / number series</label>
-                <input type="text" value="Hyderabad · HYD-INV" readOnly className="w-full border border-gray-100 bg-slate-50 rounded-lg py-2 px-3 text-sm focus:outline-none text-slate-600 font-medium cursor-default" />
+                <input type="text" value="Hyderabad · HYD-INV" readOnly className="w-full bg-[#e0e0e0] rounded-xl py-2.5 px-3 text-sm focus:outline-none text-slate-500 font-medium cursor-not-allowed shadow-[inset_4px_4px_8px_#b5b5b5,inset_-4px_-4px_8px_#ffffff] border-none" />
               </div>
             </div>
           </div>
 
           {/* Customer Section */}
-          <div className="bg-white rounded-xl shadow-[0_2px_8px_rgba(0,0,0,0.04)] border border-gray-100 p-5 flex justify-between items-center">
+          <div className="bg-[#f0f0f3] rounded-3xl shadow-[8px_8px_16px_#cbced1,-8px_-8px_16px_#ffffff] p-6 relative overflow-hidden flex justify-between items-center">
             <div>
               <div className="text-[10px] font-bold text-blue-600 tracking-wider uppercase mb-1">Customer</div>
-              <h3 className="font-bold text-slate-800">{customerName || 'Walk-In customer'}</h3>
+              <h3 className="font-bold text-slate-700">{customerName || 'Walk-In customer'}</h3>
               <p className="text-[11px] text-slate-400 mt-0.5">Add customer details if needed</p>
             </div>
             <button 
               onClick={() => setIsCustomerModalOpen(true)}
-              className="text-xs font-bold text-slate-700 bg-white border border-gray-200 hover:border-gray-300 hover:bg-gray-50 px-4 py-2 rounded-lg shadow-sm transition-all active:scale-95"
+              className="text-xs font-bold text-white bg-amber-500 hover:bg-amber-600 px-5 py-2.5 rounded-xl transition-all shadow-md border-none"
             >
               Edit customer
             </button>
           </div>
 
           {/* Invoice Items */}
-          <div className="bg-white rounded-xl shadow-[0_2px_8px_rgba(0,0,0,0.04)] border border-gray-100 p-5 min-h-[250px] flex flex-col">
+          <div className="bg-[#f0f0f3] rounded-3xl shadow-[8px_8px_16px_#cbced1,-8px_-8px_16px_#ffffff] p-6 min-h-[250px] flex flex-col">
             <div className="flex justify-between items-center mb-4">
               <h3 className="font-bold text-slate-800">Invoice items <span className="text-slate-400 font-medium text-sm">({invoiceItems.length})</span></h3>
               {invoiceItems.length > 0 && (
@@ -406,44 +458,162 @@ const BuildInvoice: React.FC<BuildInvoiceProps> = ({ onBack }) => {
               )}
             </div>
             
-            <div className="flex-1">
-              <table className="w-full text-left">
+            <div className="flex-1 overflow-x-auto pb-4">
+              <table className="w-full text-left min-w-[700px]">
                 <thead>
                   <tr className="border-b border-gray-100">
-                    <th className="text-[10px] font-bold text-slate-400 uppercase tracking-wider pb-3 pl-2">Item</th>
-                    <th className="text-[10px] font-bold text-slate-400 uppercase tracking-wider pb-3 w-16 text-center">Qty</th>
+                    <th className="text-[10px] font-bold text-slate-400 uppercase tracking-wider pb-3 pl-2 w-64">Item</th>
+                    <th className="text-[10px] font-bold text-slate-400 uppercase tracking-wider pb-3 w-28 text-center">Qty</th>
                     <th className="text-[10px] font-bold text-slate-400 uppercase tracking-wider pb-3 w-24 text-right">Price ₹</th>
                     <th className="text-[10px] font-bold text-slate-400 uppercase tracking-wider pb-3 w-20 text-center">Disc %</th>
                     <th className="text-[10px] font-bold text-slate-400 uppercase tracking-wider pb-3 w-16 text-center">Tax %</th>
                     <th className="text-[10px] font-bold text-slate-400 uppercase tracking-wider pb-3 pr-2 w-28 text-right">Amount</th>
+                    <th className="text-[10px] font-bold text-slate-400 uppercase tracking-wider pb-3 w-12 text-center"></th>
                   </tr>
                 </thead>
                 <tbody>
                   {invoiceItems.length === 0 ? (
                     <tr>
-                      <td colSpan={6} className="py-12 text-center text-[13px] text-slate-400">
-                        Your invoice is empty. Add an item from the product list.
+                      <td colSpan={7} className="py-12 text-center text-[13px] text-slate-400">
+                        Your invoice is empty. Click "Add Item" to start.
                       </td>
                     </tr>
                   ) : (
                     invoiceItems.map((item, idx) => (
-                      <tr key={idx} className="border-b border-gray-50">
+                      <tr key={idx} className="border-b border-gray-50/50 group">
                         <td className="py-3 pl-2">
-                          <div className="text-sm font-semibold text-slate-800">{item.product.name}</div>
-                          <div className="text-[11px] text-slate-400 truncate max-w-[200px]">{item.product.sku}</div>
+                          <div className="relative">
+                            <select 
+                              value={item.product?.id || ''}
+                              onChange={(e) => {
+                                const p = products.find(prod => prod.id.toString() === e.target.value);
+                                if (p) {
+                                  const newItems = [...invoiceItems];
+                                  newItems[idx] = { 
+                                    ...newItems[idx], 
+                                    product: p, 
+                                    price: p.price, 
+                                    amount: p.price * newItems[idx].qty * (1 - newItems[idx].disc/100) 
+                                  };
+                                  setInvoiceItems(newItems);
+                                }
+                              }}
+                              className="w-full appearance-none bg-[#f0f0f3] rounded-xl py-2 pl-3 pr-8 text-sm focus:outline-none focus:ring-0 text-slate-700 font-medium transition-all shadow-[inset_4px_4px_8px_#cbced1,inset_-4px_-4px_8px_#ffffff] border-none"
+                            >
+                              <option value="" disabled>Select product...</option>
+                              {products.map(p => (
+                                <option key={p.id} value={p.id}>{p.name} (₹{p.price})</option>
+                              ))}
+                            </select>
+                            <ChevronDown className="absolute right-3 top-2.5 w-4 h-4 text-gray-400 pointer-events-none" />
+                          </div>
                         </td>
-                        <td className="py-3 text-center">
-                          <input type="number" min="1" value={item.qty} readOnly className="w-12 text-center border border-gray-200 rounded py-1 text-sm font-medium focus:outline-none bg-transparent" />
+                        <td className="py-3 px-2">
+                          <div className="flex items-center justify-center gap-1.5">
+                            <button 
+                              onClick={() => {
+                                const newQty = Math.max(1, item.qty - 1);
+                                const newItems = [...invoiceItems];
+                                newItems[idx].qty = newQty;
+                                newItems[idx].amount = newItems[idx].price * newQty * (1 - newItems[idx].disc/100);
+                                setInvoiceItems(newItems);
+                              }}
+                              className="w-6 h-6 flex-shrink-0 flex items-center justify-center rounded-lg bg-[#f0f0f3] shadow-[2px_2px_4px_#cbced1,-2px_-2px_4px_#ffffff] active:shadow-[inset_2px_2px_4px_#cbced1,inset_-2px_-2px_4px_#ffffff] text-slate-500 hover:text-blue-600 transition-all border-none focus:outline-none"
+                            >
+                              <Minus className="w-3 h-3" />
+                            </button>
+                            <input 
+                              type="number" 
+                              min="1" 
+                              value={item.qty} 
+                              onChange={(e) => {
+                                const newQty = parseInt(e.target.value) || 1;
+                                const newItems = [...invoiceItems];
+                                newItems[idx].qty = newQty;
+                                newItems[idx].amount = newItems[idx].price * newQty * (1 - newItems[idx].disc/100);
+                                setInvoiceItems(newItems);
+                              }}
+                              className="w-10 text-center bg-[#f0f0f3] shadow-[inset_2px_2px_4px_#cbced1,inset_-2px_-2px_4px_#ffffff] rounded-lg py-1.5 text-sm font-medium focus:outline-none border-none text-slate-700 [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none" 
+                            />
+                            <button 
+                              onClick={() => {
+                                const newQty = item.qty + 1;
+                                const newItems = [...invoiceItems];
+                                newItems[idx].qty = newQty;
+                                newItems[idx].amount = newItems[idx].price * newQty * (1 - newItems[idx].disc/100);
+                                setInvoiceItems(newItems);
+                              }}
+                              className="w-6 h-6 flex-shrink-0 flex items-center justify-center rounded-lg bg-[#f0f0f3] shadow-[2px_2px_4px_#cbced1,-2px_-2px_4px_#ffffff] active:shadow-[inset_2px_2px_4px_#cbced1,inset_-2px_-2px_4px_#ffffff] text-slate-500 hover:text-blue-600 transition-all border-none focus:outline-none"
+                            >
+                              <Plus className="w-3 h-3" />
+                            </button>
+                          </div>
                         </td>
-                        <td className="py-3 text-right text-sm font-medium text-slate-700">{item.price.toFixed(2)}</td>
-                        <td className="py-3 text-center text-sm font-medium text-slate-700">{item.disc}</td>
+                        <td className="py-3 px-2">
+                          <input 
+                            type="number" 
+                            min="0"
+                            step="0.01"
+                            value={item.price}
+                            onChange={(e) => {
+                              const newPrice = parseFloat(e.target.value) || 0;
+                              const newItems = [...invoiceItems];
+                              newItems[idx].price = newPrice;
+                              newItems[idx].amount = newPrice * newItems[idx].qty * (1 - newItems[idx].disc/100);
+                              setInvoiceItems(newItems);
+                            }}
+                            className="w-20 text-right bg-[#f0f0f3] shadow-[inset_2px_2px_4px_#cbced1,inset_-2px_-2px_4px_#ffffff] rounded-lg py-2 text-sm font-medium focus:outline-none border-none text-slate-700 ml-auto block" 
+                          />
+                        </td>
+                        <td className="py-3 text-center px-2">
+                          <input 
+                            type="number" 
+                            min="0"
+                            max="100"
+                            value={item.disc}
+                            onChange={(e) => {
+                              const newDisc = parseFloat(e.target.value) || 0;
+                              const newItems = [...invoiceItems];
+                              newItems[idx].disc = newDisc;
+                              newItems[idx].amount = newItems[idx].price * newItems[idx].qty * (1 - newDisc/100);
+                              setInvoiceItems(newItems);
+                            }}
+                            className="w-16 text-center bg-[#f0f0f3] shadow-[inset_2px_2px_4px_#cbced1,inset_-2px_-2px_4px_#ffffff] rounded-lg py-2 text-sm font-medium focus:outline-none border-none text-slate-700 mx-auto block" 
+                          />
+                        </td>
                         <td className="py-3 text-center text-sm font-medium text-slate-700">{item.tax}</td>
-                        <td className="py-3 pr-2 text-right text-sm font-bold text-slate-900">{item.amount.toFixed(2)}</td>
+                        <td className="py-3 pr-2 text-right text-sm font-bold text-slate-900">₹{item.amount.toFixed(2)}</td>
+                        <td className="py-3 text-center">
+                          <button 
+                            onClick={() => {
+                              const newItems = [...invoiceItems];
+                              newItems.splice(idx, 1);
+                              setInvoiceItems(newItems);
+                            }}
+                            className="p-1.5 text-gray-400 hover:text-red-500 rounded-lg transition-colors opacity-0 group-hover:opacity-100"
+                          >
+                            <Trash2 className="w-4 h-4" />
+                          </button>
+                        </td>
                       </tr>
                     ))
                   )}
                 </tbody>
               </table>
+            </div>
+            
+            <div className="mt-4">
+              <button 
+                onClick={() => {
+                  setInvoiceItems([
+                    ...invoiceItems, 
+                    { product: { id: '', name: '', sku: '', price: 0 }, qty: 1, price: 0, disc: 0, tax: 0, amount: 0 }
+                  ]);
+                }}
+                className="flex items-center gap-2 text-[11px] font-bold text-blue-600 bg-[#f0f0f3] shadow-[4px_4px_8px_#cbced1,-4px_-4px_8px_#ffffff] hover:shadow-[inset_2px_2px_4px_#cbced1,inset_-2px_-2px_4px_#ffffff] hover:text-blue-700 px-4 py-2.5 rounded-xl transition-all"
+              >
+                <Plus className="w-3.5 h-3.5" /> Add Item Line
+              </button>
             </div>
           </div>
 
@@ -451,8 +621,8 @@ const BuildInvoice: React.FC<BuildInvoiceProps> = ({ onBack }) => {
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             
             {/* Totals */}
-            <div className="bg-white rounded-xl shadow-[0_2px_8px_rgba(0,0,0,0.04)] border border-gray-100 p-5">
-              <h3 className="font-bold text-slate-800 mb-4">Totals</h3>
+            <div className="bg-[#f0f0f3] rounded-3xl shadow-[8px_8px_16px_#cbced1,-8px_-8px_16px_#ffffff] p-6">
+              <h3 className="font-bold text-slate-700 mb-4 tracking-tight">Totals</h3>
               <div className="flex gap-4 mb-6">
                 <div className="flex-1">
                   <label className="block text-[11px] font-bold text-slate-500 mb-1.5">Bill discount %</label>
@@ -460,7 +630,7 @@ const BuildInvoice: React.FC<BuildInvoiceProps> = ({ onBack }) => {
                     type="number" 
                     value={billDiscount}
                     onChange={(e) => setBillDiscount(e.target.value)}
-                    className="w-full border border-gray-200 rounded-lg py-2 px-3 text-sm focus:outline-none focus:border-blue-400 text-slate-800 font-medium" 
+                    className="w-full bg-[#f0f0f3] rounded-xl py-2 px-3 text-sm focus:outline-none focus:ring-0 text-slate-700 font-medium transition-all shadow-[inset_4px_4px_8px_#cbced1,inset_-4px_-4px_8px_#ffffff] border-none" 
                   />
                 </div>
                 <div className="flex-1">
@@ -469,7 +639,7 @@ const BuildInvoice: React.FC<BuildInvoiceProps> = ({ onBack }) => {
                     type="number" 
                     value={otherCharges}
                     onChange={(e) => setOtherCharges(e.target.value)}
-                    className="w-full border border-gray-200 rounded-lg py-2 px-3 text-sm focus:outline-none focus:border-blue-400 text-slate-800 font-medium" 
+                    className="w-full bg-[#f0f0f3] rounded-xl py-2 px-3 text-sm focus:outline-none focus:ring-0 text-slate-700 font-medium transition-all shadow-[inset_4px_4px_8px_#cbced1,inset_-4px_-4px_8px_#ffffff] border-none" 
                   />
                 </div>
               </div>
@@ -511,12 +681,12 @@ const BuildInvoice: React.FC<BuildInvoiceProps> = ({ onBack }) => {
             </div>
 
             {/* Payment */}
-            <div className="bg-white rounded-xl shadow-[0_2px_8px_rgba(0,0,0,0.04)] border border-gray-100 p-5 flex flex-col">
+            <div className="bg-[#f0f0f3] rounded-3xl shadow-[8px_8px_16px_#cbced1,-8px_-8px_16px_#ffffff] p-6 flex flex-col">
               <div className="flex justify-between items-center mb-4">
-                <h3 className="font-bold text-slate-800">Payment</h3>
+                <h3 className="font-bold text-slate-700 tracking-tight">Payment</h3>
                 <button 
                   onClick={() => setPayments([...payments, { id: Date.now(), method: 'UPI', amount: '0', ref: '' }])}
-                  className="flex items-center gap-1 text-[11px] font-bold text-[#254ab8] hover:text-blue-800"
+                  className="flex items-center gap-1 text-[11px] font-bold text-blue-600 bg-[#f0f0f3] shadow-[4px_4px_8px_#cbced1,-4px_-4px_8px_#ffffff] hover:shadow-[inset_2px_2px_4px_#cbced1,inset_-2px_-2px_4px_#ffffff] hover:text-blue-700 px-3 py-1.5 rounded-lg transition-all"
                 >
                   <Plus className="w-3 h-3" /> Add method
                 </button>
@@ -533,15 +703,15 @@ const BuildInvoice: React.FC<BuildInvoiceProps> = ({ onBack }) => {
                       <div key={payment.id} className="space-y-2">
                         <div className="flex gap-2 items-center">
                           <div className="relative flex-1">
-                            <select 
-                              value={payment.method}
-                              onChange={(e) => {
-                                const newP = [...payments];
-                                newP[idx].method = e.target.value;
-                                setPayments(newP);
-                              }}
-                              className="w-full appearance-none border border-gray-200 rounded-lg py-2 pl-3 pr-8 text-sm focus:outline-none focus:border-blue-400 text-slate-700 bg-white"
-                            >
+                              <select 
+                                value={payment.method}
+                                onChange={(e) => {
+                                  const newP = [...payments];
+                                  newP[idx].method = e.target.value;
+                                  setPayments(newP);
+                                }}
+                                className="w-full appearance-none bg-[#f0f0f3] rounded-xl py-2 pl-3 pr-8 text-sm focus:outline-none focus:ring-0 text-slate-700 transition-all shadow-[inset_4px_4px_8px_#cbced1,inset_-4px_-4px_8px_#ffffff] border-none"
+                              >
                               <option>UPI</option>
                               <option>Cash</option>
                               <option>Card</option>
@@ -558,7 +728,7 @@ const BuildInvoice: React.FC<BuildInvoiceProps> = ({ onBack }) => {
                               newP[idx].amount = e.target.value;
                               setPayments(newP);
                             }}
-                            className="w-24 border border-gray-200 rounded-lg py-2 px-3 text-sm focus:outline-none focus:border-blue-400 text-slate-800"
+                            className="w-24 bg-[#f0f0f3] rounded-xl py-2 px-3 text-sm focus:outline-none focus:ring-0 text-slate-700 transition-all shadow-[inset_4px_4px_8px_#cbced1,inset_-4px_-4px_8px_#ffffff] border-none"
                           />
                           <button 
                             onClick={() => setPayments(payments.filter((_, i) => i !== idx))}
@@ -576,7 +746,7 @@ const BuildInvoice: React.FC<BuildInvoiceProps> = ({ onBack }) => {
                             newP[idx].ref = e.target.value;
                             setPayments(newP);
                           }}
-                          className="w-full border border-gray-200 rounded-lg py-2 px-3 text-sm focus:outline-none focus:border-blue-400 text-slate-800 placeholder:text-gray-400"
+                          className="w-full bg-[#f0f0f3] rounded-xl py-2 px-3 text-sm focus:outline-none focus:ring-0 text-slate-700 placeholder:text-gray-400 transition-all shadow-[inset_4px_4px_8px_#cbced1,inset_-4px_-4px_8px_#ffffff] border-none"
                         />
                       </div>
                     ))}
@@ -632,17 +802,25 @@ const BuildInvoice: React.FC<BuildInvoiceProps> = ({ onBack }) => {
             <div className="text-[11px] text-slate-500 leading-tight">
             </div>
             <div className="flex gap-3">
-              <button className="px-4 py-2 rounded-lg text-sm font-bold text-slate-700 bg-white border border-gray-200 hover:bg-gray-50 shadow-sm transition-colors">
+              <button 
+                onClick={() => handleSave('Draft', true)}
+                className="px-4 py-2 rounded-lg text-sm font-bold text-white bg-slate-600 hover:bg-slate-700 shadow-sm transition-colors border-none"
+              >
                 Save draft
               </button>
               <button 
                 onClick={() => setShowPreview(true)}
-                className="px-4 py-2 rounded-lg text-sm font-bold text-slate-700 bg-white border border-gray-200 hover:bg-gray-50 shadow-sm transition-colors"
+                className="px-4 py-2 rounded-lg text-sm font-bold text-white bg-emerald-600 hover:bg-emerald-700 shadow-sm transition-colors border-none"
               >
                 Preview
               </button>
               <button 
                 onClick={() => {
+                  let status = 'Unpaid';
+                  if (totalReceived >= totalAmount && totalAmount > 0) status = 'Paid';
+                  else if (totalReceived > 0) status = 'Partial';
+                  
+                  handleSave(status, false);
                   setShowPreview(true);
                   setTimeout(() => window.print(), 100);
                 }}

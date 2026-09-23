@@ -1,5 +1,5 @@
 from pydantic import BaseModel
-from typing import Optional
+from typing import Optional, List, Any, Dict
 from datetime import date
 
 class UserLogin(BaseModel):
@@ -195,6 +195,27 @@ class InventoryItemBase(BaseModel):
     dimension_h: Optional[float] = None
     area: Optional[float] = None
     weight: Optional[float] = None
+
+class InvoiceBase(BaseModel):
+    id: str
+    date: str
+    customer: str
+    amount: str
+    status: str
+    items: List[Dict[str, Any]] = []
+    customerPhone: Optional[str] = None
+    customerAddress: Optional[str] = None
+    customerState: Optional[str] = None
+    otherCharges: Optional[str] = None
+    payments: List[Dict[str, Any]] = []
+    documentType: Optional[str] = "Tax invoice"
+
+class InvoiceCreate(InvoiceBase):
+    pass
+
+class InvoiceOut(InvoiceBase):
+    class Config:
+        orm_mode = True
 
 class InventoryItemCreate(InventoryItemBase):
     pass
