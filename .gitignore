@@ -1,0 +1,9 @@
+node_modules/
+dist/
+__pycache__/
+*.pyc
+venv/
+env/
+.env
+.DS_Store
+backend/branch_management.db
