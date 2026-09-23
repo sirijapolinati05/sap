@@ -298,7 +298,7 @@ const BuildInvoice: React.FC<BuildInvoiceProps> = ({ onBack, onSave, initialInvo
         
         {/* Left Pane - Products (POS Mode Only) */}
         {openInPosMode && (
-          <div className="w-full lg:w-[400px] flex-shrink-0 flex flex-col bg-[#f0f0f3] rounded-3xl shadow-[8px_8px_16px_#cbced1,-8px_-8px_16px_#ffffff] border-none overflow-hidden">
+          <div className="w-full lg:w-[400px] flex-shrink-0 flex flex-col bg-[#f0f0f3] rounded-3xl shadow-[8px_8px_16px_#cbced1,-8px_-8px_16px_#ffffff] border-none overflow-hidden h-fit max-h-full">
             <div className="p-4 bg-[#f0f0f3] shadow-[0_4px_10px_rgba(0,0,0,0.02)] z-10">
               <div className="flex justify-between items-center mb-4">
                 <h2 className="font-bold text-slate-700 flex items-center gap-2">
@@ -391,11 +391,8 @@ const BuildInvoice: React.FC<BuildInvoiceProps> = ({ onBack, onSave, initialInvo
             <div className="flex justify-between items-start mb-6 relative z-10">
               <div>
                 <h2 className="text-xl font-bold text-slate-700 mb-1 tracking-tight">New invoice</h2>
-                <p className="text-xs text-slate-500">Draft · Number assigned when issued</p>
+                <p className="text-xs text-slate-500">Number assigned when issued</p>
               </div>
-              <span className="bg-amber-100 text-amber-800 text-[11px] font-bold px-3 py-1 rounded-full uppercase tracking-wide">
-                Draft
-              </span>
             </div>
             
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4">

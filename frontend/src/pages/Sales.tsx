@@ -129,7 +129,7 @@ const Sales: React.FC = () => {
       <div className="flex justify-between items-center mb-2">
         <h1 className="text-2xl font-bold text-slate-800">{activeTab}</h1>
         <button 
-          onClick={() => setCurrentView('build-invoice')}
+          onClick={() => { setCurrentView('build-invoice'); setPosMode(true); }}
           className="flex items-center space-x-1.5 bg-[#232f4e] hover:bg-slate-800 text-white px-4 py-2 rounded text-sm font-medium transition-colors shadow-sm"
         >
           <ShoppingCart className="w-4 h-4" />
