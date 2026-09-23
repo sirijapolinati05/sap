@@ -16,9 +16,16 @@ const customersData = [
   { title: 'Mr', firstName: 'Uday', lastName: '', mobile: '+91 7702944483', email: '', orders: 0 },
 ];
 
-const paymentMixData = [
-  { name: 'UPI', value: 6000 },
-  { name: 'CASH', value: 500 },
+const customersData = [
+  { title: 'Mr', firstName: 'Adithya', lastName: '', mobile: '+91 9959993095', email: '', orders: 1 },
+  { title: 'Mr', firstName: 'Biplav', lastName: '', mobile: '+91 9538412155', email: '', orders: 1 },
+  { title: 'Ms', firstName: 'Deepanvitha', lastName: '', mobile: '+91 7205767768', email: '', orders: 1 },
+  { title: 'Ms', firstName: 'Hasini', lastName: 'Muthyalapati', mobile: '+91 9866589905', email: '', orders: 1 },
+  { title: 'Mr', firstName: 'Jena', lastName: 'P.K', mobile: '+91 7978686701', email: '', orders: 1, bg: 'bg-gray-50' },
+  { title: 'Mr', firstName: 'Sdhgsdhn', lastName: 'Dfhdfh', mobile: '+91 7893525665', email: '', orders: 1 },
+  { title: 'Mr', firstName: 'Sharbodeb', lastName: '', mobile: '+91 8825291649', email: '', orders: 1 },
+  { title: 'Mrs', firstName: 'Subhankar', lastName: 'Linda', mobile: '+91 9547042927', email: '', orders: 1 },
+  { title: 'Mr', firstName: 'Uday', lastName: '', mobile: '+91 7702944483', email: '', orders: 0 },
 ];
 
 const Sales: React.FC = () => {
@@ -29,6 +36,8 @@ const Sales: React.FC = () => {
   const [invoiceToPrint, setInvoiceToPrint] = useState<any>(null);
   const [previewMode, setPreviewMode] = useState(false);
   const [posMode, setPosMode] = useState(false);
+  const [paymentMixPeriod, setPaymentMixPeriod] = useState<'FY' | 'Month'>('Month');
+  const [topProductsCategory, setTopProductsCategory] = useState('All');
 
   useEffect(() => {
     fetch('http://localhost:8000/invoices')
@@ -106,6 +115,63 @@ const Sales: React.FC = () => {
   const monthlySales = monthlyInvoices.reduce((acc, inv) => acc + parseFloat(inv.amount || '0'), 0);
   const annualTransactions = annualInvoices.length;
   const monthlyTransactions = monthlyInvoices.length;
+
+  // Computed data for charts
+  const relevantInvoices = paymentMixPeriod === 'FY' ? annualInvoices : monthlyInvoices;
+  
+  const paymentMixMap: Record<string, number> = {};
+  relevantInvoices.forEach(inv => {
+    (inv.payments || []).forEach((p: any) => {
+      const method = p.method || 'Unknown';
+      const amount = parseFloat(p.amount) || 0;
+      paymentMixMap[method] = (paymentMixMap[method] || 0) + amount;
+    });
+  });
+
+  const paymentMixData = Object.entries(paymentMixMap).map(([name, value]) => ({ name, value }));
+  if (paymentMixData.length === 0) {
+    paymentMixData.push({ name: 'No Data', value: 0 });
+  }
+
+  const maxPaymentMixValue = Math.max(...paymentMixData.map(d => d.value), 100);
+  const yAxisTicks = [0, Math.ceil(maxPaymentMixValue / 2), Math.ceil(maxPaymentMixValue)];
+
+  const productCountMap: Record<string, number> = {};
+  annualInvoices.forEach(inv => {
+    (inv.items || []).forEach((item: any) => {
+      if (!item.product || !item.product.name) return;
+      
+      if (topProductsCategory !== 'All') {
+        const parts = (item.product.sku || '').split(' - ');
+        const category = parts.length > 1 ? parts[parts.length - 1].trim() : '';
+        if (category !== topProductsCategory) return;
+      }
+      
+      const qty = parseInt(item.qty) || 0;
+      productCountMap[item.product.name] = (productCountMap[item.product.name] || 0) + qty;
+    });
+  });
+
+  const topProductsData = Object.entries(productCountMap)
+    .sort((a, b) => b[1] - a[1])
+    .slice(0, 5)
+    .map(([name, value], idx) => {
+       const colors = ['bg-red-500', 'bg-orange-400', 'bg-amber-300', 'bg-emerald-400', 'bg-blue-400'];
+       return { name, value, max: 0, color: colors[idx % colors.length] };
+    });
+    
+  const maxProductValue = topProductsData.length > 0 ? topProductsData[0].value : 5;
+  topProductsData.forEach(p => p.max = maxProductValue);
+
+  // Available categories for dropdown
+  const allCategories = new Set<string>();
+  annualInvoices.forEach(inv => {
+    (inv.items || []).forEach((item: any) => {
+      if (!item.product || !item.product.name) return;
+      const parts = (item.product.sku || '').split(' - ');
+      if (parts.length > 1) allCategories.add(parts[parts.length - 1].trim());
+    });
+  });
 
   return (
     <div className="p-4 md:p-6 space-y-6 bg-[#f0f0f3] min-h-[calc(100vh-64px)]">
@@ -301,8 +367,8 @@ const Sales: React.FC = () => {
           <div className="bg-white rounded shadow-sm border border-gray-100 p-4">
             <h3 className="text-slate-800 font-medium mb-4">Payment Mix</h3>
             <div className="flex bg-gray-100 p-1 rounded-md text-xs font-medium w-fit mb-6">
-              <button className="px-3 py-1 text-slate-600 hover:text-slate-800">This FY</button>
-              <button className="px-3 py-1 bg-[#333] text-white rounded shadow-sm">This Month</button>
+              <button onClick={() => setPaymentMixPeriod('FY')} className={`px-3 py-1 rounded shadow-sm ${paymentMixPeriod === 'FY' ? 'bg-[#333] text-white' : 'text-slate-600 hover:text-slate-800'}`}>This FY</button>
+              <button onClick={() => setPaymentMixPeriod('Month')} className={`px-3 py-1 rounded shadow-sm ${paymentMixPeriod === 'Month' ? 'bg-[#333] text-white' : 'text-slate-600 hover:text-slate-800'}`}>This Month</button>
             </div>
             
             <div className="h-40 w-full relative">
@@ -315,10 +381,10 @@ const Sales: React.FC = () => {
               <ResponsiveContainer width="100%" height="100%">
                 <BarChart data={paymentMixData} margin={{ top: 0, right: 0, left: -25, bottom: 0 }}>
                   <RechartsXAxis dataKey="name" tick={{fontSize: 10, fill: '#64748b'}} axisLine={{stroke: '#cbd5e1'}} tickLine={false} />
-                  <YAxis tick={{fontSize: 10, fill: '#64748b'}} axisLine={false} tickLine={false} ticks={[0, 3000, 6000]} tickFormatter={(val) => val === 0 ? '0' : val.toLocaleString()} />
+                  <YAxis tick={{fontSize: 10, fill: '#64748b'}} axisLine={false} tickLine={false} ticks={yAxisTicks} tickFormatter={(val) => val === 0 ? '0' : val.toLocaleString()} />
                   <Bar dataKey="value" barSize={40}>
                     {paymentMixData.map((entry, index) => (
-                      <Cell key={`cell-${index}`} fill={entry.name === 'UPI' ? '#4a7a8c' : '#739e9e'} />
+                      <Cell key={`cell-${index}`} fill={entry.name === 'UPI' ? '#4a7a8c' : (entry.name === 'No Data' ? '#e2e8f0' : '#739e9e')} />
                     ))}
                   </Bar>
                 </BarChart>
@@ -336,27 +402,32 @@ const Sales: React.FC = () => {
             <div className="space-y-4">
               <div>
                 <label className="text-xs text-slate-500 mb-1 block">Category</label>
-                <select className="w-full border border-gray-300 rounded py-1.5 px-3 text-sm focus:outline-none focus:border-blue-500">
-                  <option>Books</option>
+                <select 
+                  value={topProductsCategory}
+                  onChange={(e) => setTopProductsCategory(e.target.value)}
+                  className="w-full border border-gray-300 rounded py-1.5 px-3 text-sm focus:outline-none focus:border-blue-500"
+                >
+                  <option value="All">All Categories</option>
+                  {Array.from(allCategories).map(cat => (
+                    <option key={cat} value={cat}>{cat}</option>
+                  ))}
                 </select>
               </div>
               
               <div className="space-y-4 pt-2">
-                {[
-                  { name: 'A Call to the Youth of India', value: 4, max: 5, color: 'bg-red-500' },
-                  { name: 'Burning Brazier', value: 4, max: 5, color: 'bg-orange-400' },
-                  { name: 'Ideal Child', value: 3, max: 5, color: 'bg-amber-300' },
-                ].map((item, idx) => (
+                {topProductsData.length > 0 ? topProductsData.map((item, idx) => (
                   <div key={idx} className="space-y-1">
                     <div className="flex justify-between text-xs">
-                      <span className="text-slate-700">{item.name}</span>
-                      <span className="text-slate-500">{item.value}</span>
+                      <span className="text-slate-700 truncate pr-2" title={item.name}>{item.name}</span>
+                      <span className="text-slate-500 flex-shrink-0">{item.value}</span>
                     </div>
                     <div className="h-1.5 w-full bg-gray-100 rounded-full overflow-hidden">
                       <div className={`h-full ${item.color}`} style={{ width: `${(item.value / item.max) * 100}%` }}></div>
                     </div>
                   </div>
-                ))}
+                )) : (
+                  <div className="text-sm text-slate-500 text-center py-4">No data available</div>
+                )}
               </div>
             </div>
           </div>
