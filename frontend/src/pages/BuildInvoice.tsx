@@ -294,7 +294,7 @@ const BuildInvoice: React.FC<BuildInvoiceProps> = ({ onBack, onSave, initialInvo
         </div>
       </div>
 
-      <div className={`flex flex-col ${openInPosMode ? 'lg:flex-row' : ''} gap-6 flex-1 min-h-0 bg-[#f0f0f3] p-2 md:p-6 rounded-2xl ${!openInPosMode ? 'max-w-5xl mx-auto w-full' : ''}`}>
+      <div className={`flex flex-col ${openInPosMode ? 'lg:flex-row gap-6 flex-1 min-h-0 w-full' : 'gap-6 flex-1 min-h-0 bg-[#f0f0f3] p-4 md:p-6 rounded-2xl max-w-5xl mx-auto w-full'}`}>
         
         {/* Left Pane - Products (POS Mode Only) */}
         {openInPosMode && (
