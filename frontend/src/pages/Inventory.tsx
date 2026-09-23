@@ -43,15 +43,157 @@ const Inventory: React.FC = () => {
   const [activeTab, setActiveTab] = useState<'summary' | 'products' | 'categories' | 'opening-stock'>('summary');
   const [isAddItemModalOpen, setIsAddItemModalOpen] = useState(false);
   const [inventoryItems, setInventoryItems] = useState<any[]>([]);
+  const [invoices, setInvoices] = useState<any[]>([]);
+  const [selectedTransactionItem, setSelectedTransactionItem] = useState<any | null>(null);
 
   useEffect(() => {
     fetch('http://localhost:8000/inventory')
       .then(res => res.json())
       .then(data => setInventoryItems(data))
       .catch(console.error);
+    
+    fetch('http://localhost:8000/invoices')
+      .then(res => res.json())
+      .then(data => setInvoices(data))
+      .catch(console.error);
   }, []);
 
-  const categoriesData = React.useMemo(() => {
+  // Compute total sold per item from real invoice data
+  const salesByItem = React.useMemo(() => {
+    const map = new Map<string, number>();
+    invoices.forEach(inv => {
+      const items = inv.items || [];
+      items.forEach((item: any) => {
+        const prev = map.get(item.name) || 0;
+        map.set(item.name, prev + (Number(item.quantity) || 0));
+      });
+    });
+    return map;
+  }, [invoices]);
+
+  const transactionDetails = React.useMemo(() => {
+    if (!selectedTransactionItem) return [];
+    const itemName = selectedTransactionItem.item_name;
+    const itemCode = selectedTransactionItem.item_code;
+    const transactions: any[] = [];
+    
+    // Add sales from invoices (real data)
+    invoices.forEach(inv => {
+      const items = inv.items || [];
+      items.forEach((item: any) => {
+        if (item.name === itemName) {
+          transactions.push({
+            date: inv.date,
+            type: 'Sale',
+            batchNo: itemCode,
+            refNo: inv.id?.replace('HYD-INV-', '') || '',
+            qty: item.quantity
+          });
+        }
+      });
+    });
+    
+    // Add opening balance (use earliest invoice date or today as reference)
+    if (selectedTransactionItem.opening_qty) {
+      const allDates = invoices.map(inv => inv.date).filter(Boolean).sort();
+      const openingDate = allDates.length > 0 ? allDates[0] : new Date().toISOString().split('T')[0];
+      transactions.push({
+        date: openingDate,
+        type: 'Opening Balance',
+        batchNo: itemCode,
+        refNo: '',
+        qty: selectedTransactionItem.opening_qty
+      });
+    }
+    
+    // Sort by date descending
+    transactions.sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime());
+    return transactions;
+  }, [selectedTransactionItem, invoices]);
+
+  // Transaction Details View
+  if (selectedTransactionItem) {
+    return (
+      <div className="p-4 md:p-6 space-y-4 flex flex-col h-[calc(100vh-3.5rem)]">
+        <div>
+          <div className="text-[#0088cc] text-sm cursor-pointer mb-1 hover:underline" onClick={() => setSelectedTransactionItem(null)}>
+            Inventory \
+          </div>
+          <h1 className="text-xl font-bold text-slate-900">
+            Inventory Transaction Details - {selectedTransactionItem.item_name}
+          </h1>
+        </div>
+
+        {/* Banner */}
+        <div className="h-6 w-full bg-[#1e3a5f] bg-opacity-80 rounded" style={{ backgroundImage: 'url("data:image/svg+xml,%3Csvg width=\'60\' height=\'60\' viewBox=\'0 0 60 60\' xmlns=\'http://www.w3.org/2000/svg\'%3E%3Cg fill=\'none\' fill-rule=\'evenodd\'%3E%3Cg fill=\'%23f9cc4a\' fill-opacity=\'0.4\'%3E%3Cpath d=\'M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z\'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E")' }}></div>
+
+        <div className="flex-1 bg-white rounded-md border border-gray-200 overflow-hidden shadow-sm flex flex-col">
+          {/* Toolbar */}
+          <div className="p-3 border-b border-gray-100 flex flex-wrap items-center gap-4 bg-white">
+            <div className="flex items-center space-x-2 border border-gray-300 rounded px-2 bg-white">
+              <Search className="w-4 h-4 text-gray-400" />
+              <input type="text" placeholder="Search" className="border-none py-1 focus:ring-0 text-sm w-48 outline-none" />
+            </div>
+            <button className="font-semibold text-sm text-slate-800 hover:text-black">Go</button>
+            
+            <div className="flex items-center space-x-2 text-sm text-slate-600 ml-4">
+              <span>Rows</span>
+              <select className="border border-gray-300 rounded py-1 px-2 focus:outline-none bg-white">
+                <option>50</option>
+              </select>
+            </div>
+
+            <div className="flex items-center space-x-1 text-sm font-medium ml-4 cursor-pointer">
+              <span>Actions</span>
+              <ChevronDown className="w-4 h-4 text-slate-800" />
+            </div>
+          </div>
+
+          {/* Table */}
+          <div className="flex-1 overflow-auto">
+            <table className="w-full text-sm text-left whitespace-nowrap">
+              <thead className="text-[11px] text-[#1e3a5f] font-bold border-b border-gray-200 bg-white uppercase sticky top-0">
+                <tr>
+                  <th className="px-4 py-3">Transaction Date <ArrowUp className="w-3 h-3 inline text-gray-400" /></th>
+                  <th className="px-4 py-3">Transaction Type</th>
+                  <th className="px-4 py-3">Batch No</th>
+                  <th className="px-4 py-3">Reference No</th>
+                  <th className="px-4 py-3 text-right">Quantity</th>
+                </tr>
+              </thead>
+              <tbody className="divide-y divide-gray-100 bg-[#f9fafb]">
+                {transactionDetails.length === 0 ? (
+                  <tr>
+                    <td colSpan={5} className="px-4 py-12 text-center text-slate-400">
+                      <Search className="w-8 h-8 mx-auto mb-2 text-gray-300" strokeWidth={1.5} />
+                      <p className="text-sm">No transactions found for this item.</p>
+                    </td>
+                  </tr>
+                ) : (
+                  transactionDetails.map((tx, idx) => (
+                    <tr key={idx} className="hover:bg-gray-50 transition-colors">
+                      <td className="px-4 py-3">{tx.date}</td>
+                      <td className="px-4 py-3">{tx.type}</td>
+                      <td className="px-4 py-3">{tx.batchNo}</td>
+                      <td className="px-4 py-3">{tx.refNo}</td>
+                      <td className="px-4 py-3 text-right font-medium text-[#0088cc]">{tx.qty}</td>
+                    </tr>
+                  ))
+                )}
+              </tbody>
+            </table>
+          </div>
+
+          {/* Footer */}
+          <div className="px-4 py-2 text-xs text-slate-500 text-right bg-white border-t border-gray-200">
+            1 - {transactionDetails.length}
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  const categoriesData = (() => {
     const map = new Map<string, any>();
     inventoryItems.forEach(item => {
       const catName = item.item_category;
@@ -71,7 +213,7 @@ const Inventory: React.FC = () => {
       map.get(catName).count += 1;
     });
     return Array.from(map.values());
-  }, [inventoryItems]);
+  })();
 
   return (
     <div className="p-4 md:p-6 space-y-4 flex flex-col h-[calc(100vh-3.5rem)]">
@@ -169,12 +311,15 @@ const Inventory: React.FC = () => {
                       <td className="px-4 py-3 border-r border-gray-300">{row.item_category}</td>
                       <td className="px-4 py-3 border-r border-gray-300">{row.item_name}</td>
                       <td className="px-4 py-3 text-right border-r border-gray-300">{row.opening_qty || 0}</td>
-                      <td className="px-4 py-3 text-right border-r border-gray-300">0</td>
-                      <td className="px-4 py-3 text-right font-medium border-r border-gray-300">{row.opening_qty || 0}</td>
+                      <td className="px-4 py-3 text-right border-r border-gray-300">{salesByItem.get(row.item_name) || 0}</td>
+                      <td className="px-4 py-3 text-right font-medium border-r border-gray-300">{(row.opening_qty || 0) - (salesByItem.get(row.item_name) || 0)}</td>
                       <td className="px-4 py-3 text-right border-r border-gray-300">{row.reorder_level || 0}</td>
                       <td className="px-4 py-3">
                         <div className="flex justify-center space-x-1.5">
-                          <button className="p-1.5 rounded-lg bg-[#f0f0f3] shadow-[2px_2px_4px_#cbced1,-2px_-2px_4px_#ffffff] hover:shadow-[inset_2px_2px_4px_#cbced1,inset_-2px_-2px_4px_#ffffff] text-slate-600 transition-all border-none"><Settings className="w-3.5 h-3.5" /></button>
+                          <button 
+                            onClick={() => setSelectedTransactionItem(row)}
+                            className="p-1.5 rounded-lg bg-[#f0f0f3] shadow-[2px_2px_4px_#cbced1,-2px_-2px_4px_#ffffff] hover:shadow-[inset_2px_2px_4px_#cbced1,inset_-2px_-2px_4px_#ffffff] text-slate-600 transition-all border-none"
+                          ><Settings className="w-3.5 h-3.5" /></button>
                           <button className="p-1.5 rounded-lg bg-[#f0f0f3] shadow-[2px_2px_4px_#cbced1,-2px_-2px_4px_#ffffff] hover:shadow-[inset_2px_2px_4px_#cbced1,inset_-2px_-2px_4px_#ffffff] text-slate-600 transition-all border-none"><Moon className="w-3.5 h-3.5" /></button>
                           <button className="p-1.5 rounded-lg bg-[#f0f0f3] shadow-[2px_2px_4px_#cbced1,-2px_-2px_4px_#ffffff] hover:shadow-[inset_2px_2px_4px_#cbced1,inset_-2px_-2px_4px_#ffffff] text-slate-600 transition-all border-none"><BarChart2 className="w-3.5 h-3.5" /></button>
                         </div>
@@ -290,18 +435,6 @@ const Inventory: React.FC = () => {
               </div>
             </div>
 
-            {/* Filter tags */}
-            <div className="px-4 py-3 bg-[#f0f0f3] border-none flex items-center space-x-3 mb-2 mx-4 rounded-xl shadow-[inset_4px_4px_8px_#cbced1,inset_-4px_-4px_8px_#ffffff]">
-              <Filter className="w-4 h-4 text-slate-600" />
-              <div className="flex items-center space-x-1 border-none bg-[#f0f0f3] shadow-[3px_3px_6px_#cbced1,-3px_-3px_6px_#ffffff] rounded-lg overflow-hidden">
-                <div className="px-2 py-1 bg-transparent border-r border-gray-300"><CheckSquare className="w-3.5 h-3.5 text-green-600" /></div>
-                <div className="px-2 py-1 flex items-center space-x-1 text-xs font-medium bg-transparent">
-                  <Star className="w-3 h-3 text-slate-500" />
-                  <span className="bg-[#e49b5c] text-white px-2 py-0.5 rounded text-[10px] uppercase shadow-[inset_0_1px_2px_rgba(0,0,0,0.2)]">Inactive Category</span>
-                </div>
-                <button className="px-2 py-1 hover:shadow-[inset_1px_1px_3px_#cbced1,inset_-1px_-1px_3px_#ffffff] border-l border-gray-300 bg-transparent transition-all"><X className="w-3.5 h-3.5 text-slate-500" /></button>
-              </div>
-            </div>
 
             <div className="flex-1 overflow-auto mx-4 mb-4 p-4 shadow-[inset_5px_5px_10px_#cbced1,inset_-5px_-5px_10px_#ffffff] bg-[#f0f0f3] rounded-xl">
               <table className="w-full text-[13px] text-left border border-gray-300">
