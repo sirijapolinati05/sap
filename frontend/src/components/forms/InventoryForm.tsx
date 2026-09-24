@@ -47,7 +47,7 @@ const InventoryForm: React.FC<InventoryFormProps> = ({ isOpen, onClose }) => {
     document.addEventListener('mousedown', handleClickOutside);
     
     // Fetch categories
-    fetch('http://localhost:8000/categories')
+    fetch(`${import.meta.env.VITE_API_URL}/categories`)
       .then(res => res.json())
       .then(data => setCategories(data))
       .catch(err => console.error('Failed to fetch categories', err));
@@ -82,7 +82,7 @@ const InventoryForm: React.FC<InventoryFormProps> = ({ isOpen, onClose }) => {
         opening_rate: formData.mrp ? parseFloat(formData.mrp) : null
       };
 
-      const res = await fetch('http://localhost:8000/inventory', {
+      const res = await fetch(`${import.meta.env.VITE_API_URL}/inventory`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(payload)

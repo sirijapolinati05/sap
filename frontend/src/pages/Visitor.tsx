@@ -38,7 +38,7 @@ const Visitor: React.FC = () => {
 
   const fetchVisitors = async () => {
     try {
-      const res = await fetch('http://localhost:8000/visitors');
+      const res = await fetch(`${import.meta.env.VITE_API_URL}/visitors`);
       const data = await res.json();
       setVisitorsList(data);
     } catch (err) {
@@ -47,7 +47,7 @@ const Visitor: React.FC = () => {
   };
 
   useEffect(() => {
-    fetch('http://localhost:8000/members')
+    fetch(`${import.meta.env.VITE_API_URL}/members`)
       .then(res => res.json())
       .then(data => setMembers(data))
       .catch(err => console.error("Error fetching members:", err));
@@ -74,7 +74,7 @@ const Visitor: React.FC = () => {
       if (!submitData.dob) delete submitData.dob;
       if (!submitData.visit_date) delete submitData.visit_date;
 
-      const response = await fetch('http://localhost:8000/visitors', {
+      const response = await fetch(`${import.meta.env.VITE_API_URL}/visitors`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(submitData)
@@ -138,7 +138,7 @@ const Visitor: React.FC = () => {
       if (!submitData.dob) delete submitData.dob;
       if (!submitData.visit_date) delete submitData.visit_date;
 
-      const response = await fetch(`http://localhost:8000/visitors/${editingVisitor.id}`, {
+      const response = await fetch(`${import.meta.env.VITE_API_URL}/visitors/${editingVisitor.id}`, {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(submitData)

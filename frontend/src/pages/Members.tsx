@@ -49,12 +49,12 @@ const Members: React.FC = () => {
   }, [members]);
 
   useEffect(() => {
-    fetch('http://localhost:8000/members')
+    fetch(`${import.meta.env.VITE_API_URL}/members`)
       .then(res => res.json())
       .then(data => setMembers(data))
       .catch(err => console.error("Error fetching members:", err));
 
-    fetch('http://localhost:8000/visitors')
+    fetch(`${import.meta.env.VITE_API_URL}/visitors`)
       .then(res => res.json())
       .then(data => {
         const interested = data.filter((v: any) => v.interested_to_become_member === true);
@@ -62,7 +62,7 @@ const Members: React.FC = () => {
       })
       .catch(err => console.error("Error fetching visitors:", err));
       
-    fetch('http://localhost:8000/members/stats')
+    fetch(`${import.meta.env.VITE_API_URL}/members/stats`)
       .then(res => res.json())
       .then(data => setMemberStats(data))
       .catch(err => console.error("Error fetching member stats:", err));
@@ -80,7 +80,7 @@ const Members: React.FC = () => {
     if (!window.confirm('Are you sure you want to delete this member?')) return;
     
     try {
-      const response = await fetch(`http://localhost:8000/members/${memberId}`, {
+      const response = await fetch(`${import.meta.env.VITE_API_URL}/members/${memberId}`, {
         method: 'DELETE',
       });
       

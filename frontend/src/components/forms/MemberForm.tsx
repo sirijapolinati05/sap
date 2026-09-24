@@ -132,8 +132,8 @@ const MemberForm: React.FC<MemberFormProps> = ({ isOpen, onClose, onMemberAdded,
       }
 
       const url = initialData 
-        ? `http://localhost:8000/members/${initialData.id}` 
-        : 'http://localhost:8000/members';
+        ? `${import.meta.env.VITE_API_URL}/members/${initialData.id}` 
+        : `${import.meta.env.VITE_API_URL}/members`;
       
       const method = initialData ? 'PUT' : 'POST';
 

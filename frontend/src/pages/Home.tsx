@@ -45,7 +45,7 @@ const UpcomingBirthdays: React.FC = () => {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    fetch('http://localhost:8000/home/upcoming-birthdays?days=30')
+    fetch(`${import.meta.env.VITE_API_URL}/home/upcoming-birthdays?days=30`)
       .then(r => {
         if (!r.ok) throw new Error(`HTTP ${r.status}`);
         return r.json();
@@ -108,7 +108,7 @@ const MembershipRenewals: React.FC = () => {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    fetch('http://localhost:8000/home/membership-renewals?days=30')
+    fetch(`${import.meta.env.VITE_API_URL}/home/membership-renewals?days=30`)
       .then(r => {
         if (!r.ok) throw new Error(`HTTP ${r.status}`);
         return r.json();
@@ -198,10 +198,10 @@ const Home: React.FC = () => {
     const fetchKPIs = async () => {
       try {
         const [membersRes, visitorsRes, salesRes, inventoryRes] = await Promise.all([
-          fetch('http://localhost:8000/members').catch(() => null),
-          fetch('http://localhost:8000/visitors').catch(() => null),
-          fetch('http://localhost:8000/sales').catch(() => null),
-          fetch('http://localhost:8000/inventory').catch(() => null)
+          fetch(`${import.meta.env.VITE_API_URL}/members`).catch(() => null),
+          fetch(`${import.meta.env.VITE_API_URL}/visitors`).catch(() => null),
+          fetch(`${import.meta.env.VITE_API_URL}/invoices`).catch(() => null),
+          fetch(`${import.meta.env.VITE_API_URL}/inventory`).catch(() => null)
         ]);
 
         const members = membersRes && membersRes.ok ? await membersRes.json() : [];
@@ -233,7 +233,7 @@ const Home: React.FC = () => {
 
     const fetchTime = async () => {
       try {
-        const response = await fetch('http://localhost:8000/time');
+        const response = await fetch(`${import.meta.env.VITE_API_URL}/time`);
         if (response.ok) {
           const data = await response.json();
           setCurrentTime(new Date(data.time));
@@ -246,7 +246,7 @@ const Home: React.FC = () => {
     fetchTime();
     
     // Fetch renewal count for banner
-    fetch('http://localhost:8000/home/membership-renewals?days=30')
+    fetch(`${import.meta.env.VITE_API_URL}/home/membership-renewals?days=30`)
       .then(r => r.json())
       .then((d: unknown) => {
         if (Array.isArray(d)) setRenewalCount(d.length);
@@ -256,7 +256,7 @@ const Home: React.FC = () => {
     // Fetch tasks
     const fetchTasks = async () => {
       try {
-        const response = await fetch('http://localhost:8000/tasks');
+        const response = await fetch(`${import.meta.env.VITE_API_URL}/tasks`);
         if (response.ok) {
           const data = await response.json();
           setTasks(data);
@@ -294,7 +294,7 @@ const Home: React.FC = () => {
   const handleCreateTask = async () => {
     if (!taskName || !taskDate) return;
     try {
-      const res = await fetch('http://localhost:8000/tasks', {
+      const res = await fetch(`${import.meta.env.VITE_API_URL}/tasks`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ name: taskName, date: taskDate, status: 'pending' })

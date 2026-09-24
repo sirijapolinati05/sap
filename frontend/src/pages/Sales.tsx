@@ -41,7 +41,7 @@ const Sales: React.FC = () => {
   };
 
   useEffect(() => {
-    fetch('http://localhost:8000/invoices')
+    fetch(`${import.meta.env.VITE_API_URL}/invoices`)
       .then(res => res.json())
       .then(data => {
         // sort by newest first (descending ID usually works if ID format is INV-0001, but date/time is better)
@@ -49,7 +49,7 @@ const Sales: React.FC = () => {
       })
       .catch(console.error);
 
-    fetch('http://localhost:8000/members')
+    fetch(`${import.meta.env.VITE_API_URL}/members`)
       .then(res => res.json())
       .then(data => {
         setCustomers(data);
@@ -69,7 +69,7 @@ const Sales: React.FC = () => {
         }} 
         onSave={(newInvoice, returnToInvoices) => {
           if (!invoiceToPrint) {
-            fetch('http://localhost:8000/invoices', {
+            fetch(`${import.meta.env.VITE_API_URL}/invoices`, {
               method: 'POST',
               headers: { 'Content-Type': 'application/json' },
               body: JSON.stringify(newInvoice)
@@ -78,7 +78,7 @@ const Sales: React.FC = () => {
             .then(saved => setInvoicesData(prev => [saved, ...prev]))
             .catch(console.error);
           } else {
-            fetch(`http://localhost:8000/invoices/${newInvoice.id}`, {
+            fetch(`${import.meta.env.VITE_API_URL}/invoices/${newInvoice.id}`, {
               method: 'PUT',
               headers: { 'Content-Type': 'application/json' },
               body: JSON.stringify(newInvoice)

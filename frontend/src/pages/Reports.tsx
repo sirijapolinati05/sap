@@ -10,12 +10,12 @@ const Reports: React.FC = () => {
   const navigate = useNavigate();
 
   useEffect(() => {
-    fetch('http://localhost:8000/inventory')
+    fetch(`${import.meta.env.VITE_API_URL}/inventory`)
       .then(res => res.json())
       .then(data => setInventoryItems(data))
       .catch(console.error);
     
-    fetch('http://localhost:8000/invoices')
+    fetch(`${import.meta.env.VITE_API_URL}/invoices`)
       .then(res => res.json())
       .then(data => setInvoices(data))
       .catch(console.error);

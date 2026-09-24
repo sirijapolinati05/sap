@@ -62,14 +62,14 @@ const BuildInvoice: React.FC<BuildInvoiceProps> = ({ onBack, onSave, initialInvo
   })));
 
   useEffect(() => {
-    fetch('http://localhost:8000/members')
+    fetch(`${import.meta.env.VITE_API_URL}/members`)
       .then(res => res.json())
       .then(data => {
         setMembers(data);
       })
       .catch(console.error);
       
-    fetch('http://localhost:8000/inventory')
+    fetch(`${import.meta.env.VITE_API_URL}/inventory`)
       .then(res => res.json())
       .then(data => {
         const mappedProducts = data.map((item: any) => ({

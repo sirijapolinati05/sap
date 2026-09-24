@@ -50,7 +50,7 @@ const UpdateInfoForm: React.FC<UpdateInfoFormProps> = ({ isOpen, onClose }) => {
     setSuccess(false);
 
     try {
-      const response = await fetch('http://localhost:8000/locations', {
+      const response = await fetch(`${import.meta.env.VITE_API_URL}/locations`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

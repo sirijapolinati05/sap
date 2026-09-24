@@ -54,17 +54,17 @@ const Inventory: React.FC = () => {
   const [editedStock, setEditedStock] = useState<Record<number, { rate: number; qty: number }>>({});
 
   useEffect(() => {
-    fetch('http://localhost:8000/inventory')
+    fetch(`${import.meta.env.VITE_API_URL}/inventory`)
       .then(res => res.json())
       .then(data => setInventoryItems(data))
       .catch(console.error);
     
-      fetch('http://localhost:8000/invoices')
+      fetch(`${import.meta.env.VITE_API_URL}/invoices`)
       .then(res => res.json())
       .then(data => setInvoices(data))
       .catch(console.error);
       
-    fetch('http://localhost:8000/categories')
+    fetch(`${import.meta.env.VITE_API_URL}/categories`)
       .then(res => res.json())
       .then(data => setCategoriesList(data))
       .catch(console.error);
@@ -247,7 +247,7 @@ const Inventory: React.FC = () => {
       const updatePromises = inventoryItems.map(item => {
         const edited = editedStock[item.id];
         if (edited && (edited.rate !== item.opening_rate || edited.qty !== item.opening_qty)) {
-          return fetch(`http://localhost:8000/inventory/${item.id}`, {
+          return fetch(`${import.meta.env.VITE_API_URL}/inventory/${item.id}`, {
             method: 'PUT',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ opening_rate: edited.rate, opening_qty: edited.qty })
