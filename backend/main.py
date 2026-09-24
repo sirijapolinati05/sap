@@ -20,9 +20,14 @@ import os
 import shutil
 import json
 
-UPLOAD_DIR = "uploads/products"
+if os.getenv("VERCEL"):
+    UPLOAD_BASE_DIR = "/tmp/uploads"
+else:
+    UPLOAD_BASE_DIR = "uploads"
+
+UPLOAD_DIR = f"{UPLOAD_BASE_DIR}/products"
 os.makedirs(UPLOAD_DIR, exist_ok=True)
-app.mount("/uploads", StaticFiles(directory="uploads"), name="uploads")
+app.mount("/uploads", StaticFiles(directory=UPLOAD_BASE_DIR), name="uploads")
 
 
 app.add_middleware(
