@@ -7,14 +7,14 @@ const CashBook: React.FC = () => {
   const [isAddExpenseModalOpen, setIsAddExpenseModalOpen] = useState(false);
 
   return (
-    <div className="p-4 md:p-6 space-y-4 flex flex-col h-[calc(100vh-3.5rem)]">
+    <div className="md:space-y-4 flex flex-col h-[calc(100vh-3.5rem)]">
       {/* Tabs */}
       <div className="flex space-x-6 mb-2">
         <button 
           onClick={() => setActiveTab('cashbook')}
           className={`flex items-center justify-center px-4 py-1.5 font-medium text-sm transition-all rounded-full ${
             activeTab === 'cashbook' 
-              ? 'bg-[#5a6c8e] text-white shadow-[inset_0_2px_4px_rgba(255,255,255,0.3),0_4px_6px_rgba(0,0,0,0.2)] border border-[#4a5a75] active:scale-95 active:shadow-[inset_0_1px_2px_rgba(0,0,0,0.4)]' 
+              ? 'bg-[#5a6c8e] text-white shadow-sm border border-[#4a5a75] active:scale-95 active:shadow-sm' 
               : 'text-[#3c7ab7] hover:text-[#2d6195]'
           }`}
         >
@@ -24,7 +24,7 @@ const CashBook: React.FC = () => {
           onClick={() => setActiveTab('expenses')}
           className={`flex items-center justify-center px-4 py-1.5 font-medium text-sm transition-all rounded-full ${
             activeTab === 'expenses' 
-              ? 'bg-[#5a6c8e] text-white shadow-[inset_0_2px_4px_rgba(255,255,255,0.3),0_4px_6px_rgba(0,0,0,0.2)] border border-[#4a5a75] active:scale-95 active:shadow-[inset_0_1px_2px_rgba(0,0,0,0.4)]' 
+              ? 'bg-[#5a6c8e] text-white shadow-sm border border-[#4a5a75] active:scale-95 active:shadow-sm' 
               : 'text-[#3c7ab7] hover:text-[#2d6195]'
           }`}
         >
@@ -32,35 +32,35 @@ const CashBook: React.FC = () => {
         </button>
       </div>
 
-      <div className="flex-1 bg-[#f0f0f3] rounded-xl shadow-[10px_10px_20px_#cbced1,-10px_-10px_20px_#ffffff] border-none flex flex-col overflow-hidden mb-2">
+      <div className="flex-1 bg-white rounded-xl shadow-sm border-none flex flex-col overflow-hidden mb-2">
         
         {activeTab === 'cashbook' ? (
           <>
             {/* Toolbar */}
-            <div className="p-4 border-none flex flex-wrap items-center justify-between gap-4 bg-[#f0f0f3]">
+            <div className="border-none flex flex-wrap items-center justify-between gap-4 bg-white">
               <div className="flex items-center space-x-4">
-                <div className="flex items-center space-x-2 border-none bg-[#f0f0f3] shadow-[inset_4px_4px_8px_#cbced1,inset_-4px_-4px_8px_#ffffff] rounded-lg px-2">
+                <div className="flex items-center space-x-2 border-none bg-white rounded-xl shadow-[0_2px_10px_rgba(0,0,0,0.03)] border border-gray-100/50 px-2">
                   <Search className="w-4 h-4 text-gray-400 ml-2" />
                   <input type="text" placeholder="Search" className="border-none py-2 px-2 text-sm w-48 bg-transparent focus:outline-none" />
                 </div>
-                <button className="bg-[#f0f0f3] hover:shadow-[inset_2px_2px_5px_#cbced1,inset_-2px_-2px_5px_#ffffff] text-black px-4 py-1.5 rounded-lg font-semibold text-sm transition-all shadow-[4px_4px_8px_#cbced1,-4px_-4px_8px_#ffffff] border-none">Go</button>
+                <button className="bg-white hover:shadow-sm text-black px-4 py-1.5 rounded-lg font-semibold text-sm transition-all shadow-sm border-none">Go</button>
                 
                 <div className="flex items-center space-x-2 ml-4">
                   <span className="text-sm text-slate-600 font-medium">Rows</span>
-                  <select className="appearance-none border-none bg-[#f0f0f3] shadow-[inset_4px_4px_8px_#cbced1,inset_-4px_-4px_8px_#ffffff] rounded-lg px-4 py-1.5 text-sm focus:outline-none">
+                  <select className="appearance-none border-none bg-white rounded-xl shadow-[0_2px_10px_rgba(0,0,0,0.03)] border border-gray-100/50 px-4 py-1.5 text-sm focus:outline-none">
                     <option>50</option>
                   </select>
                 </div>
               </div>
               
-              <div className="flex items-center space-x-2 text-sm font-medium bg-[#f0f0f3] shadow-[3px_3px_6px_#cbced1,-3px_-3px_6px_#ffffff] hover:shadow-[inset_2px_2px_4px_#cbced1,inset_-2px_-2px_4px_#ffffff] px-4 py-1.5 rounded-lg transition-all cursor-pointer">
+              <div className="flex items-center space-x-2 text-sm font-medium bg-white shadow-sm hover:shadow-sm px-4 py-1.5 rounded-lg transition-all cursor-pointer">
                 <span className="text-slate-800">Actions</span>
                 <ChevronDown className="w-4 h-4 text-slate-800" />
               </div>
             </div>
 
             {/* Data Table */}
-            <div className="flex-1 overflow-auto mx-4 mb-4 p-4 shadow-[inset_5px_5px_10px_#cbced1,inset_-5px_-5px_10px_#ffffff] bg-[#f0f0f3] rounded-xl">
+            <div className="flex-1 overflow-auto mx-4 mb-4 shadow-sm bg-white rounded-xl">
               <table className="w-full text-sm text-left whitespace-nowrap border border-gray-300">
                 <thead className="text-[11px] font-bold text-gray-500 uppercase tracking-wider border-b border-gray-300">
                   <tr>
@@ -112,21 +112,21 @@ const CashBook: React.FC = () => {
         ) : (
           <>
             {/* Expenses Toolbar */}
-            <div className="p-4 border-none flex flex-wrap items-center gap-4 bg-[#f0f0f3]">
-              <div className="flex items-center space-x-2 border-none bg-[#f0f0f3] shadow-[inset_4px_4px_8px_#cbced1,inset_-4px_-4px_8px_#ffffff] rounded-lg px-2">
+            <div className="border-none flex flex-wrap items-center gap-4 bg-white">
+              <div className="flex items-center space-x-2 border-none bg-white rounded-xl shadow-[0_2px_10px_rgba(0,0,0,0.03)] border border-gray-100/50 px-2">
                 <Search className="w-4 h-4 text-gray-400 ml-2" />
                 <input type="text" placeholder="Search" className="border-none py-2 px-2 text-sm w-48 bg-transparent focus:outline-none" />
               </div>
-              <button className="bg-[#f0f0f3] hover:shadow-[inset_2px_2px_5px_#cbced1,inset_-2px_-2px_5px_#ffffff] text-black px-4 py-1.5 rounded-lg font-semibold text-sm transition-all shadow-[4px_4px_8px_#cbced1,-4px_-4px_8px_#ffffff] border-none">Go</button>
+              <button className="bg-white hover:shadow-sm text-black px-4 py-1.5 rounded-lg font-semibold text-sm transition-all shadow-sm border-none">Go</button>
               
               <div className="flex items-center space-x-2 ml-4">
                 <span className="text-sm text-slate-600 font-medium">Rows</span>
-                <select className="appearance-none border-none bg-[#f0f0f3] shadow-[inset_4px_4px_8px_#cbced1,inset_-4px_-4px_8px_#ffffff] rounded-lg px-4 py-1.5 text-sm focus:outline-none">
+                <select className="appearance-none border-none bg-white rounded-xl shadow-[0_2px_10px_rgba(0,0,0,0.03)] border border-gray-100/50 px-4 py-1.5 text-sm focus:outline-none">
                   <option>50</option>
                 </select>
               </div>
 
-              <div className="flex items-center space-x-2 text-sm font-medium ml-4 bg-[#f0f0f3] shadow-[3px_3px_6px_#cbced1,-3px_-3px_6px_#ffffff] hover:shadow-[inset_2px_2px_4px_#cbced1,inset_-2px_-2px_4px_#ffffff] px-4 py-1.5 rounded-lg transition-all cursor-pointer">
+              <div className="flex items-center space-x-2 text-sm font-medium ml-4 bg-white shadow-sm hover:shadow-sm px-4 py-1.5 rounded-lg transition-all cursor-pointer">
                 <span className="text-slate-800">Actions</span>
                 <ChevronDown className="w-4 h-4 text-slate-800" />
               </div>
@@ -134,7 +134,7 @@ const CashBook: React.FC = () => {
               <div className="ml-auto">
                 <button 
                   onClick={() => setIsAddExpenseModalOpen(true)}
-                  className="bg-[#f0f0f3] shadow-[3px_3px_6px_#cbced1,-3px_-3px_6px_#ffffff] hover:shadow-[inset_2px_2px_4px_#cbced1,inset_-2px_-2px_4px_#ffffff] px-4 py-1.5 rounded-lg font-semibold text-sm text-slate-800 transition-all border-none"
+                  className="bg-white shadow-sm hover:shadow-sm px-4 py-1.5 rounded-lg font-semibold text-sm text-slate-800 transition-all border-none"
                 >
                   Create
                 </button>

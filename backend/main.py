@@ -1,4 +1,5 @@
-from fastapi import FastAPI, Depends, HTTPException, status
+from fastapi import FastAPI, Depends, HTTPException, status, File, UploadFile, Form
+from fastapi.staticfiles import StaticFiles
 from typing import List
 from fastapi.middleware.cors import CORSMiddleware
 from sqlalchemy.orm import Session
@@ -14,6 +15,15 @@ import auth
 Base.metadata.create_all(bind=engine)
 
 app = FastAPI(title="Branch Management API")
+
+import os
+import shutil
+import json
+
+UPLOAD_DIR = "uploads/products"
+os.makedirs(UPLOAD_DIR, exist_ok=True)
+app.mount("/uploads", StaticFiles(directory="uploads"), name="uploads")
+
 
 app.add_middleware(
     CORSMiddleware,
@@ -320,6 +330,18 @@ def create_inventory_item(item: schemas.InventoryItemCreate, db: Session = Depen
     db.refresh(new_item)
     return new_item
 
+@app.put("/inventory/{item_id}", response_model=schemas.InventoryItemOut, tags=["Inventory"])
+def update_inventory_item(item_id: int, item: dict, db: Session = Depends(get_db)):
+    db_item = db.query(models.InventoryItem).filter(models.InventoryItem.id == item_id).first()
+    if not db_item:
+        raise HTTPException(status_code=404, detail="Item not found")
+    for key, value in item.items():
+        if hasattr(db_item, key):
+            setattr(db_item, key, value)
+    db.commit()
+    db.refresh(db_item)
+    return db_item
+
 @app.get("/invoices", response_model=List[schemas.InvoiceOut], tags=["Invoices"])
 def get_invoices(skip: int = 0, limit: int = 100, db: Session = Depends(get_db)):
     invoices = db.query(models.Invoice).offset(skip).limit(limit).all()
@@ -346,3 +368,88 @@ def update_invoice(invoice_id: str, invoice: schemas.InvoiceCreate, db: Session 
     db.commit()
     db.refresh(db_invoice)
     return db_invoice
+
+# --- Product Endpoints ---
+@app.get("/products", response_model=List[schemas.ProductOut], tags=["Products"])
+def get_products(skip: int = 0, limit: int = 100, db: Session = Depends(get_db)):
+    return db.query(models.Product).offset(skip).limit(limit).all()
+
+@app.post("/products", response_model=schemas.ProductOut, status_code=status.HTTP_201_CREATED, tags=["Products"])
+def create_product(
+    category: str = Form(None),
+    item_name: str = Form(...),
+    description: str = Form(None),
+    item_code: str = Form(None),
+    hsn_sac: str = Form(None),
+    reorder_quantity: int = Form(None),
+    tags: str = Form("[]"),
+    product_status: bool = Form(True),
+    uom: str = Form(None),
+    purchase_price: float = Form(None),
+    mrp: float = Form(None),
+    sales_price: float = Form(None),
+    tax: str = Form(None),
+    image: UploadFile = File(None),
+    db: Session = Depends(get_db)
+):
+    image_path = None
+    if image and image.filename:
+        file_location = f"{UPLOAD_DIR}/{image.filename}"
+        with open(file_location, "wb+") as file_object:
+            shutil.copyfileobj(image.file, file_object)
+        image_path = file_location
+
+    try:
+        parsed_tags = json.loads(tags)
+    except:
+        parsed_tags = []
+
+    new_product = models.Product(
+        category=category,
+        item_name=item_name,
+        description=description,
+        item_code=item_code,
+        hsn_sac=hsn_sac,
+        reorder_quantity=reorder_quantity,
+        tags=parsed_tags,
+        status=product_status,
+        uom=uom,
+        purchase_price=purchase_price,
+        mrp=mrp,
+        sales_price=sales_price,
+        tax=tax,
+        image_path=image_path
+    )
+    db.add(new_product)
+    db.commit()
+    db.refresh(new_product)
+    return new_product
+
+
+@app.get("/tasks", response_model=List[schemas.TaskOut])
+def get_tasks(db: Session = Depends(get_db)):
+    return db.query(models.Task).all()
+
+@app.post("/tasks", response_model=schemas.TaskOut)
+def create_task(task: schemas.TaskCreate, db: Session = Depends(get_db)):
+    db_task = models.Task(**task.dict())
+    db.add(db_task)
+    db.commit()
+    db.refresh(db_task)
+    return db_task
+
+@app.get("/categories", response_model=List[schemas.CategoryOut])
+def get_categories(db: Session = Depends(get_db)):
+    return db.query(models.Category).all()
+
+@app.post("/categories", response_model=schemas.CategoryOut)
+def create_category(category: schemas.CategoryCreate, db: Session = Depends(get_db)):
+    db_category = models.Category(**category.dict())
+    db.add(db_category)
+    try:
+        db.commit()
+        db.refresh(db_category)
+        return db_category
+    except Exception:
+        db.rollback()
+        raise HTTPException(status_code=400, detail="Category already exists")

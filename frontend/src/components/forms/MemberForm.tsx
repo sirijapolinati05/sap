@@ -166,7 +166,7 @@ const MemberForm: React.FC<MemberFormProps> = ({ isOpen, onClose, onMemberAdded,
 
   return (
   <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 backdrop-blur-sm p-0 sm:p-4">
-      <div className="bg-gray-50 sm:rounded-xl shadow-[0_20px_40px_rgba(0,0,0,0.5),inset_0_2px_4px_rgba(255,255,255,1)] border-0 sm:border border-gray-300 w-full h-full sm:h-auto max-w-4xl max-h-screen sm:max-h-[90vh] overflow-hidden flex flex-col relative animate-in fade-in zoom-in duration-200">
+      <div className="bg-gray-50 sm:rounded-xl shadow-sm border-0 sm:border border-gray-300 w-full h-full sm:h-auto max-w-4xl max-h-screen sm:max-h-[90vh] overflow-hidden flex flex-col relative animate-in fade-in zoom-in duration-200">
         
         {/* Modal Header */}
         <div className="flex justify-between items-center p-5 border-b border-gray-100">
@@ -187,7 +187,7 @@ const MemberForm: React.FC<MemberFormProps> = ({ isOpen, onClose, onMemberAdded,
             <div className="grid grid-cols-1 md:grid-cols-5 gap-4">
               <div className="space-y-1 relative">
                 <label className="absolute -top-2 left-2 bg-white px-1 text-[10px] text-slate-500 font-medium">Title</label>
-                <div className="flex bg-slate-50 shadow-[inset_0_3px_6px_rgba(0,0,0,0.15),0_1px_0_rgba(255,255,255,1)] border-t border-r border-b border-l-2 border-l-red-500 border-gray-400/60 rounded-md overflow-hidden">
+                <div className="flex bg-slate-50 shadow-sm border-t border-r border-b border-l-2 border-l-red-500 border-gray-400/60 rounded-md overflow-hidden">
                   <select name="title" value={formData.title} onChange={handleChange} className="w-full bg-transparent border-none py-2 px-3 text-sm focus:ring-0 outline-none">
                     <option>Mr</option>
                     <option>Mrs</option>
@@ -198,14 +198,14 @@ const MemberForm: React.FC<MemberFormProps> = ({ isOpen, onClose, onMemberAdded,
               
               <div className="space-y-1 relative md:col-span-2">
                 <label className="absolute -top-2 left-2 bg-white px-1 text-[10px] text-slate-500 font-medium">First Name</label>
-                <div className="flex bg-slate-50 shadow-[inset_0_3px_6px_rgba(0,0,0,0.15),0_1px_0_rgba(255,255,255,1)] border-t border-r border-b border-l-2 border-l-red-500 border-gray-400/60 rounded-md overflow-hidden">
+                <div className="flex bg-slate-50 shadow-sm border-t border-r border-b border-l-2 border-l-red-500 border-gray-400/60 rounded-md overflow-hidden">
                   <input type="text" name="first_name" value={formData.first_name} onChange={handleChange} className="w-full bg-transparent border-none py-2 px-3 text-sm focus:ring-0 outline-none" />
                 </div>
               </div>
               
               <div className="space-y-1 relative md:col-span-2">
                 <label className="absolute -top-2 left-2 bg-white px-1 text-[10px] text-slate-500 font-medium">Last Name <span className="text-red-500">*</span></label>
-                <div className="flex bg-slate-50 shadow-[inset_0_3px_6px_rgba(0,0,0,0.15),0_1px_0_rgba(255,255,255,1)] border-t border-r border-b border-l-2 border-l-red-500 border-gray-400/60 rounded-md overflow-hidden">
+                <div className="flex bg-slate-50 shadow-sm border-t border-r border-b border-l-2 border-l-red-500 border-gray-400/60 rounded-md overflow-hidden">
                   <input type="text" name="last_name" value={formData.last_name} onChange={handleChange} className="w-full bg-transparent border-none py-2 px-3 text-sm focus:ring-0 outline-none" />
                 </div>
               </div>
@@ -215,7 +215,7 @@ const MemberForm: React.FC<MemberFormProps> = ({ isOpen, onClose, onMemberAdded,
             <div className="space-y-4">
               <div className="space-y-1 relative">
                 <label className="absolute -top-2 left-2 bg-white px-1 text-[10px] text-slate-500 font-medium">Date of Birth</label>
-                <div className="flex bg-slate-50 shadow-[inset_0_3px_6px_rgba(0,0,0,0.15),0_1px_0_rgba(255,255,255,1)] border border-gray-400/60 rounded-md overflow-hidden">
+                <div className="flex bg-slate-50 shadow-sm border border-gray-400/60 rounded-md overflow-hidden">
                   <input type="date" name="dob" value={formData.dob} onChange={handleChange} className="w-full bg-transparent border-none py-2 px-3 text-sm focus:ring-0 outline-none text-slate-700 uppercase" />
                 </div>
               </div>
@@ -223,17 +223,17 @@ const MemberForm: React.FC<MemberFormProps> = ({ isOpen, onClose, onMemberAdded,
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div className="space-y-1 relative">
                   <label className="absolute -top-2 left-2 bg-white px-1 text-[10px] text-slate-500 font-medium">Member Occupation</label>
-                  <input type="text" name="occupation" value={formData.occupation} onChange={handleChange} className="w-full bg-slate-50 shadow-[inset_0_3px_6px_rgba(0,0,0,0.15),0_1px_0_rgba(255,255,255,1)] border border-gray-400/60 rounded-md py-2 px-3 text-sm focus:outline-none" />
+                  <input type="text" name="occupation" value={formData.occupation} onChange={handleChange} className="w-full bg-slate-50 shadow-sm border border-gray-400/60 rounded-md py-2 px-3 text-sm focus:outline-none" />
                 </div>
                 <div className="space-y-1 relative">
                   <label className="absolute -top-2 left-2 bg-white px-1 text-[10px] text-slate-500 font-medium">Member Designation</label>
-                  <input type="text" name="designation" value={formData.designation} onChange={handleChange} className="w-full bg-slate-50 shadow-[inset_0_3px_6px_rgba(0,0,0,0.15),0_1px_0_rgba(255,255,255,1)] border border-gray-400/60 rounded-md py-2 px-3 text-sm focus:outline-none" />
+                  <input type="text" name="designation" value={formData.designation} onChange={handleChange} className="w-full bg-slate-50 shadow-sm border border-gray-400/60 rounded-md py-2 px-3 text-sm focus:outline-none" />
                 </div>
               </div>
               
               <div className="space-y-1 relative">
                 <label className="absolute -top-2 left-2 bg-white px-1 text-[10px] text-slate-500 font-medium">Organization</label>
-                <input type="text" name="organization" value={formData.organization} onChange={handleChange} className="w-full bg-slate-50 shadow-[inset_0_3px_6px_rgba(0,0,0,0.15),0_1px_0_rgba(255,255,255,1)] border border-gray-400/60 rounded-md py-2 px-3 text-sm focus:outline-none" />
+                <input type="text" name="organization" value={formData.organization} onChange={handleChange} className="w-full bg-slate-50 shadow-sm border border-gray-400/60 rounded-md py-2 px-3 text-sm focus:outline-none" />
               </div>
             </div>
 
@@ -251,13 +251,13 @@ const MemberForm: React.FC<MemberFormProps> = ({ isOpen, onClose, onMemberAdded,
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div className="space-y-1 relative">
                   <label className="absolute -top-2 left-2 bg-white px-1 text-[10px] text-slate-500 font-medium">ISD Code</label>
-                  <div className="flex bg-slate-50 shadow-[inset_0_3px_6px_rgba(0,0,0,0.15),0_1px_0_rgba(255,255,255,1)] border border-gray-400/60 rounded-md overflow-hidden">
+                  <div className="flex bg-slate-50 shadow-sm border border-gray-400/60 rounded-md overflow-hidden">
                     <input type="text" name="isd_code" readOnly value={formData.isd_code} onChange={handleChange} className="w-full bg-transparent border-none py-2 px-3 text-sm focus:ring-0 outline-none text-slate-700 font-medium cursor-default" />
                   </div>
                 </div>
                 <div className="space-y-1 relative">
                   <label className="absolute -top-2 left-2 bg-white px-1 text-[10px] text-slate-500 font-medium">Contact Number <span className="text-red-500">*</span></label>
-                  <div className="flex bg-slate-50 shadow-[inset_0_3px_6px_rgba(0,0,0,0.15),0_1px_0_rgba(255,255,255,1)] border-t border-r border-b border-l-2 border-l-red-500 border-gray-400/60 rounded-md overflow-hidden">
+                  <div className="flex bg-slate-50 shadow-sm border-t border-r border-b border-l-2 border-l-red-500 border-gray-400/60 rounded-md overflow-hidden">
                     <input type="text" name="contact_number" value={formData.contact_number} onChange={handleChange} className="w-full bg-transparent border-none py-2 px-3 text-sm focus:ring-0 outline-none" />
                   </div>
                 </div>
@@ -265,32 +265,32 @@ const MemberForm: React.FC<MemberFormProps> = ({ isOpen, onClose, onMemberAdded,
 
               <div className="space-y-1 relative">
                 <label className="absolute -top-2 left-2 bg-white px-1 text-[10px] text-slate-500 font-medium">Email</label>
-                <input type="email" name="email" value={formData.email} onChange={handleChange} className="w-full bg-slate-50 shadow-[inset_0_3px_6px_rgba(0,0,0,0.15),0_1px_0_rgba(255,255,255,1)] border border-gray-400/60 rounded-md py-2 px-3 text-sm focus:outline-none" />
+                <input type="email" name="email" value={formData.email} onChange={handleChange} className="w-full bg-slate-50 shadow-sm border border-gray-400/60 rounded-md py-2 px-3 text-sm focus:outline-none" />
               </div>
               
               <div className="space-y-1 relative mt-4">
                 <label className="absolute -top-2 left-2 bg-white px-1 text-[10px] text-slate-500 font-medium">H.No / Apt No. / Apt Block / Apt Name</label>
-                <input type="text" name="h_no" value={formData.h_no} onChange={handleChange} className="w-full bg-slate-50 shadow-[inset_0_3px_6px_rgba(0,0,0,0.15),0_1px_0_rgba(255,255,255,1)] border border-gray-400/60 rounded-md py-2 px-3 text-sm focus:outline-none" />
+                <input type="text" name="h_no" value={formData.h_no} onChange={handleChange} className="w-full bg-slate-50 shadow-sm border border-gray-400/60 rounded-md py-2 px-3 text-sm focus:outline-none" />
               </div>
               
               <div className="space-y-1 relative">
                 <label className="absolute -top-2 left-2 bg-white px-1 text-[10px] text-slate-500 font-medium">Street No. / Colony name / Landmark</label>
-                <input type="text" name="street" value={formData.street} onChange={handleChange} className="w-full bg-slate-50 shadow-[inset_0_3px_6px_rgba(0,0,0,0.15),0_1px_0_rgba(255,255,255,1)] border border-gray-400/60 rounded-md py-2 px-3 text-sm focus:outline-none" />
+                <input type="text" name="street" value={formData.street} onChange={handleChange} className="w-full bg-slate-50 shadow-sm border border-gray-400/60 rounded-md py-2 px-3 text-sm focus:outline-none" />
               </div>
 
               <div className="space-y-1 relative">
                 <label className="absolute -top-2 left-2 bg-white px-1 text-[10px] text-slate-500 font-medium">Locality</label>
-                <input type="text" name="locality" value={formData.locality} onChange={handleChange} className="w-full bg-slate-50 shadow-[inset_0_3px_6px_rgba(0,0,0,0.15),0_1px_0_rgba(255,255,255,1)] border border-gray-400/60 rounded-md py-2 px-3 text-sm focus:outline-none" />
+                <input type="text" name="locality" value={formData.locality} onChange={handleChange} className="w-full bg-slate-50 shadow-sm border border-gray-400/60 rounded-md py-2 px-3 text-sm focus:outline-none" />
               </div>
 
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div className="space-y-1 relative">
                   <label className="absolute -top-2 left-2 bg-white px-1 text-[10px] text-slate-500 font-medium">City</label>
-                  <input type="text" name="city" value={formData.city} onChange={handleChange} className="w-full bg-slate-50 shadow-[inset_0_3px_6px_rgba(0,0,0,0.15),0_1px_0_rgba(255,255,255,1)] border border-gray-400/60 rounded-md py-2 px-3 text-sm focus:outline-none" />
+                  <input type="text" name="city" value={formData.city} onChange={handleChange} className="w-full bg-slate-50 shadow-sm border border-gray-400/60 rounded-md py-2 px-3 text-sm focus:outline-none" />
                 </div>
                 <div className="space-y-1 relative">
                   <label className="absolute -top-2 left-2 bg-white px-1 text-[10px] text-slate-500 font-medium">Pincode <span className="text-red-500">*</span></label>
-                  <div className="flex bg-slate-50 shadow-[inset_0_3px_6px_rgba(0,0,0,0.15),0_1px_0_rgba(255,255,255,1)] border-t border-r border-b border-l-2 border-l-red-500 border-gray-400/60 rounded-md overflow-hidden">
+                  <div className="flex bg-slate-50 shadow-sm border-t border-r border-b border-l-2 border-l-red-500 border-gray-400/60 rounded-md overflow-hidden">
                     <input list="pincodes" name="pincode" value={formData.pincode} onChange={handleChange} placeholder="--Search or Enter--" className="w-full bg-transparent border-none py-2 px-3 text-sm focus:ring-0 outline-none" />
                     <datalist id="pincodes">
                       {Array.from({ length: 150 }, (_, i) => 500001 + i).map(pin => (
@@ -304,13 +304,13 @@ const MemberForm: React.FC<MemberFormProps> = ({ isOpen, onClose, onMemberAdded,
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div className="space-y-1 relative">
                   <label className="absolute -top-2 left-2 bg-white px-1 text-[10px] text-slate-500 font-medium">Country</label>
-                  <select name="country" value={formData.country} onChange={handleChange} className="w-full bg-slate-50 shadow-[inset_0_3px_6px_rgba(0,0,0,0.15),0_1px_0_rgba(255,255,255,1)] border border-gray-400/60 rounded-md py-2 px-3 text-sm focus:outline-none">
+                  <select name="country" value={formData.country} onChange={handleChange} className="w-full bg-slate-50 shadow-sm border border-gray-400/60 rounded-md py-2 px-3 text-sm focus:outline-none">
                     <option>India</option>
                   </select>
                 </div>
                 <div className="space-y-1 relative">
                   <label className="absolute -top-2 left-2 bg-white px-1 text-[10px] text-slate-500 font-medium">State</label>
-                  <select name="state" value={formData.state} onChange={handleChange} className="w-full bg-slate-50 shadow-[inset_0_3px_6px_rgba(0,0,0,0.15),0_1px_0_rgba(255,255,255,1)] border border-gray-400/60 rounded-md py-2 px-3 text-sm focus:outline-none">
+                  <select name="state" value={formData.state} onChange={handleChange} className="w-full bg-slate-50 shadow-sm border border-gray-400/60 rounded-md py-2 px-3 text-sm focus:outline-none">
                     <option>Telangana</option>
                   </select>
                 </div>
@@ -330,11 +330,11 @@ const MemberForm: React.FC<MemberFormProps> = ({ isOpen, onClose, onMemberAdded,
             {membershipOpen && <div className="space-y-4 border border-gray-200 p-4 rounded-md">
               <div className="space-y-1 relative">
                 <label className="absolute -top-2 left-2 bg-white px-1 text-[10px] text-slate-500 font-medium">Ref Member No</label>
-                <input type="text" name="ref_member_no" value={formData.ref_member_no} onChange={handleChange} className="w-full bg-slate-50 shadow-[inset_0_3px_6px_rgba(0,0,0,0.15),0_1px_0_rgba(255,255,255,1)] border border-gray-400/60 rounded-md py-2 px-3 text-sm focus:outline-none" />
+                <input type="text" name="ref_member_no" value={formData.ref_member_no} onChange={handleChange} className="w-full bg-slate-50 shadow-sm border border-gray-400/60 rounded-md py-2 px-3 text-sm focus:outline-none" />
               </div>
               <div className="space-y-1 relative">
                 <label className="absolute -top-2 left-2 bg-white px-1 text-[10px] text-slate-500 font-medium">Relation with SAS</label>
-                <select name="relation_with_sas" value={formData.relation_with_sas} onChange={handleChange} className="w-full bg-slate-50 shadow-[inset_0_3px_6px_rgba(0,0,0,0.15),0_1px_0_rgba(255,255,255,1)] border border-gray-400/60 rounded-md py-2 px-3 text-sm focus:outline-none">
+                <select name="relation_with_sas" value={formData.relation_with_sas} onChange={handleChange} className="w-full bg-slate-50 shadow-sm border border-gray-400/60 rounded-md py-2 px-3 text-sm focus:outline-none">
                   <option>--Select--</option>
                   <option>SAS MC Member</option>
                   <option>SAS Members</option>
@@ -342,7 +342,7 @@ const MemberForm: React.FC<MemberFormProps> = ({ isOpen, onClose, onMemberAdded,
               </div>
               <div className="space-y-1 relative">
                 <label className="absolute -top-2 left-2 bg-white px-1 text-[10px] text-slate-500 font-medium">Prefered Language</label>
-                <select name="preferred_language" value={formData.preferred_language} onChange={handleChange} className="w-full bg-slate-50 shadow-[inset_0_3px_6px_rgba(0,0,0,0.15),0_1px_0_rgba(255,255,255,1)] border border-gray-400/60 rounded-md py-2 px-3 text-sm focus:outline-none">
+                <select name="preferred_language" value={formData.preferred_language} onChange={handleChange} className="w-full bg-slate-50 shadow-sm border border-gray-400/60 rounded-md py-2 px-3 text-sm focus:outline-none">
                   <option>--Select--</option>
                   <option>English</option>
                   <option>Hindi</option>
@@ -355,19 +355,19 @@ const MemberForm: React.FC<MemberFormProps> = ({ isOpen, onClose, onMemberAdded,
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div className="space-y-1 relative">
                   <label className="absolute -top-2 left-2 bg-white px-1 text-[10px] text-slate-500 font-medium">Paid On</label>
-                  <div className="flex bg-slate-50 shadow-[inset_0_3px_6px_rgba(0,0,0,0.15),0_1px_0_rgba(255,255,255,1)] border border-gray-400/60 rounded-md overflow-hidden">
+                  <div className="flex bg-slate-50 shadow-sm border border-gray-400/60 rounded-md overflow-hidden">
                     <input type="date" name="paid_on" value={formData.paid_on} onChange={handleChange} className="w-full bg-transparent border-none py-2 px-3 text-sm focus:ring-0 outline-none text-slate-700 uppercase" />
                   </div>
                 </div>
                 <div className="space-y-1 relative">
                   <label className="absolute -top-2 left-2 bg-white px-1 text-[10px] text-slate-500 font-medium">Membership Amount</label>
-                  <input type="text" name="membership_amount" value={formData.membership_amount} onChange={handleChange} className="w-full bg-slate-50 shadow-[inset_0_3px_6px_rgba(0,0,0,0.15),0_1px_0_rgba(255,255,255,1)] border border-gray-400/60 rounded-md py-2 px-3 text-sm focus:outline-none" />
+                  <input type="text" name="membership_amount" value={formData.membership_amount} onChange={handleChange} className="w-full bg-slate-50 shadow-sm border border-gray-400/60 rounded-md py-2 px-3 text-sm focus:outline-none" />
                 </div>
               </div>
 
               <div className="space-y-1 relative">
                 <label className="absolute -top-2 left-2 bg-white px-1 text-[10px] text-slate-500 font-medium">Membership Category <span className="text-red-500">*</span></label>
-                <div className="flex bg-slate-50 shadow-[inset_0_3px_6px_rgba(0,0,0,0.15),0_1px_0_rgba(255,255,255,1)] border-t border-r border-b border-l-2 border-l-red-500 border-gray-400/60 rounded-md overflow-hidden">
+                <div className="flex bg-slate-50 shadow-sm border-t border-r border-b border-l-2 border-l-red-500 border-gray-400/60 rounded-md overflow-hidden">
                   <select name="membership_category" value={formData.membership_category} onChange={handleChange} className="w-full bg-transparent border-none py-2 px-3 text-sm focus:ring-0 outline-none">
                     <option>--Choose--</option>
                     <option>Patron-99 Year</option>
@@ -387,13 +387,13 @@ const MemberForm: React.FC<MemberFormProps> = ({ isOpen, onClose, onMemberAdded,
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4">
                 <div className="space-y-1 relative">
                   <label className="absolute -top-2 left-2 bg-white px-1 text-[10px] text-slate-500 font-medium">Joining/Renewal Date</label>
-                  <div className="flex bg-slate-50 shadow-[inset_0_3px_6px_rgba(0,0,0,0.15),0_1px_0_rgba(255,255,255,1)] border border-gray-400/60 rounded-md overflow-hidden">
+                  <div className="flex bg-slate-50 shadow-sm border border-gray-400/60 rounded-md overflow-hidden">
                     <input type="date" name="joining_date" value={formData.joining_date} onChange={handleChange} className="w-full bg-transparent border-none py-2 px-3 text-sm focus:ring-0 outline-none text-slate-700 uppercase" />
                   </div>
                 </div>
                 <div className="space-y-1 relative">
                   <label className="absolute -top-2 left-2 bg-white px-1 text-[10px] text-slate-500 font-medium">Membership Ends on</label>
-                  <div className="flex bg-slate-50 shadow-[inset_0_3px_6px_rgba(0,0,0,0.15),0_1px_0_rgba(255,255,255,1)] border border-gray-400/60 rounded-md overflow-hidden">
+                  <div className="flex bg-slate-50 shadow-sm border border-gray-400/60 rounded-md overflow-hidden">
                     <input type="date" name="membership_ends_on" value={formData.membership_ends_on} onChange={handleChange} className="w-full bg-transparent border-none py-2 px-3 text-sm focus:ring-0 outline-none text-slate-700 uppercase" />
                   </div>
                 </div>
@@ -401,7 +401,7 @@ const MemberForm: React.FC<MemberFormProps> = ({ isOpen, onClose, onMemberAdded,
 
               <div className="space-y-1 relative mt-4">
                 <label className="absolute -top-2 left-2 bg-white px-1 text-[10px] text-slate-500 font-medium">Introduced By</label>
-                <input type="text" name="introduced_by" value={formData.introduced_by} onChange={handleChange} className="w-full bg-slate-50 shadow-[inset_0_3px_6px_rgba(0,0,0,0.15),0_1px_0_rgba(255,255,255,1)] border border-gray-400/60 rounded-md py-2 px-3 text-sm focus:outline-none" />
+                <input type="text" name="introduced_by" value={formData.introduced_by} onChange={handleChange} className="w-full bg-slate-50 shadow-sm border border-gray-400/60 rounded-md py-2 px-3 text-sm focus:outline-none" />
               </div>
             </div>}
 
@@ -412,14 +412,14 @@ const MemberForm: React.FC<MemberFormProps> = ({ isOpen, onClose, onMemberAdded,
         <div className="flex justify-between items-center p-5 border-t border-gray-100 bg-gray-50">
           <button 
             onClick={onClose}
-            className="bg-gray-200 hover:bg-gray-300 text-slate-700 px-5 py-2.5 rounded-lg font-medium text-sm transition-all shadow-[inset_0_2px_4px_rgba(255,255,255,0.6),0_4px_6px_rgba(0,0,0,0.1)] border border-gray-300 active:scale-95 active:shadow-[inset_0_1px_2px_rgba(0,0,0,0.2)]"
+            className="bg-gray-200 hover:bg-gray-300 text-slate-700 px-5 py-2.5 rounded-lg font-medium text-sm transition-all shadow-sm border border-gray-300 active:scale-95 active:shadow-sm"
           >
             Cancel
           </button>
           <button 
             type="button"
             onClick={handleSubmit}
-            className="bg-[#467f92] hover:bg-[#3a6878] text-white px-5 py-2.5 rounded-lg font-medium text-sm transition-all shadow-[inset_0_2px_4px_rgba(255,255,255,0.3),0_4px_6px_rgba(0,0,0,0.2)] border border-[#2d525e] active:scale-95 active:shadow-[inset_0_1px_2px_rgba(0,0,0,0.4)]"
+            className="bg-[#467f92] hover:bg-[#3a6878] text-white px-5 py-2.5 rounded-lg font-medium text-sm transition-all shadow-sm border border-[#2d525e] active:scale-95 active:shadow-sm"
           >
             {initialData ? 'Update' : 'Create'}
           </button>

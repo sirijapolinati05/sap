@@ -182,3 +182,43 @@ class Invoice(Base):
     otherCharges = Column(String)
     payments = Column(JSON, default=list)
     documentType = Column(String, default="Tax invoice")
+
+class Product(Base):
+    __tablename__ = "products"
+    
+    id = Column(Integer, primary_key=True, index=True)
+    category = Column(String)
+    item_name = Column(String, nullable=False)
+    description = Column(String)
+    item_code = Column(String)
+    hsn_sac = Column(String)
+    reorder_quantity = Column(Integer)
+    tags = Column(JSON, default=list)
+    status = Column(Boolean, default=True)
+    uom = Column(String)
+    purchase_price = Column(Float)
+    mrp = Column(Float)
+    sales_price = Column(Float)
+    tax = Column(String)
+    image_path = Column(String)
+
+class Task(Base):
+    __tablename__ = "tasks"
+    
+    id = Column(Integer, primary_key=True, index=True)
+    name = Column(String, nullable=False)
+    date = Column(String, nullable=False)
+    status = Column(String, default="pending")
+
+class Category(Base):
+    __tablename__ = "categories"
+    
+    id = Column(Integer, primary_key=True, index=True)
+    type = Column(String, nullable=True)
+    parent = Column(String, nullable=True)
+    code = Column(String, nullable=True)
+    name = Column(String, nullable=False, unique=True)
+    hsn = Column(String, nullable=True)
+    vendor = Column(String, nullable=True)
+    tax = Column(String, nullable=True)
+    status = Column(String, default="Active")

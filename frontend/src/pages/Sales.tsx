@@ -175,14 +175,14 @@ const Sales: React.FC = () => {
   });
 
   return (
-    <div className="p-4 md:p-6 space-y-6 bg-[#f0f0f3] min-h-[calc(100vh-64px)]">
+    <div className="w-full space-y-6">
       {/* Top Tabs */}
       <div className="flex space-x-6 mb-6">
         <button 
           onClick={() => setActiveTab('Sales Invoices')}
           className={`flex items-center justify-center px-4 py-1.5 font-medium text-sm transition-all rounded-full ${
             activeTab === 'Sales Invoices' 
-              ? 'bg-[#5a6c8e] text-white shadow-[inset_0_2px_4px_rgba(255,255,255,0.3),0_4px_6px_rgba(0,0,0,0.2)] border border-[#4a5a75] active:scale-95 active:shadow-[inset_0_1px_2px_rgba(0,0,0,0.4)]' 
+              ? 'bg-[#5a6c8e] text-white shadow-sm border border-[#4a5a75] active:scale-95 active:shadow-sm' 
               : 'text-slate-500 hover:text-slate-700'
           }`}
         >
@@ -192,7 +192,7 @@ const Sales: React.FC = () => {
           onClick={() => setActiveTab('Customers')}
           className={`flex items-center justify-center px-6 py-1.5 font-medium text-sm transition-all rounded-full ${
             activeTab === 'Customers' 
-              ? 'bg-[#5a6c8e] text-white shadow-[inset_0_2px_4px_rgba(255,255,255,0.3),0_4px_6px_rgba(0,0,0,0.2)] border border-[#4a5a75] active:scale-95 active:shadow-[inset_0_1px_2px_rgba(0,0,0,0.4)]' 
+              ? 'bg-[#5a6c8e] text-white shadow-sm border border-[#4a5a75] active:scale-95 active:shadow-sm' 
               : 'text-slate-500 hover:text-slate-700'
           }`}
         >
@@ -214,22 +214,22 @@ const Sales: React.FC = () => {
 
       {/* Summary Cards */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-        <div className="bg-[#65b98b] text-white p-4 rounded shadow-sm">
+        <div className="bg-[#65b98b] text-white rounded-xl shadow-sm p-6 flex flex-col justify-center">
           <div className="text-xs font-semibold uppercase tracking-wide mb-1 opacity-90">Total Annual Sales</div>
           <div className="text-3xl font-light">₹{annualSales.toFixed(2)}</div>
         </div>
         
-        <div className="bg-[#c2ce64] text-white p-4 rounded shadow-sm">
+        <div className="bg-[#c2ce64] text-white rounded-xl shadow-sm p-6 flex flex-col justify-center">
           <div className="text-xs font-semibold uppercase tracking-wide mb-1 opacity-90">Monthly Sales</div>
           <div className="text-3xl font-light">₹{monthlySales.toFixed(2)}</div>
         </div>
         
-        <div className="bg-[#5c98ce] text-white p-4 rounded shadow-sm">
+        <div className="bg-[#5c98ce] text-white rounded-xl shadow-sm p-6 flex flex-col justify-center">
           <div className="text-xs font-semibold uppercase tracking-wide mb-1 opacity-90">Annual Transactions</div>
           <div className="text-3xl font-light">{annualTransactions}</div>
         </div>
         
-        <div className="bg-[#dd5c63] text-white p-4 rounded shadow-sm">
+        <div className="bg-[#dd5c63] text-white rounded-xl shadow-sm p-6 flex flex-col justify-center">
           <div className="text-xs font-semibold uppercase tracking-wide mb-1 opacity-90">Monthly Transactions</div>
           <div className="text-3xl font-light">{monthlyTransactions}</div>
         </div>
@@ -241,17 +241,17 @@ const Sales: React.FC = () => {
         <div className="flex-1 space-y-4">
           
           {/* Toolbar */}
-          <div className="flex flex-wrap items-center justify-between gap-4 bg-[#f0f0f3] shadow-[5px_5px_10px_#cbced1,-5px_-5px_10px_#ffffff] p-4 rounded-xl border-none">
+          <div className="flex flex-wrap items-center justify-between gap-4 bg-white shadow-sm rounded-xl border-none">
             <div className="flex items-center space-x-4">
-              <div className="flex items-center space-x-2 border-none bg-[#f0f0f3] shadow-[inset_4px_4px_8px_#cbced1,inset_-4px_-4px_8px_#ffffff] rounded-lg px-2">
+              <div className="flex items-center space-x-2 border-none bg-white rounded-xl shadow-[0_2px_10px_rgba(0,0,0,0.03)] border border-gray-100/50 px-2">
                 <Search className="w-4 h-4 text-gray-400" />
                 <input type="text" placeholder="Search" className="border-none py-1.5 focus:ring-0 text-sm w-48 bg-transparent outline-none" />
               </div>
-              <button className="bg-[#f0f0f3] hover:shadow-[inset_2px_2px_5px_#cbced1,inset_-2px_-2px_5px_#ffffff] text-black px-4 py-1.5 rounded-lg font-semibold text-sm transition-all shadow-[4px_4px_8px_#cbced1,-4px_-4px_8px_#ffffff] border-none">Go</button>
+              <button className="bg-white hover:shadow-sm text-black px-4 py-1.5 rounded-lg font-semibold text-sm transition-all shadow-sm border-none">Go</button>
               
               <div className="flex items-center space-x-2 text-sm text-slate-600">
                 <span>Rows</span>
-                <select className="border-none bg-[#f0f0f3] shadow-[inset_4px_4px_8px_#cbced1,inset_-4px_-4px_8px_#ffffff] rounded-lg py-1 px-2 focus:outline-none">
+                <select className="border-none bg-white rounded-xl shadow-[0_2px_10px_rgba(0,0,0,0.03)] border border-gray-100/50 py-1 px-2 focus:outline-none">
                   <option>25</option>
                   <option>50</option>
                 </select>
@@ -265,7 +265,7 @@ const Sales: React.FC = () => {
                   <select 
                     value={invoiceStatusFilter}
                     onChange={(e) => setInvoiceStatusFilter(e.target.value)}
-                    className="border-none bg-[#f0f0f3] shadow-[inset_4px_4px_8px_#cbced1,inset_-4px_-4px_8px_#ffffff] rounded-lg py-1.5 px-3 focus:outline-none"
+                    className="border-none bg-white rounded-xl shadow-[0_2px_10px_rgba(0,0,0,0.03)] border border-gray-100/50 py-1.5 px-3 focus:outline-none"
                   >
                     <option value="All">All</option>
                     <option value="Paid">Paid</option>
@@ -284,7 +284,7 @@ const Sales: React.FC = () => {
           </div>
 
           {/* Data Table */}
-          <div className="bg-[#f0f0f3] shadow-[inset_5px_5px_10px_#cbced1,inset_-5px_-5px_10px_#ffffff] rounded-xl overflow-x-auto p-4 mt-4">
+          <div className="bg-white shadow-sm rounded-xl overflow-x-auto mt-4">
             {activeTab === 'Sales Invoices' ? (
               <table className="w-full text-sm text-left whitespace-nowrap border border-gray-300">
                 <thead className="text-[11px] font-bold text-gray-500 uppercase tracking-wider border-b border-gray-300">
@@ -318,7 +318,7 @@ const Sales: React.FC = () => {
                           {getComputedStatus(row)}
                         </td>
                         <td className="px-4 py-3">
-                          <div className="flex space-x-1 rounded w-fit overflow-hidden border-none shadow-[inset_2px_2px_4px_#cbced1,inset_-2px_-2px_4px_#ffffff] bg-[#f0f0f3] p-1">
+                          <div className="flex space-x-1 rounded w-fit overflow-hidden border-none shadow-sm bg-white p-1">
                             <button className="p-1.5 transition-colors text-blue-500 hover:bg-blue-100 rounded" onClick={() => { setInvoiceToPrint(row); setPreviewMode(false); setPosMode(true); }}><Edit className="w-3.5 h-3.5" /></button>
                             <button className="p-1.5 transition-colors text-green-600 hover:bg-green-100 rounded" onClick={() => { setInvoiceToPrint(row); setPreviewMode(true); setPosMode(false); }}><Printer className="w-3.5 h-3.5" /></button>
                             <button className="p-1.5 transition-colors text-purple-600 hover:bg-purple-100 rounded" onClick={() => { setInvoiceToPrint(row); setPreviewMode(false); setPosMode(true); }}><List className="w-3.5 h-3.5" /></button>
@@ -366,7 +366,7 @@ const Sales: React.FC = () => {
                     return actualCustomers.map((row, idx) => (
                       <tr key={idx} className="bg-transparent hover:bg-gray-50 transition-colors text-slate-800">
                         <td className="px-4 py-3 border-r border-gray-300 text-center">
-                          <button className="text-[#3b82f6] hover:text-blue-700 transition-colors"><Edit className="w-4 h-4 mx-auto" /></button>
+                          <button className="text-[#3b82f6] hover:text-blue-700 transition-colors"><Edit className="w-4 h-4" /></button>
                         </td>
                         <td className="px-4 py-3 border-r border-gray-300">{row.title || ''}</td>
                         <td className="px-4 py-3 border-r border-gray-300">{row.first_name || ''}</td>
@@ -384,10 +384,10 @@ const Sales: React.FC = () => {
         </div>
 
         {/* Right Sidebar */}
-        <div className="w-full lg:w-72 space-y-6 flex-shrink-0">
+        <div className="w-full lg:w-72 w-full space-y-6 flex-shrink-0">
           
           {/* Payment Mix Chart */}
-          <div className="bg-white rounded shadow-sm border border-gray-100 p-4">
+          <div className="bg-white rounded shadow-sm border border-gray-100">
             <h3 className="text-slate-800 font-medium mb-4">Payment Mix</h3>
             <div className="flex bg-gray-100 p-1 rounded-md text-xs font-medium w-fit mb-6">
               <button onClick={() => setPaymentMixPeriod('FY')} className={`px-3 py-1 rounded shadow-sm ${paymentMixPeriod === 'FY' ? 'bg-[#333] text-white' : 'text-slate-600 hover:text-slate-800'}`}>This FY</button>
@@ -416,7 +416,7 @@ const Sales: React.FC = () => {
           </div>
 
           {/* Top 5 Products */}
-          <div className="bg-white rounded shadow-sm border border-gray-100 p-4">
+          <div className="bg-white rounded shadow-sm border border-gray-100">
             <div className="flex items-center space-x-2 text-slate-800 font-medium mb-4 cursor-pointer">
               <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 9l-7 7-7-7"></path></svg>
               <h3>Top 5 moving products</h3>

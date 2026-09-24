@@ -45,7 +45,7 @@ const Reports: React.FC = () => {
   if (currentReport === 'sales-summary') {
     return (
       <div className="flex flex-col h-[calc(100vh-3.5rem)] bg-[#f9fbfd]">
-        <div className="p-4 md:p-6 bg-white border-b border-gray-200 pb-4">
+        <div className="md:bg-white border-b border-gray-200 pb-4">
           <div className="text-[#0088cc] text-sm cursor-pointer mb-1 hover:underline" onClick={() => setCurrentReport(null)}>
             Reports \
           </div>
@@ -55,7 +55,7 @@ const Reports: React.FC = () => {
         {/* Banner */}
         <div className="h-6 w-full bg-[#1e3a5f] bg-opacity-80" style={{ backgroundImage: 'url("data:image/svg+xml,%3Csvg width=\'60\' height=\'60\' viewBox=\'0 0 60 60\' xmlns=\'http://www.w3.org/2000/svg\'%3E%3Cg fill=\'none\' fill-rule=\'evenodd\'%3E%3Cg fill=\'%23f9cc4a\' fill-opacity=\'0.4\'%3E%3Cpath d=\'M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z\'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E")' }}></div>
 
-        <div className="flex-1 p-4 md:p-6 overflow-auto">
+        <div className="flex-1 md:overflow-auto">
           <div className="bg-white rounded-md border border-gray-200 overflow-hidden shadow-sm">
             
             {/* Item Name Select */}
@@ -147,7 +147,7 @@ const Reports: React.FC = () => {
   if (currentReport === 'sales-chart') {
     return (
       <div className="flex flex-col h-[calc(100vh-3.5rem)] bg-[#f9fbfd]">
-        <div className="p-4 md:p-6 bg-white border-b border-gray-200 pb-4">
+        <div className="md:bg-white border-b border-gray-200 pb-4">
           <div className="text-[#0088cc] text-sm cursor-pointer mb-1 hover:underline" onClick={() => setCurrentReport(null)}>
             Reports \
           </div>
@@ -157,11 +157,11 @@ const Reports: React.FC = () => {
         {/* Banner */}
         <div className="h-6 w-full bg-[#1e3a5f] bg-opacity-80" style={{ backgroundImage: 'url("data:image/svg+xml,%3Csvg width=\'60\' height=\'60\' viewBox=\'0 0 60 60\' xmlns=\'http://www.w3.org/2000/svg\'%3E%3Cg fill=\'none\' fill-rule=\'evenodd\'%3E%3Cg fill=\'%23f9cc4a\' fill-opacity=\'0.4\'%3E%3Cpath d=\'M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z\'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E")' }}></div>
 
-        <div className="flex-1 p-4 md:p-6 overflow-auto">
+        <div className="flex-1 md:overflow-auto">
           <div className="bg-white rounded-md border border-gray-200 overflow-hidden shadow-sm">
             
             {/* Buckets Select */}
-            <div className="p-6 border-b border-gray-200 bg-white">
+            <div className="border-b border-gray-200 bg-white">
               <div className="relative mb-6">
                 <select className="w-full border border-gray-300 rounded py-2.5 px-3 text-sm appearance-none bg-white focus:outline-none focus:border-blue-500 shadow-inner">
                   <option>Buckets</option>
@@ -235,13 +235,13 @@ const Reports: React.FC = () => {
   }
 
   return (
-    <div className="p-4 md:p-6 space-y-6">
+    <div className="w-full space-y-6">
       <h1 className="text-2xl font-bold text-slate-900 mb-6">Reports</h1>
       
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
         
         {/* Left Column */}
-        <div className="bg-white rounded-lg shadow-sm border border-gray-200 overflow-hidden h-fit">
+        <div className="bg-white rounded-xl shadow-[0_2px_10px_rgba(0,0,0,0.03)] border border-gray-100/50 overflow-hidden h-fit">
           <div className="px-5 py-4 border-b border-gray-100 bg-white">
             <h2 className="text-[#1e3a5f] font-semibold">Reports for Master Data</h2>
           </div>
@@ -253,7 +253,7 @@ const Reports: React.FC = () => {
         </div>
 
         {/* Right Column */}
-        <div className="bg-white rounded-lg shadow-sm border border-gray-200 overflow-hidden h-fit">
+        <div className="bg-white rounded-xl shadow-[0_2px_10px_rgba(0,0,0,0.03)] border border-gray-100/50 overflow-hidden h-fit">
           <div className="px-5 py-4 border-b border-gray-100 bg-white">
             <h2 className="text-[#1e3a5f] font-semibold">Sales Report</h2>
           </div>

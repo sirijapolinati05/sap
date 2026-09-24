@@ -141,7 +141,7 @@ const SystemSetup: React.FC = () => {
   if (currentView === 'manage-lookups') {
     return (
       <div className="flex flex-col h-[calc(100vh-3.5rem)] bg-[#f9fbfd]">
-        <div className="p-4 md:p-6 bg-white border-b border-gray-200 pb-4">
+        <div className="md:bg-white border-b border-gray-200 pb-4">
           <div className="text-[#0088cc] text-sm cursor-pointer mb-1 hover:underline" onClick={() => setCurrentView(null)}>
             System setup \
           </div>
@@ -151,11 +151,11 @@ const SystemSetup: React.FC = () => {
         {/* Banner */}
         <div className="h-6 w-full bg-[#1e3a5f] bg-opacity-80" style={{ backgroundImage: 'url("data:image/svg+xml,%3Csvg width=\'60\' height=\'60\' viewBox=\'0 0 60 60\' xmlns=\'http://www.w3.org/2000/svg\'%3E%3Cg fill=\'none\' fill-rule=\'evenodd\'%3E%3Cg fill=\'%23f9cc4a\' fill-opacity=\'0.4\'%3E%3Cpath d=\'M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z\'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E")' }}></div>
 
-        <div className="flex-1 p-4 md:p-6 overflow-auto">
+        <div className="flex-1 md:overflow-auto">
           <div className="bg-white rounded-md border border-gray-200 overflow-hidden shadow-sm flex flex-col h-full">
             
             {/* Top Search Area */}
-            <div className="p-6 border-b border-gray-200 bg-white flex justify-center items-end space-x-4">
+            <div className="border-b border-gray-200 bg-white flex justify-center items-end space-x-4">
               <div className="relative w-96">
                 <label className="absolute left-3 top-1 text-[10px] text-gray-500 z-10">Lookup Type</label>
                 <select className="w-full border border-gray-300 rounded px-3 pt-5 pb-1 text-sm appearance-none bg-white focus:outline-none focus:ring-1 focus:ring-blue-500 shadow-inner">
@@ -182,7 +182,7 @@ const SystemSetup: React.FC = () => {
               </div>
               
               <button className="font-semibold text-sm text-slate-800 hover:text-black ml-4">Edit</button>
-              <button className="bg-[#467f92] hover:bg-[#3a6878] text-white px-5 py-2.5 rounded-lg font-medium text-sm transition-all shadow-[inset_0_2px_4px_rgba(255,255,255,0.3),0_4px_6px_rgba(0,0,0,0.2)] border border-[#2d525e] active:scale-95 active:shadow-[inset_0_1px_2px_rgba(0,0,0,0.4)]">Save</button>
+              <button className="bg-[#467f92] hover:bg-[#3a6878] text-white px-5 py-2.5 rounded-lg font-medium text-sm transition-all shadow-sm border border-[#2d525e] active:scale-95 active:shadow-sm">Save</button>
               <button className="font-semibold text-sm text-slate-800 hover:text-black ml-2">Add Row</button>
               
               <div className="ml-auto flex items-center text-gray-400 cursor-pointer hover:text-gray-600 transition-colors">
@@ -245,7 +245,7 @@ const SystemSetup: React.FC = () => {
   if (currentView === 'users') {
     return (
       <div className="flex flex-col h-[calc(100vh-3.5rem)] bg-[#f9fbfd]">
-        <div className="p-4 md:p-6 bg-white border-b border-gray-200 pb-4">
+        <div className="md:bg-white border-b border-gray-200 pb-4">
           <div className="text-[#0088cc] text-sm cursor-pointer mb-1 hover:underline" onClick={() => setCurrentView(null)}>
             System setup \
           </div>
@@ -255,7 +255,7 @@ const SystemSetup: React.FC = () => {
         {/* Banner */}
         <div className="h-6 w-full bg-[#1e3a5f] bg-opacity-80" style={{ backgroundImage: 'url("data:image/svg+xml,%3Csvg width=\'60\' height=\'60\' viewBox=\'0 0 60 60\' xmlns=\'http://www.w3.org/2000/svg\'%3E%3Cg fill=\'none\' fill-rule=\'evenodd\'%3E%3Cg fill=\'%23f9cc4a\' fill-opacity=\'0.4\'%3E%3Cpath d=\'M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z\'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E")' }}></div>
 
-        <div className="flex-1 p-4 md:p-6 overflow-auto">
+        <div className="flex-1 md:overflow-auto">
           <div className="bg-white rounded-md border border-gray-200 overflow-hidden shadow-sm flex flex-col h-full">
             
             {/* Toolbar */}
@@ -272,7 +272,7 @@ const SystemSetup: React.FC = () => {
               </div>
               
               <button className="font-semibold text-sm text-slate-800 hover:text-black ml-4">Edit</button>
-              <button className="bg-[#467f92] hover:bg-[#3a6878] text-white px-5 py-2.5 rounded-lg font-medium text-sm transition-all shadow-[inset_0_2px_4px_rgba(255,255,255,0.3),0_4px_6px_rgba(0,0,0,0.2)] border border-[#2d525e] active:scale-95 active:shadow-[inset_0_1px_2px_rgba(0,0,0,0.4)]">Save</button>
+              <button className="bg-[#467f92] hover:bg-[#3a6878] text-white px-5 py-2.5 rounded-lg font-medium text-sm transition-all shadow-sm border border-[#2d525e] active:scale-95 active:shadow-sm">Save</button>
               <button className="font-semibold text-sm text-slate-800 hover:text-black ml-2">Add Row</button>
               
               <div className="ml-auto flex items-center text-gray-400 cursor-pointer hover:text-gray-600 transition-colors">
@@ -334,7 +334,7 @@ const SystemSetup: React.FC = () => {
   if (currentView === 'permissions') {
     return (
       <div className="flex flex-col h-[calc(100vh-3.5rem)] bg-[#f9fbfd]">
-        <div className="p-4 md:p-6 bg-white border-b border-gray-200 pb-4">
+        <div className="md:bg-white border-b border-gray-200 pb-4">
           <div className="text-[#0088cc] text-sm cursor-pointer mb-1 hover:underline" onClick={() => setCurrentView(null)}>
             System setup \
           </div>
@@ -344,7 +344,7 @@ const SystemSetup: React.FC = () => {
         {/* Banner */}
         <div className="h-6 w-full bg-[#1e3a5f] bg-opacity-80" style={{ backgroundImage: 'url("data:image/svg+xml,%3Csvg width=\'60\' height=\'60\' viewBox=\'0 0 60 60\' xmlns=\'http://www.w3.org/2000/svg\'%3E%3Cg fill=\'none\' fill-rule=\'evenodd\'%3E%3Cg fill=\'%23f9cc4a\' fill-opacity=\'0.4\'%3E%3Cpath d=\'M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z\'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E")' }}></div>
 
-        <div className="flex-1 p-4 md:p-6 overflow-auto">
+        <div className="flex-1 md:overflow-auto">
           <div className="bg-white rounded-md border border-gray-200 overflow-hidden shadow-sm flex flex-col h-full">
             
             {/* Toolbar */}
@@ -361,7 +361,7 @@ const SystemSetup: React.FC = () => {
               </div>
               
               <button className="font-semibold text-sm text-slate-800 hover:text-black ml-4">Edit</button>
-              <button className="bg-[#467f92] hover:bg-[#3a6878] text-white px-5 py-2.5 rounded-lg font-medium text-sm transition-all shadow-[inset_0_2px_4px_rgba(255,255,255,0.3),0_4px_6px_rgba(0,0,0,0.2)] border border-[#2d525e] active:scale-95 active:shadow-[inset_0_1px_2px_rgba(0,0,0,0.4)]">Save</button>
+              <button className="bg-[#467f92] hover:bg-[#3a6878] text-white px-5 py-2.5 rounded-lg font-medium text-sm transition-all shadow-sm border border-[#2d525e] active:scale-95 active:shadow-sm">Save</button>
               
               <div className="ml-auto flex items-center text-gray-400 cursor-pointer hover:text-gray-600 transition-colors">
                 <svg className="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"></path></svg>
@@ -436,7 +436,7 @@ const SystemSetup: React.FC = () => {
   if (currentView === 'discounts') {
     return (
       <div className="flex flex-col h-[calc(100vh-3.5rem)] bg-[#f9fbfd]">
-        <div className="p-4 md:p-6 bg-white border-b border-gray-200 pb-4">
+        <div className="md:bg-white border-b border-gray-200 pb-4">
           <div className="text-[#0088cc] text-sm cursor-pointer mb-1 hover:underline" onClick={() => setCurrentView(null)}>
             System setup \
           </div>
@@ -446,7 +446,7 @@ const SystemSetup: React.FC = () => {
         {/* Banner */}
         <div className="h-6 w-full bg-[#1e3a5f] bg-opacity-80" style={{ backgroundImage: 'url("data:image/svg+xml,%3Csvg width=\'60\' height=\'60\' viewBox=\'0 0 60 60\' xmlns=\'http://www.w3.org/2000/svg\'%3E%3Cg fill=\'none\' fill-rule=\'evenodd\'%3E%3Cg fill=\'%23f9cc4a\' fill-opacity=\'0.4\'%3E%3Cpath d=\'M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z\'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E")' }}></div>
 
-        <div className="flex-1 p-4 md:p-6 overflow-auto">
+        <div className="flex-1 md:overflow-auto">
           <div className="bg-white rounded-md border border-gray-200 overflow-hidden shadow-sm flex flex-col h-full">
             
             {/* Toolbar */}
@@ -463,7 +463,7 @@ const SystemSetup: React.FC = () => {
               </div>
               
               <button className="font-semibold text-sm text-slate-800 hover:text-black ml-4">Edit</button>
-              <button className="bg-[#467f92] hover:bg-[#3a6878] text-white px-5 py-2.5 rounded-lg font-medium text-sm transition-all shadow-[inset_0_2px_4px_rgba(255,255,255,0.3),0_4px_6px_rgba(0,0,0,0.2)] border border-[#2d525e] active:scale-95 active:shadow-[inset_0_1px_2px_rgba(0,0,0,0.4)]">Save</button>
+              <button className="bg-[#467f92] hover:bg-[#3a6878] text-white px-5 py-2.5 rounded-lg font-medium text-sm transition-all shadow-sm border border-[#2d525e] active:scale-95 active:shadow-sm">Save</button>
               <button className="font-semibold text-sm text-slate-800 hover:text-black ml-2">Add Row</button>
               
               <div className="ml-auto flex items-center text-gray-400 cursor-pointer hover:text-gray-600 transition-colors">
@@ -525,7 +525,7 @@ const SystemSetup: React.FC = () => {
   if (currentView === 'roles') {
     return (
       <div className="flex flex-col h-[calc(100vh-3.5rem)] bg-[#f9fbfd]">
-        <div className="p-4 md:p-6 bg-white border-b border-gray-200 pb-4">
+        <div className="md:bg-white border-b border-gray-200 pb-4">
           <div className="text-[#0088cc] text-sm cursor-pointer mb-1 hover:underline" onClick={() => setCurrentView(null)}>
             System setup \
           </div>
@@ -535,7 +535,7 @@ const SystemSetup: React.FC = () => {
         {/* Banner */}
         <div className="h-6 w-full bg-[#1e3a5f] bg-opacity-80" style={{ backgroundImage: 'url("data:image/svg+xml,%3Csvg width=\'60\' height=\'60\' viewBox=\'0 0 60 60\' xmlns=\'http://www.w3.org/2000/svg\'%3E%3Cg fill=\'none\' fill-rule=\'evenodd\'%3E%3Cg fill=\'%23f9cc4a\' fill-opacity=\'0.4\'%3E%3Cpath d=\'M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z\'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E")' }}></div>
 
-        <div className="flex-1 p-4 md:p-6 overflow-auto">
+        <div className="flex-1 md:overflow-auto">
           <div className="bg-white rounded-md border border-gray-200 overflow-hidden shadow-sm flex flex-col h-full">
             
             {/* Toolbar */}
@@ -552,7 +552,7 @@ const SystemSetup: React.FC = () => {
               </div>
               
               <button className="font-semibold text-sm text-slate-800 hover:text-black ml-4">Edit</button>
-              <button className="bg-[#467f92] hover:bg-[#3a6878] text-white px-5 py-2.5 rounded-lg font-medium text-sm transition-all shadow-[inset_0_2px_4px_rgba(255,255,255,0.3),0_4px_6px_rgba(0,0,0,0.2)] border border-[#2d525e] active:scale-95 active:shadow-[inset_0_1px_2px_rgba(0,0,0,0.4)]">Save</button>
+              <button className="bg-[#467f92] hover:bg-[#3a6878] text-white px-5 py-2.5 rounded-lg font-medium text-sm transition-all shadow-sm border border-[#2d525e] active:scale-95 active:shadow-sm">Save</button>
               
               <div className="ml-auto flex items-center text-gray-400 cursor-pointer hover:text-gray-600 transition-colors">
                 <svg className="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"></path></svg>
@@ -607,7 +607,7 @@ const SystemSetup: React.FC = () => {
   if (currentView === 'membership') {
     return (
       <div className="flex flex-col h-[calc(100vh-3.5rem)] bg-[#f9fbfd]">
-        <div className="p-4 md:p-6 bg-white border-b border-gray-200 pb-4">
+        <div className="md:bg-white border-b border-gray-200 pb-4">
           <div className="text-[#0088cc] text-sm cursor-pointer mb-1 hover:underline" onClick={() => setCurrentView(null)}>
             System setup \
           </div>
@@ -617,7 +617,7 @@ const SystemSetup: React.FC = () => {
         {/* Banner */}
         <div className="h-6 w-full bg-[#1e3a5f] bg-opacity-80" style={{ backgroundImage: 'url("data:image/svg+xml,%3Csvg width=\'60\' height=\'60\' viewBox=\'0 0 60 60\' xmlns=\'http://www.w3.org/2000/svg\'%3E%3Cg fill=\'none\' fill-rule=\'evenodd\'%3E%3Cg fill=\'%23f9cc4a\' fill-opacity=\'0.4\'%3E%3Cpath d=\'M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z\'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E")' }}></div>
 
-        <div className="flex-1 p-4 md:p-6 overflow-auto">
+        <div className="flex-1 md:overflow-auto">
           <div className="bg-white rounded-md border border-gray-200 overflow-hidden shadow-sm flex flex-col h-full">
             
             {/* Toolbar */}
@@ -634,7 +634,7 @@ const SystemSetup: React.FC = () => {
               </div>
               
               <button className="font-semibold text-sm text-slate-800 hover:text-black ml-4">Edit</button>
-              <button className="bg-[#467f92] hover:bg-[#3a6878] text-white px-5 py-2.5 rounded-lg font-medium text-sm transition-all shadow-[inset_0_2px_4px_rgba(255,255,255,0.3),0_4px_6px_rgba(0,0,0,0.2)] border border-[#2d525e] active:scale-95 active:shadow-[inset_0_1px_2px_rgba(0,0,0,0.4)]">Save</button>
+              <button className="bg-[#467f92] hover:bg-[#3a6878] text-white px-5 py-2.5 rounded-lg font-medium text-sm transition-all shadow-sm border border-[#2d525e] active:scale-95 active:shadow-sm">Save</button>
               <button className="font-semibold text-sm text-slate-800 hover:text-black ml-2">Add Row</button>
               
               <div className="ml-auto flex items-center text-gray-400 cursor-pointer hover:text-gray-600 transition-colors">
@@ -694,7 +694,7 @@ const SystemSetup: React.FC = () => {
   if (currentView === 'taxes') {
     return (
       <div className="flex flex-col h-[calc(100vh-3.5rem)] bg-[#f9fbfd]">
-        <div className="p-4 md:p-6 bg-white border-b border-gray-200 pb-4">
+        <div className="md:bg-white border-b border-gray-200 pb-4">
           <div className="text-[#0088cc] text-sm cursor-pointer mb-1 hover:underline" onClick={() => setCurrentView(null)}>
             System setup \
           </div>
@@ -704,7 +704,7 @@ const SystemSetup: React.FC = () => {
         {/* Banner */}
         <div className="h-6 w-full bg-[#1e3a5f] bg-opacity-80" style={{ backgroundImage: 'url("data:image/svg+xml,%3Csvg width=\'60\' height=\'60\' viewBox=\'0 0 60 60\' xmlns=\'http://www.w3.org/2000/svg\'%3E%3Cg fill=\'none\' fill-rule=\'evenodd\'%3E%3Cg fill=\'%23f9cc4a\' fill-opacity=\'0.4\'%3E%3Cpath d=\'M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z\'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E")' }}></div>
 
-        <div className="flex-1 p-4 md:p-6 overflow-auto">
+        <div className="flex-1 md:overflow-auto">
           <div className="bg-white rounded-md border border-gray-200 overflow-hidden shadow-sm flex flex-col h-full">
             
             {/* Toolbar */}
@@ -721,7 +721,7 @@ const SystemSetup: React.FC = () => {
               </div>
               
               <button className="font-semibold text-sm text-slate-800 hover:text-black ml-4">Edit</button>
-              <button className="bg-[#467f92] hover:bg-[#3a6878] text-white px-5 py-2.5 rounded-lg font-medium text-sm transition-all shadow-[inset_0_2px_4px_rgba(255,255,255,0.3),0_4px_6px_rgba(0,0,0,0.2)] border border-[#2d525e] active:scale-95 active:shadow-[inset_0_1px_2px_rgba(0,0,0,0.4)]">Save</button>
+              <button className="bg-[#467f92] hover:bg-[#3a6878] text-white px-5 py-2.5 rounded-lg font-medium text-sm transition-all shadow-sm border border-[#2d525e] active:scale-95 active:shadow-sm">Save</button>
               <button className="font-semibold text-sm text-slate-800 hover:text-black ml-2">Add Row</button>
               
               <div className="ml-auto flex items-center text-gray-400 cursor-pointer hover:text-gray-600 transition-colors">
@@ -783,7 +783,7 @@ const SystemSetup: React.FC = () => {
   if (currentView === 'code-references') {
     return (
       <div className="flex flex-col h-[calc(100vh-3.5rem)] bg-[#f9fbfd]">
-        <div className="p-4 md:p-6 bg-white border-b border-gray-200 pb-4">
+        <div className="md:bg-white border-b border-gray-200 pb-4">
           <div className="text-[#0088cc] text-sm cursor-pointer mb-1 hover:underline" onClick={() => setCurrentView(null)}>
             System setup \
           </div>
@@ -793,7 +793,7 @@ const SystemSetup: React.FC = () => {
         {/* Banner */}
         <div className="h-6 w-full bg-[#1e3a5f] bg-opacity-80" style={{ backgroundImage: 'url("data:image/svg+xml,%3Csvg width=\'60\' height=\'60\' viewBox=\'0 0 60 60\' xmlns=\'http://www.w3.org/2000/svg\'%3E%3Cg fill=\'none\' fill-rule=\'evenodd\'%3E%3Cg fill=\'%23f9cc4a\' fill-opacity=\'0.4\'%3E%3Cpath d=\'M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z\'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E")' }}></div>
 
-        <div className="flex-1 p-4 md:p-6 overflow-auto">
+        <div className="flex-1 md:overflow-auto">
           <div className="bg-white rounded-md border border-gray-200 overflow-hidden shadow-sm flex flex-col h-full items-center justify-center text-gray-500">
             <p>Code References under construction.</p>
           </div>
@@ -805,7 +805,7 @@ const SystemSetup: React.FC = () => {
   if (currentView === 'employee') {
     return (
       <div className="flex flex-col h-[calc(100vh-3.5rem)] bg-[#f9fbfd]">
-        <div className="p-4 md:p-6 bg-white border-b border-gray-200 pb-4">
+        <div className="md:bg-white border-b border-gray-200 pb-4">
           <div className="text-[#0088cc] text-sm cursor-pointer mb-1 hover:underline" onClick={() => setCurrentView(null)}>
             System setup \
           </div>
@@ -815,7 +815,7 @@ const SystemSetup: React.FC = () => {
         {/* Banner */}
         <div className="h-6 w-full bg-[#1e3a5f] bg-opacity-80" style={{ backgroundImage: 'url("data:image/svg+xml,%3Csvg width=\'60\' height=\'60\' viewBox=\'0 0 60 60\' xmlns=\'http://www.w3.org/2000/svg\'%3E%3Cg fill=\'none\' fill-rule=\'evenodd\'%3E%3Cg fill=\'%23f9cc4a\' fill-opacity=\'0.4\'%3E%3Cpath d=\'M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z\'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E")' }}></div>
 
-        <div className="flex-1 p-4 md:p-6 overflow-auto">
+        <div className="flex-1 md:overflow-auto">
           <div className="bg-white rounded-md border border-gray-200 overflow-hidden shadow-sm flex flex-col">
             
             {/* Toolbar */}
@@ -833,7 +833,7 @@ const SystemSetup: React.FC = () => {
               </div>
               
               <div className="ml-auto flex items-center">
-                <button className="bg-[#467f92] hover:bg-[#3a6878] text-white px-5 py-2.5 rounded-lg font-medium text-sm transition-all shadow-[inset_0_2px_4px_rgba(255,255,255,0.3),0_4px_6px_rgba(0,0,0,0.2)] border border-[#2d525e] active:scale-95 active:shadow-[inset_0_1px_2px_rgba(0,0,0,0.4)]">Add Employee</button>
+                <button className="bg-[#467f92] hover:bg-[#3a6878] text-white px-5 py-2.5 rounded-lg font-medium text-sm transition-all shadow-sm border border-[#2d525e] active:scale-95 active:shadow-sm">Add Employee</button>
               </div>
             </div>
 
@@ -850,7 +850,7 @@ const SystemSetup: React.FC = () => {
   }
 
   return (
-    <div className="p-4 md:p-6 bg-slate-50 min-h-[calc(100vh-3.5rem)]">
+    <div className="md:bg-slate-50 min-h-[calc(100vh-3.5rem)]">
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
         {cards.map((card, index) => (
           <div 
@@ -867,7 +867,7 @@ const SystemSetup: React.FC = () => {
               else if (card.title === 'Employee') setCurrentView('employee');
               else if (card.title === 'Update Info') setIsUpdateInfoOpen(true);
             }}
-            className="bg-white rounded-lg shadow-sm border border-gray-100 p-6 flex flex-col items-center text-center hover:shadow-md transition-shadow cursor-pointer"
+            className="bg-white rounded-xl shadow-[0_2px_10px_rgba(0,0,0,0.03)] border border-gray-100/50 border border-gray-100 flex flex-col items-center text-center hover:shadow-md transition-shadow cursor-pointer"
           >
             <div className={`${card.bgColor} w-12 h-12 rounded-full flex items-center justify-center mb-4 text-white shadow-sm`}>
               <card.icon className="w-5 h-5" />

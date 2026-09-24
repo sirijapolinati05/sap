@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Settings, Moon, BarChart2, Star, CheckSquare, Edit, Menu, Image as ImageIcon, Search, ChevronDown, Filter, ArrowUp, X } from 'lucide-react';
 import InventoryForm from '../components/forms/InventoryForm';
+import CategoryForm from '../components/forms/CategoryForm';
 
 const InventorySearch: React.FC = () => {
   const [isOpen, setIsOpen] = useState(false);
@@ -17,17 +18,17 @@ const InventorySearch: React.FC = () => {
   }, []);
 
   return (
-    <div className="flex items-center border-none bg-[#f0f0f3] shadow-[inset_4px_4px_8px_#cbced1,inset_-4px_-4px_8px_#ffffff] rounded-lg">
+    <div className="flex items-center border-none bg-white rounded-xl shadow-[0_2px_10px_rgba(0,0,0,0.03)] border border-gray-100/50">
       <div className="relative h-full flex" ref={dropdownRef}>
         <button 
           onClick={() => setIsOpen(!isOpen)} 
-          className="flex items-center justify-center space-x-1 px-3 py-2 bg-[#dcdfe4] rounded-l-lg hover:bg-[#d0d3d8] transition-colors border-r border-gray-300 shadow-[inset_1px_1px_3px_#b8bba9,inset_-1px_-1px_3px_#ffffff]"
+          className="flex items-center justify-center space-x-1 px-3 py-2 bg-[#dcdfe4] rounded-l-lg hover:bg-[#d0d3d8] transition-colors border-r border-gray-300 shadow-sm"
         >
           <Search className="w-4 h-4 text-slate-700" />
           <ChevronDown className="w-3 h-3 text-slate-700" />
         </button>
         {isOpen && (
-          <div className="absolute top-full left-0 mt-1 w-48 bg-white rounded-md shadow-[0_10px_25px_rgba(0,0,0,0.1)] py-1 z-50 border border-gray-100">
+          <div className="absolute top-full left-0 mt-1 w-48 bg-white rounded-md shadow-sm py-1 z-50 border border-gray-100">
             {['Row Search', 'Category Name', 'Item name', 'Stock In', 'Stock Out', 'Stock Balance', 'Reorder Qty', 'Manage Inventory'].map(item => (
               <div key={item} className="px-4 py-2 hover:bg-gray-50 cursor-pointer text-sm text-slate-700 transition-colors" onClick={() => setIsOpen(false)}>{item}</div>
             ))}
@@ -42,9 +43,15 @@ const InventorySearch: React.FC = () => {
 const Inventory: React.FC = () => {
   const [activeTab, setActiveTab] = useState<'summary' | 'products' | 'categories' | 'opening-stock'>('summary');
   const [isAddItemModalOpen, setIsAddItemModalOpen] = useState(false);
+  const [isAddCategoryModalOpen, setIsAddCategoryModalOpen] = useState(false);
   const [inventoryItems, setInventoryItems] = useState<any[]>([]);
   const [invoices, setInvoices] = useState<any[]>([]);
+  const [categoriesList, setCategoriesList] = useState<any[]>([]);
   const [selectedTransactionItem, setSelectedTransactionItem] = useState<any | null>(null);
+  
+  // Opening stock editing
+  const [isEditingStock, setIsEditingStock] = useState(false);
+  const [editedStock, setEditedStock] = useState<Record<number, { rate: number; qty: number }>>({});
 
   useEffect(() => {
     fetch('http://localhost:8000/inventory')
@@ -52,9 +59,14 @@ const Inventory: React.FC = () => {
       .then(data => setInventoryItems(data))
       .catch(console.error);
     
-    fetch('http://localhost:8000/invoices')
+      fetch('http://localhost:8000/invoices')
       .then(res => res.json())
       .then(data => setInvoices(data))
+      .catch(console.error);
+      
+    fetch('http://localhost:8000/categories')
+      .then(res => res.json())
+      .then(data => setCategoriesList(data))
       .catch(console.error);
   }, []);
 
@@ -114,7 +126,7 @@ const Inventory: React.FC = () => {
   // Transaction Details View
   if (selectedTransactionItem) {
     return (
-      <div className="p-4 md:p-6 space-y-4 flex flex-col h-[calc(100vh-3.5rem)]">
+      <div className="md:space-y-4 flex flex-col h-[calc(100vh-3.5rem)]">
         <div>
           <div className="text-[#0088cc] text-sm cursor-pointer mb-1 hover:underline" onClick={() => setSelectedTransactionItem(null)}>
             Inventory \
@@ -165,7 +177,7 @@ const Inventory: React.FC = () => {
                 {transactionDetails.length === 0 ? (
                   <tr>
                     <td colSpan={5} className="px-4 py-12 text-center text-slate-400">
-                      <Search className="w-8 h-8 mx-auto mb-2 text-gray-300" strokeWidth={1.5} />
+                      <Search className="w-8 h-8 mb-2 text-gray-300" strokeWidth={1.5} />
                       <p className="text-sm">No transactions found for this item.</p>
                     </td>
                   </tr>
@@ -215,15 +227,53 @@ const Inventory: React.FC = () => {
     return Array.from(map.values());
   })();
 
+  const handleEditStockToggle = () => {
+    if (!isEditingStock) {
+      // Initialize editedStock with current values
+      const initial: Record<number, { rate: number; qty: number }> = {};
+      inventoryItems.forEach(item => {
+        initial[item.id] = { rate: item.opening_rate || 0, qty: item.opening_qty || 0 };
+      });
+      setEditedStock(initial);
+      setIsEditingStock(true);
+    } else {
+      setIsEditingStock(false);
+    }
+  };
+
+  const handleSaveStock = async () => {
+    try {
+      // Send updates for all modified items
+      const updatePromises = inventoryItems.map(item => {
+        const edited = editedStock[item.id];
+        if (edited && (edited.rate !== item.opening_rate || edited.qty !== item.opening_qty)) {
+          return fetch(`http://localhost:8000/inventory/${item.id}`, {
+            method: 'PUT',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ opening_rate: edited.rate, opening_qty: edited.qty })
+          });
+        }
+        return Promise.resolve();
+      });
+      
+      await Promise.all(updatePromises);
+      setIsEditingStock(false);
+      // Reload to get fresh data
+      window.location.reload();
+    } catch (e) {
+      console.error(e);
+    }
+  };
+
   return (
-    <div className="p-4 md:p-6 space-y-4 flex flex-col h-[calc(100vh-3.5rem)]">
+    <div className="md:space-y-4 flex flex-col h-[calc(100vh-3.5rem)]">
       {/* Tabs */}
       <div className="flex space-x-6 mb-2">
         <button 
           onClick={() => setActiveTab('summary')}
           className={`flex items-center justify-center px-4 py-1.5 font-medium text-sm transition-all rounded-full ${
             activeTab === 'summary' 
-              ? 'bg-[#5a6c8e] text-white shadow-[inset_0_2px_4px_rgba(255,255,255,0.3),0_4px_6px_rgba(0,0,0,0.2)] border border-[#4a5a75] active:scale-95 active:shadow-[inset_0_1px_2px_rgba(0,0,0,0.4)]' 
+              ? 'bg-[#5a6c8e] text-white shadow-sm border border-[#4a5a75] active:scale-95 active:shadow-sm' 
               : 'text-[#3c7ab7] hover:text-[#2d6195]'
           }`}
         >
@@ -233,7 +283,7 @@ const Inventory: React.FC = () => {
           onClick={() => setActiveTab('products')}
           className={`flex items-center justify-center px-4 py-1.5 font-medium text-sm transition-all rounded-full ${
             activeTab === 'products' 
-              ? 'bg-[#5a6c8e] text-white shadow-[inset_0_2px_4px_rgba(255,255,255,0.3),0_4px_6px_rgba(0,0,0,0.2)] border border-[#4a5a75] active:scale-95 active:shadow-[inset_0_1px_2px_rgba(0,0,0,0.4)]' 
+              ? 'bg-[#5a6c8e] text-white shadow-sm border border-[#4a5a75] active:scale-95 active:shadow-sm' 
               : 'text-[#3c7ab7] hover:text-[#2d6195]'
           }`}
         >
@@ -243,7 +293,7 @@ const Inventory: React.FC = () => {
           onClick={() => setActiveTab('categories')}
           className={`flex items-center justify-center px-4 py-1.5 font-medium text-sm transition-all rounded-full ${
             activeTab === 'categories' 
-              ? 'bg-[#5a6c8e] text-white shadow-[inset_0_2px_4px_rgba(255,255,255,0.3),0_4px_6px_rgba(0,0,0,0.2)] border border-[#4a5a75] active:scale-95 active:shadow-[inset_0_1px_2px_rgba(0,0,0,0.4)]' 
+              ? 'bg-[#5a6c8e] text-white shadow-sm border border-[#4a5a75] active:scale-95 active:shadow-sm' 
               : 'text-[#3c7ab7] hover:text-[#2d6195]'
           }`}
         >
@@ -253,7 +303,7 @@ const Inventory: React.FC = () => {
           onClick={() => setActiveTab('opening-stock')}
           className={`flex items-center justify-center px-4 py-1.5 font-medium text-sm transition-all rounded-full ${
             activeTab === 'opening-stock' 
-              ? 'bg-[#5a6c8e] text-white shadow-[inset_0_2px_4px_rgba(255,255,255,0.3),0_4px_6px_rgba(0,0,0,0.2)] border border-[#4a5a75] active:scale-95 active:shadow-[inset_0_1px_2px_rgba(0,0,0,0.4)]' 
+              ? 'bg-[#5a6c8e] text-white shadow-sm border border-[#4a5a75] active:scale-95 active:shadow-sm' 
               : 'text-[#3c7ab7] hover:text-[#2d6195]'
           }`}
         >
@@ -261,27 +311,27 @@ const Inventory: React.FC = () => {
         </button>
       </div>
 
-      <div className="flex-1 bg-[#f0f0f3] rounded-xl shadow-[10px_10px_20px_#cbced1,-10px_-10px_20px_#ffffff] border-none flex flex-col overflow-hidden mb-2">
+      <div className="flex-1 bg-white rounded-xl shadow-sm border-none flex flex-col overflow-hidden mb-2">
         
         {/* SUMMARY TAB */}
         {activeTab === 'summary' && (
           <>
-            <div className="p-4 border-none flex flex-wrap items-center gap-4 bg-[#f0f0f3]">
+            <div className="border-none flex flex-wrap items-center gap-4 bg-white">
               <InventorySearch />
-              <button className="bg-[#f0f0f3] hover:shadow-[inset_2px_2px_5px_#cbced1,inset_-2px_-2px_5px_#ffffff] text-black px-4 py-1.5 rounded-lg font-semibold text-sm transition-all shadow-[4px_4px_8px_#cbced1,-4px_-4px_8px_#ffffff] border-none">Go</button>
+              <button className="bg-white hover:shadow-sm text-black px-4 py-1.5 rounded-lg font-semibold text-sm transition-all shadow-sm border-none">Go</button>
               
-              <select className="appearance-none border-none bg-[#f0f0f3] shadow-[inset_4px_4px_8px_#cbced1,inset_-4px_-4px_8px_#ffffff] rounded-lg py-2 px-4 text-sm focus:outline-none min-w-[150px]">
+              <select className="appearance-none border-none bg-white rounded-xl shadow-[0_2px_10px_rgba(0,0,0,0.03)] border border-gray-100/50 py-2 px-4 text-sm focus:outline-none min-w-[150px]">
                 <option>1. Primary Report</option>
               </select>
               
               <div className="flex items-center space-x-2 text-sm text-slate-600 ml-4">
                 <span>Rows</span>
-                <select className="appearance-none border-none bg-[#f0f0f3] shadow-[inset_4px_4px_8px_#cbced1,inset_-4px_-4px_8px_#ffffff] rounded-lg px-4 py-1.5 text-sm focus:outline-none">
+                <select className="appearance-none border-none bg-white rounded-xl shadow-[0_2px_10px_rgba(0,0,0,0.03)] border border-gray-100/50 px-4 py-1.5 text-sm focus:outline-none">
                   <option>50</option>
                 </select>
               </div>
 
-              <div className="flex items-center space-x-2 text-sm font-medium ml-4 bg-[#f0f0f3] shadow-[3px_3px_6px_#cbced1,-3px_-3px_6px_#ffffff] hover:shadow-[inset_2px_2px_4px_#cbced1,inset_-2px_-2px_4px_#ffffff] px-4 py-1.5 rounded-lg transition-all cursor-pointer">
+              <div className="flex items-center space-x-2 text-sm font-medium ml-4 bg-white shadow-sm hover:shadow-sm px-4 py-1.5 rounded-lg transition-all cursor-pointer">
                 <span className="text-slate-800">Actions</span>
                 <ChevronDown className="w-4 h-4 text-slate-800" />
               </div>
@@ -289,7 +339,7 @@ const Inventory: React.FC = () => {
 
 
 
-            <div className="flex-1 overflow-auto mx-4 mb-4 p-4 shadow-[inset_5px_5px_10px_#cbced1,inset_-5px_-5px_10px_#ffffff] bg-[#f0f0f3] rounded-xl">
+            <div className="flex-1 overflow-auto mx-4 mb-4 shadow-sm bg-white rounded-xl">
               <table className="w-full text-sm text-left whitespace-nowrap border border-gray-300">
                 <thead className="text-xs text-gray-500 font-bold border-b border-gray-300 bg-transparent uppercase tracking-wider sticky top-0 z-10">
                   <tr>
@@ -318,10 +368,10 @@ const Inventory: React.FC = () => {
                         <div className="flex justify-center space-x-1.5">
                           <button 
                             onClick={() => setSelectedTransactionItem(row)}
-                            className="p-1.5 rounded-lg bg-[#f0f0f3] shadow-[2px_2px_4px_#cbced1,-2px_-2px_4px_#ffffff] hover:shadow-[inset_2px_2px_4px_#cbced1,inset_-2px_-2px_4px_#ffffff] text-slate-600 transition-all border-none"
+                            className="p-1.5 rounded-lg bg-white shadow-sm hover:shadow-sm text-slate-600 transition-all border-none"
                           ><Settings className="w-3.5 h-3.5" /></button>
-                          <button className="p-1.5 rounded-lg bg-[#f0f0f3] shadow-[2px_2px_4px_#cbced1,-2px_-2px_4px_#ffffff] hover:shadow-[inset_2px_2px_4px_#cbced1,inset_-2px_-2px_4px_#ffffff] text-slate-600 transition-all border-none"><Moon className="w-3.5 h-3.5" /></button>
-                          <button className="p-1.5 rounded-lg bg-[#f0f0f3] shadow-[2px_2px_4px_#cbced1,-2px_-2px_4px_#ffffff] hover:shadow-[inset_2px_2px_4px_#cbced1,inset_-2px_-2px_4px_#ffffff] text-slate-600 transition-all border-none"><BarChart2 className="w-3.5 h-3.5" /></button>
+                          <button className="p-1.5 rounded-lg bg-white shadow-sm hover:shadow-sm text-slate-600 transition-all border-none"><Moon className="w-3.5 h-3.5" /></button>
+                          <button className="p-1.5 rounded-lg bg-white shadow-sm hover:shadow-sm text-slate-600 transition-all border-none"><BarChart2 className="w-3.5 h-3.5" /></button>
                         </div>
                       </td>
                     </tr>
@@ -335,23 +385,23 @@ const Inventory: React.FC = () => {
         {/* PRODUCTS TAB */}
         {activeTab === 'products' && (
           <>
-            <div className="p-4 border-none flex flex-wrap items-center gap-4 bg-[#f0f0f3]">
+            <div className="border-none flex flex-wrap items-center gap-4 bg-white">
               <InventorySearch />
-              <button className="bg-[#f0f0f3] hover:shadow-[inset_2px_2px_5px_#cbced1,inset_-2px_-2px_5px_#ffffff] text-black px-4 py-1.5 rounded-lg font-semibold text-sm transition-all shadow-[4px_4px_8px_#cbced1,-4px_-4px_8px_#ffffff] border-none">Go</button>
+              <button className="bg-white hover:shadow-sm text-black px-4 py-1.5 rounded-lg font-semibold text-sm transition-all shadow-sm border-none">Go</button>
               
-              <div className="flex space-x-2 border-none bg-[#f0f0f3] p-1 rounded-lg shadow-[inset_4px_4px_8px_#cbced1,inset_-4px_-4px_8px_#ffffff]">
+              <div className="flex space-x-2 border-none bg-white p-1 rounded-lg shadow-sm">
                 <button className="px-3 py-1 bg-[#5a6c8e] text-white rounded-md shadow-sm transition-all text-sm font-medium border-none"><Settings className="w-4 h-4" /></button>
                 <button className="px-3 py-1 hover:bg-[#d5d5d5] rounded-md transition-all text-slate-600 border-none"><BarChart2 className="w-4 h-4" /></button>
               </div>
               
               <div className="flex items-center space-x-2 text-sm text-slate-600 ml-4">
                 <span>Rows</span>
-                <select className="appearance-none border-none bg-[#f0f0f3] shadow-[inset_4px_4px_8px_#cbced1,inset_-4px_-4px_8px_#ffffff] rounded-lg px-4 py-1.5 text-sm focus:outline-none">
+                <select className="appearance-none border-none bg-white rounded-xl shadow-[0_2px_10px_rgba(0,0,0,0.03)] border border-gray-100/50 px-4 py-1.5 text-sm focus:outline-none">
                   <option>50</option>
                 </select>
               </div>
 
-              <div className="flex items-center space-x-2 text-sm font-medium ml-4 bg-[#f0f0f3] shadow-[3px_3px_6px_#cbced1,-3px_-3px_6px_#ffffff] hover:shadow-[inset_2px_2px_4px_#cbced1,inset_-2px_-2px_4px_#ffffff] px-4 py-1.5 rounded-lg transition-all cursor-pointer">
+              <div className="flex items-center space-x-2 text-sm font-medium ml-4 bg-white shadow-sm hover:shadow-sm px-4 py-1.5 rounded-lg transition-all cursor-pointer">
                 <span className="text-slate-800">Actions</span>
                 <ChevronDown className="w-4 h-4 text-slate-800" />
               </div>
@@ -359,14 +409,14 @@ const Inventory: React.FC = () => {
               <div className="ml-auto">
                 <button 
                   onClick={() => setIsAddItemModalOpen(true)}
-                  className="bg-[#f0f0f3] shadow-[3px_3px_6px_#cbced1,-3px_-3px_6px_#ffffff] hover:shadow-[inset_2px_2px_4px_#cbced1,inset_-2px_-2px_4px_#ffffff] px-4 py-1.5 rounded-lg font-semibold text-sm text-slate-800 transition-all border-none"
+                  className="bg-white shadow-sm hover:shadow-sm px-4 py-1.5 rounded-lg font-semibold text-sm text-slate-800 transition-all border-none"
                 >
                   Add new item
                 </button>
               </div>
             </div>
 
-            <div className="flex-1 overflow-auto mx-4 mb-4 p-4 shadow-[inset_5px_5px_10px_#cbced1,inset_-5px_-5px_10px_#ffffff] bg-[#f0f0f3] rounded-xl">
+            <div className="flex-1 overflow-auto mx-4 mb-4 shadow-sm bg-white rounded-xl">
               <table className="w-full text-sm text-left whitespace-nowrap border border-gray-300">
                 <thead className="text-[11px] font-bold text-gray-500 uppercase tracking-wider border-b border-gray-300">
                   <tr>
@@ -400,7 +450,7 @@ const Inventory: React.FC = () => {
                         <span className="bg-[#8ebc7f] text-[#2b4c23] px-2 py-0.5 rounded text-[11px] font-semibold shadow-sm border border-[#7ca96d]">Active</span>
                       </td>
                       <td className="px-4 py-3 text-center">
-                        <div className="w-10 h-10 border border-gray-300 rounded-full flex items-center justify-center mx-auto shadow-[inset_2px_2px_4px_#cbced1,inset_-2px_-2px_4px_#ffffff]"><ImageIcon className="w-5 h-5 text-gray-400" /></div>
+                        <div className="w-10 h-10 border border-gray-300 rounded-full flex items-center justify-center shadow-sm"><ImageIcon className="w-5 h-5 text-gray-400" /></div>
                       </td>
                     </tr>
                   ))}
@@ -413,30 +463,30 @@ const Inventory: React.FC = () => {
         {/* CATEGORIES TAB */}
         {activeTab === 'categories' && (
           <>
-            <div className="p-4 border-none flex flex-wrap items-center gap-4 bg-[#f0f0f3]">
+            <div className="border-none flex flex-wrap items-center gap-4 bg-white">
               <InventorySearch />
-              <button className="bg-[#f0f0f3] hover:shadow-[inset_2px_2px_5px_#cbced1,inset_-2px_-2px_5px_#ffffff] text-black px-4 py-1.5 rounded-lg font-semibold text-sm transition-all shadow-[4px_4px_8px_#cbced1,-4px_-4px_8px_#ffffff] border-none">Go</button>
+              <button className="bg-white hover:shadow-sm text-black px-4 py-1.5 rounded-lg font-semibold text-sm transition-all shadow-sm border-none">Go</button>
               
-              <div className="flex items-center space-x-2 text-sm font-medium ml-2 bg-[#f0f0f3] shadow-[3px_3px_6px_#cbced1,-3px_-3px_6px_#ffffff] hover:shadow-[inset_2px_2px_4px_#cbced1,inset_-2px_-2px_4px_#ffffff] px-4 py-1.5 rounded-lg transition-all cursor-pointer">
+              <div className="flex items-center space-x-2 text-sm font-medium ml-2 bg-white shadow-sm hover:shadow-sm px-4 py-1.5 rounded-lg transition-all cursor-pointer">
                 <span className="text-slate-800">Actions</span>
                 <ChevronDown className="w-4 h-4 text-slate-800" />
               </div>
 
-              <button className="bg-[#f0f0f3] shadow-[3px_3px_6px_#cbced1,-3px_-3px_6px_#ffffff] hover:shadow-[inset_2px_2px_4px_#cbced1,inset_-2px_-2px_4px_#ffffff] px-4 py-1.5 rounded-lg font-semibold text-sm text-slate-800 transition-all border-none ml-2">Edit</button>
-              <button className="bg-[#f0f0f3] shadow-[3px_3px_6px_#cbced1,-3px_-3px_6px_#ffffff] hover:shadow-[inset_2px_2px_4px_#cbced1,inset_-2px_-2px_4px_#ffffff] px-4 py-1.5 rounded-lg font-semibold text-sm text-slate-800 transition-all border-none">
+              <button className="bg-white shadow-sm hover:shadow-sm px-4 py-1.5 rounded-lg font-semibold text-sm text-slate-800 transition-all border-none ml-2">Edit</button>
+              <button className="bg-white shadow-sm hover:shadow-sm px-4 py-1.5 rounded-lg font-semibold text-sm text-slate-800 transition-all border-none">
                 Save
               </button>
-              <button className="bg-[#f0f0f3] shadow-[3px_3px_6px_#cbced1,-3px_-3px_6px_#ffffff] hover:shadow-[inset_2px_2px_4px_#cbced1,inset_-2px_-2px_4px_#ffffff] px-4 py-1.5 rounded-lg font-semibold text-sm text-slate-800 transition-all border-none">
+              <button onClick={() => setIsAddCategoryModalOpen(true)} className="bg-white shadow-sm hover:shadow-sm px-4 py-1.5 rounded-lg font-semibold text-sm text-slate-800 transition-all border-none">
                 Add New Category
               </button>
 
-              <div className="ml-auto flex items-center text-gray-500 cursor-pointer hover:text-gray-700 transition-colors bg-[#f0f0f3] shadow-[3px_3px_6px_#cbced1,-3px_-3px_6px_#ffffff] hover:shadow-[inset_2px_2px_4px_#cbced1,inset_-2px_-2px_4px_#ffffff] px-4 py-1.5 rounded-lg font-semibold text-sm border-none">
+              <div className="ml-auto flex items-center text-gray-500 cursor-pointer hover:text-gray-700 transition-colors bg-white shadow-sm hover:shadow-sm px-4 py-1.5 rounded-lg font-semibold text-sm border-none">
                 <Settings className="w-4 h-4 mr-1" /> <span>Reset</span>
               </div>
             </div>
 
 
-            <div className="flex-1 overflow-auto mx-4 mb-4 p-4 shadow-[inset_5px_5px_10px_#cbced1,inset_-5px_-5px_10px_#ffffff] bg-[#f0f0f3] rounded-xl">
+            <div className="flex-1 overflow-auto mx-4 mb-4 shadow-sm bg-white rounded-xl">
               <table className="w-full text-[13px] text-left border border-gray-300">
                 <thead className="text-[11px] font-bold text-gray-500 uppercase tracking-wider border-b border-gray-300">
                   <tr>
@@ -454,35 +504,35 @@ const Inventory: React.FC = () => {
                   </tr>
                 </thead>
                 <tbody className="divide-y divide-gray-300 text-slate-600">
-                  {categoriesData.map((row, idx) => (
-                    <tr key={idx} className={`bg-transparent hover:bg-[#8ebc7f] hover:text-[#2b4c23] transition-colors`}>
+                  {categoriesList.map((row, idx) => (
+                    <tr key={row.id || idx} className={`bg-transparent hover:bg-[#8ebc7f] hover:text-[#2b4c23] transition-colors`}>
                       <td className="px-4 py-3 text-center border-r border-gray-300">
                         <input type="checkbox" className="rounded text-blue-600 focus:ring-blue-500" />
                       </td>
                       <td className="px-4 py-3 text-center border-r border-gray-300">
                         <Menu className="w-4 h-4 text-slate-400" />
                       </td>
-                      <td className="px-4 py-3 border-r border-gray-300">{row.type}</td>
-                      <td className="px-4 py-3 border-r border-gray-300">{row.parent}</td>
-                      <td className="px-4 py-3 border-r border-gray-300">{row.code}</td>
+                      <td className="px-4 py-3 border-r border-gray-300">{row.type || 'Product'}</td>
+                      <td className="px-4 py-3 border-r border-gray-300">{row.parent || '-'}</td>
+                      <td className="px-4 py-3 border-r border-gray-300">{row.code || '-'}</td>
                       <td className="px-4 py-3 font-semibold border-r border-gray-300">{row.name}</td>
-                      <td className="px-4 py-3 border-r border-gray-300">{row.hsn}</td>
-                      <td className="px-4 py-3 border-r border-gray-300">{row.vendor}</td>
-                      <td className="px-4 py-3 border-r border-gray-300">{row.tax}</td>
+                      <td className="px-4 py-3 border-r border-gray-300">{row.hsn || '-'}</td>
+                      <td className="px-4 py-3 border-r border-gray-300">{row.vendor || '-'}</td>
+                      <td className="px-4 py-3 border-r border-gray-300">{row.tax || '-'}</td>
                       <td className="px-4 py-3 border-r border-gray-300">
                         {row.status === 'Active' ? (
                           <span className="bg-[#8ebc7f] text-[#2b4c23] px-2 py-0.5 rounded text-[11px] font-semibold shadow-sm border border-[#7ca96d]">Active</span>
                         ) : (
-                          <span className="bg-[#cbced1] text-slate-600 px-2 py-0.5 rounded text-[11px] font-medium">Inactive</span>
+                          <span className="bg-gray-200 text-slate-600 px-2 py-0.5 rounded text-[11px] font-medium">Inactive</span>
                         )}
                       </td>
-                      <td className="px-4 py-3 font-bold text-center text-slate-700">{row.count}</td>
+                      <td className="px-4 py-3 font-bold text-center text-slate-700">{row.count || 0}</td>
                     </tr>
                   ))}
                 </tbody>
               </table>
             </div>
-            <div className="p-4 mx-4 mb-4 rounded-xl shadow-[inset_4px_4px_8px_#cbced1,inset_-4px_-4px_8px_#ffffff] text-xs font-semibold text-slate-600 flex justify-between items-center bg-[#f0f0f3]">
+            <div className="mx-4 mb-4 rounded-xl shadow-sm text-xs font-semibold text-slate-600 flex justify-between items-center bg-white">
               <span>0 rows selected</span>
               <span className="font-semibold text-slate-800">Total {categoriesData.length}</span>
             </div>
@@ -492,26 +542,30 @@ const Inventory: React.FC = () => {
         {/* OPENING STOCK TAB */}
         {activeTab === 'opening-stock' && (
           <>
-            <div className="p-4 border-none flex flex-wrap items-center gap-4 bg-[#f0f0f3]">
+            <div className="border-none flex flex-wrap items-center gap-4 bg-white">
               <InventorySearch />
-              <button className="bg-[#f0f0f3] hover:shadow-[inset_2px_2px_5px_#cbced1,inset_-2px_-2px_5px_#ffffff] text-black px-4 py-1.5 rounded-lg font-semibold text-sm transition-all shadow-[4px_4px_8px_#cbced1,-4px_-4px_8px_#ffffff] border-none">Go</button>
+              <button className="bg-white hover:shadow-sm text-black px-4 py-1.5 rounded-lg font-semibold text-sm transition-all shadow-sm border-none">Go</button>
               
-              <div className="flex items-center space-x-2 text-sm font-medium ml-2 bg-[#f0f0f3] shadow-[3px_3px_6px_#cbced1,-3px_-3px_6px_#ffffff] hover:shadow-[inset_2px_2px_4px_#cbced1,inset_-2px_-2px_4px_#ffffff] px-4 py-1.5 rounded-lg transition-all cursor-pointer">
+              <div className="flex items-center space-x-2 text-sm font-medium ml-2 bg-white shadow-sm hover:shadow-sm px-4 py-1.5 rounded-lg transition-all cursor-pointer">
                 <span className="text-slate-800">Actions</span>
                 <ChevronDown className="w-4 h-4 text-slate-800" />
               </div>
 
-              <button className="bg-[#f0f0f3] shadow-[3px_3px_6px_#cbced1,-3px_-3px_6px_#ffffff] hover:shadow-[inset_2px_2px_4px_#cbced1,inset_-2px_-2px_4px_#ffffff] px-4 py-1.5 rounded-lg font-semibold text-sm text-slate-800 transition-all border-none ml-2">Edit</button>
-              <button className="bg-[#f0f0f3] shadow-[3px_3px_6px_#cbced1,-3px_-3px_6px_#ffffff] hover:shadow-[inset_2px_2px_4px_#cbced1,inset_-2px_-2px_4px_#ffffff] px-4 py-1.5 rounded-lg font-semibold text-sm text-slate-800 transition-all border-none">
-                Save
+              <button onClick={handleEditStockToggle} className="bg-white shadow-sm hover:shadow-sm px-4 py-1.5 rounded-lg font-semibold text-sm text-slate-800 transition-all border-none ml-2">
+                {isEditingStock ? 'Cancel Edit' : 'Edit'}
               </button>
+              {isEditingStock && (
+                <button onClick={handleSaveStock} className="bg-white shadow-sm hover:shadow-sm px-4 py-1.5 rounded-lg font-semibold text-sm text-slate-800 transition-all border-none">
+                  Save
+                </button>
+              )}
 
-              <div className="ml-auto flex items-center text-gray-500 cursor-pointer hover:text-gray-700 transition-colors bg-[#f0f0f3] shadow-[3px_3px_6px_#cbced1,-3px_-3px_6px_#ffffff] hover:shadow-[inset_2px_2px_4px_#cbced1,inset_-2px_-2px_4px_#ffffff] px-4 py-1.5 rounded-lg font-semibold text-sm border-none">
+              <div className="ml-auto flex items-center text-gray-500 cursor-pointer hover:text-gray-700 transition-colors bg-white shadow-sm hover:shadow-sm px-4 py-1.5 rounded-lg font-semibold text-sm border-none">
                 <Settings className="w-4 h-4 mr-1" /> <span>Reset</span>
               </div>
             </div>
 
-            <div className="flex-1 overflow-auto mx-4 mb-4 p-4 shadow-[inset_5px_5px_10px_#cbced1,inset_-5px_-5px_10px_#ffffff] bg-[#f0f0f3] rounded-xl">
+            <div className="flex-1 overflow-auto mx-4 mb-4 shadow-sm bg-white rounded-xl">
               <table className="w-full text-[13px] text-left border border-gray-300">
                 <thead className="text-[11px] font-bold text-gray-500 uppercase tracking-wider border-b border-gray-300">
                   <tr>
@@ -526,22 +580,44 @@ const Inventory: React.FC = () => {
                 </thead>
                 <tbody className="divide-y divide-gray-300 text-slate-600">
                   {inventoryItems.map((row, idx) => (
-                    <tr key={idx} className="bg-transparent hover:bg-[#8ebc7f] hover:text-[#2b4c23] transition-colors">
+                    <tr key={row.id || idx} className="bg-transparent hover:bg-[#8ebc7f] hover:text-[#2b4c23] transition-colors">
                       <td className="px-4 py-3 text-center border-r border-gray-300">
                         <input type="checkbox" className="rounded text-blue-600 focus:ring-blue-500" />
                       </td>
                       <td className="px-4 py-3 border-r border-gray-300">{row.item_category}</td>
                       <td className="px-4 py-3 border-r border-gray-300">{row.item_name}</td>
+                      <td className="px-4 py-3 border-r border-gray-300">{row.item_code}</td>
                       <td className="px-4 py-3 border-r border-gray-300">-</td>
-                      <td className="px-4 py-3 border-r border-gray-300">-</td>
-                      <td className="px-4 py-3 text-right border-r border-gray-300">{row.opening_rate || 0}</td>
-                      <td className="px-4 py-3 text-right">{row.opening_qty || 0}</td>
+                      <td className="px-4 py-3 text-right border-r border-gray-300">
+                        {isEditingStock ? (
+                          <input 
+                            type="number" 
+                            className="w-20 border border-gray-300 rounded px-2 py-1 text-right text-sm" 
+                            value={editedStock[row.id]?.rate ?? (row.opening_rate || 0)}
+                            onChange={(e) => setEditedStock(prev => ({ ...prev, [row.id]: { ...prev[row.id], rate: parseFloat(e.target.value) || 0 } }))}
+                          />
+                        ) : (
+                          row.opening_rate || 0
+                        )}
+                      </td>
+                      <td className="px-4 py-3 text-right">
+                        {isEditingStock ? (
+                          <input 
+                            type="number" 
+                            className="w-20 border border-gray-300 rounded px-2 py-1 text-right text-sm" 
+                            value={editedStock[row.id]?.qty ?? (row.opening_qty || 0)}
+                            onChange={(e) => setEditedStock(prev => ({ ...prev, [row.id]: { ...prev[row.id], qty: parseFloat(e.target.value) || 0 } }))}
+                          />
+                        ) : (
+                          row.opening_qty || 0
+                        )}
+                      </td>
                     </tr>
                   ))}
                 </tbody>
               </table>
             </div>
-            <div className="p-4 mx-4 mb-4 rounded-xl shadow-[inset_4px_4px_8px_#cbced1,inset_-4px_-4px_8px_#ffffff] text-xs font-semibold text-slate-600 flex justify-between items-center bg-[#f0f0f3]">
+            <div className="mx-4 mb-4 rounded-xl shadow-sm text-xs font-semibold text-slate-600 flex justify-between items-center bg-white">
               <span>0 rows selected</span>
               <span className="font-semibold text-slate-800">Total {inventoryItems.length}</span>
             </div>
@@ -554,6 +630,11 @@ const Inventory: React.FC = () => {
       <InventoryForm 
         isOpen={isAddItemModalOpen} 
         onClose={() => setIsAddItemModalOpen(false)} 
+      />
+      <CategoryForm 
+        isOpen={isAddCategoryModalOpen} 
+        onClose={() => setIsAddCategoryModalOpen(false)} 
+        onSuccess={(newCategory) => setCategoriesList(prev => [...prev, newCategory])}
       />
     </div>
   );

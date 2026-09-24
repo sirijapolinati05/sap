@@ -225,3 +225,52 @@ class InventoryItemOut(InventoryItemBase):
     class Config:
         orm_mode = True
 
+class ProductBase(BaseModel):
+    category: Optional[str] = None
+    item_name: str
+    description: Optional[str] = None
+    item_code: Optional[str] = None
+    hsn_sac: Optional[str] = None
+    reorder_quantity: Optional[int] = None
+    tags: List[str] = []
+    status: bool = True
+    uom: Optional[str] = None
+    purchase_price: Optional[float] = None
+    mrp: Optional[float] = None
+    sales_price: Optional[float] = None
+    tax: Optional[str] = None
+    image_path: Optional[str] = None
+
+class ProductCreate(ProductBase):
+    pass
+
+class ProductOut(ProductBase):
+    id: int
+    class Config:
+        orm_mode = True
+
+class TaskCreate(BaseModel):
+    name: str
+    date: str
+    status: Optional[str] = "pending"
+
+class TaskOut(TaskCreate):
+    id: int
+    class Config:
+        orm_mode = True
+
+class CategoryCreate(BaseModel):
+    type: Optional[str] = None
+    parent: Optional[str] = None
+    code: Optional[str] = None
+    name: str
+    hsn: Optional[str] = None
+    vendor: Optional[str] = None
+    tax: Optional[str] = None
+    status: Optional[str] = "Active"
+
+class CategoryOut(CategoryCreate):
+    id: int
+    class Config:
+        orm_mode = True
+

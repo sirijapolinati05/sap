@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Search, ChevronDown, Plus, Trash2, Package, Users, Minus } from 'lucide-react';
+import { Search, ChevronDown, Plus, Trash2, Package, Users, Minus, MessageCircle, FileText, User, Eye, Save, Phone, MapPin, Building, X } from 'lucide-react';
 
 interface Product {
   id: number;
@@ -135,7 +135,7 @@ const BuildInvoice: React.FC<BuildInvoiceProps> = ({ onBack, onSave, initialInvo
 
   if (showPreview) {
     return (
-      <div className="bg-white min-h-[calc(100vh-56px)] text-slate-900 font-sans p-8 mx-auto max-w-4xl print:p-0 print:max-w-none print:w-full">
+      <div className="bg-white min-h-[calc(100vh-56px)] text-slate-900 font-sans p-8 max-w-4xl print:p-0 print:max-w-none print:w-full">
         
         {/* Top toolbar (hidden in print) */}
         <div className="flex justify-between items-center mb-8 print:hidden border-b border-gray-200 pb-4">
@@ -279,51 +279,54 @@ const BuildInvoice: React.FC<BuildInvoiceProps> = ({ onBack, onSave, initialInvo
   }
 
   return (
-    <div className="p-4 md:p-6 bg-[#f8f9fa] flex flex-col font-sans h-full">
+    <div className="md:bg-[#f8f9fa] flex flex-col font-sans h-full">
       {/* Header */}
-      <div className="flex justify-between items-start mb-6">
-        <div>
-          <div className="text-[11px] font-bold text-blue-800 tracking-wider uppercase mb-1 flex items-center gap-2">
-            <span className="cursor-pointer hover:underline" onClick={onBack}>SALES / BILLING</span>
+      <div className="mb-6 relative">
+        <div className="absolute right-0 top-[-2rem] w-[600px] h-[200px] pointer-events-none opacity-30 bg-no-repeat bg-right-top z-0" style={{ backgroundImage: "url('/sas-watermark.svg')" }}></div>
+        <div className="flex justify-between items-start relative z-10">
+          <div>
+            <div className="text-[10px] font-bold text-amber-500 tracking-wider uppercase mb-1 flex items-center gap-2">
+              <span className="cursor-pointer hover:underline" onClick={onBack}>SALES / BILLING</span>
+            </div>
+            <h1 className="text-3xl font-bold text-[#0c3f50] mb-1">Build an invoice</h1>
+            <p className="text-slate-500 text-sm">Find an item, check the bill, then preview or issue a demo invoice.</p>
           </div>
-          <h1 className="text-2xl font-bold text-slate-800 mb-1">Build an invoice</h1>
-          <p className="text-sm text-slate-500">Find an item, check the bill, then preview or issue a demo invoice.</p>
-        </div>
-        <div className="text-xs text-slate-400 flex items-center gap-1">
-          Quick search <span className="bg-white border border-gray-200 rounded px-1.5 py-0.5 shadow-sm text-slate-600 font-medium">Ctrl</span> + <span className="bg-white border border-gray-200 rounded px-1.5 py-0.5 shadow-sm text-slate-600 font-medium">K</span>
         </div>
       </div>
 
-      <div className={`flex flex-col ${openInPosMode ? 'lg:flex-row gap-6 flex-1 min-h-0 w-full' : 'gap-6 flex-1 min-h-0 bg-[#f0f0f3] p-4 md:p-6 rounded-2xl max-w-5xl mx-auto w-full'}`}>
+      <div className={`flex flex-col ${openInPosMode ? 'lg:flex-row gap-6 flex-1 min-h-0 w-full' : 'gap-6 flex-1 min-h-0 bg-white p-4 md:p-6 rounded-2xl max-w-5xl mx-auto w-full'}`}>
         
         {/* Left Pane - Products (POS Mode Only) */}
         {openInPosMode && (
-          <div className="w-full lg:w-[400px] flex-shrink-0 flex flex-col bg-[#f0f0f3] rounded-3xl shadow-[8px_8px_16px_#cbced1,-8px_-8px_16px_#ffffff] border-none overflow-hidden h-fit max-h-full">
-            <div className="p-4 bg-[#f0f0f3] shadow-[0_4px_10px_rgba(0,0,0,0.02)] z-10">
-              <div className="flex justify-between items-center mb-4">
-                <h2 className="font-bold text-slate-700 flex items-center gap-2">
-                  <Package className="w-4 h-4 text-blue-500" /> Products
+          <div className="w-full lg:w-[400px] flex-shrink-0 flex flex-col bg-white rounded-3xl shadow-[0_2px_15px_rgba(0,0,0,0.03)] border border-gray-100 overflow-hidden h-fit max-h-full">
+            <div className="bg-white z-10 p-5 pb-4 border-b border-gray-100">
+              <div className="flex justify-between items-center mb-6">
+                <h2 className="font-bold text-slate-800 flex items-center gap-3 text-lg">
+                  <div className="bg-blue-50 text-blue-600 p-2 rounded-xl">
+                    <Package className="w-5 h-5" />
+                  </div>
+                  Products
                 </h2>
                 <span className="text-xs text-slate-500 font-medium">{products.length} items</span>
               </div>
               
-              <div className="relative mb-3">
+              <div className="relative mb-4">
                 <Search className="absolute left-3 top-2.5 w-4 h-4 text-slate-400 group-focus-within:text-blue-500 transition-colors" />
                 <input 
                   type="text" 
                   value={productSearchQuery}
                   onChange={(e) => setProductSearchQuery(e.target.value)}
                   placeholder="Search title, author, SKU or barcode" 
-                  className="w-full pl-9 pr-3 py-2 bg-[#f0f0f3] rounded-xl text-sm focus:outline-none focus:ring-0 placeholder:text-gray-400 transition-all shadow-[inset_4px_4px_8px_#cbced1,inset_-4px_-4px_8px_#ffffff] border-none text-slate-600 font-medium"
+                  className="w-full pl-9 pr-3 py-2.5 bg-gray-50 border border-gray-200 rounded-xl text-sm focus:outline-none focus:border-blue-300 focus:bg-white placeholder:text-gray-400 transition-all text-slate-700 font-medium"
                 />
               </div>
               
-              <div className="flex items-center justify-between">
-                <div className="relative w-48 group">
+              <div className="flex items-center justify-between gap-3">
+                <div className="relative flex-1 group">
                   <select 
                     value={selectedCategory}
                     onChange={(e) => setSelectedCategory(e.target.value)}
-                    className="w-full appearance-none bg-[#f0f0f3] rounded-xl py-2 pl-3 pr-8 text-sm focus:outline-none focus:ring-0 text-slate-600 font-medium truncate transition-all shadow-[inset_4px_4px_8px_#cbced1,inset_-4px_-4px_8px_#ffffff] border-none"
+                    className="w-full appearance-none bg-white border border-gray-200 rounded-xl py-2 pl-3 pr-8 text-sm focus:outline-none focus:border-blue-300 text-slate-700 font-medium truncate transition-all"
                   >
                     <option value="All categories">All categories</option>
                     {categories.map((cat, idx) => (
@@ -332,12 +335,14 @@ const BuildInvoice: React.FC<BuildInvoiceProps> = ({ onBack, onSave, initialInvo
                   </select>
                   <ChevronDown className="absolute right-3 top-2.5 w-4 h-4 text-gray-400 pointer-events-none" />
                 </div>
-                <div className="text-[11px] text-slate-400">Click Add</div>
+                <button className="flex items-center gap-1.5 text-sm font-bold text-blue-600 hover:text-blue-700 bg-white hover:bg-blue-50 px-4 py-2 rounded-xl transition-all border border-gray-200 shadow-sm shrink-0">
+                  <Plus className="w-4 h-4" /> Add Product
+                </button>
               </div>
             </div>
             
-            <div className="flex-1 overflow-y-auto p-2">
-              <div className="space-y-1">
+            <div className="flex-1 overflow-y-auto p-3">
+              <div className="space-y-2">
                 {products.filter(product => {
                   const searchLower = productSearchQuery.toLowerCase();
                   const matchesSearch = product.name.toLowerCase().includes(searchLower) || 
@@ -347,18 +352,23 @@ const BuildInvoice: React.FC<BuildInvoiceProps> = ({ onBack, onSave, initialInvo
                   const matchesCategory = selectedCategory === 'All categories' || productCategory === selectedCategory;
                   return matchesSearch && matchesCategory;
                 }).map(product => (
-                  <div key={product.id} className="flex gap-3 p-3 rounded-2xl hover:shadow-[4px_4px_8px_#cbced1,-4px_-4px_8px_#ffffff] transition-all group cursor-pointer bg-[#f0f0f3]">
-                    <div className={`w-12 h-12 flex-shrink-0 rounded-xl flex items-center justify-center text-[10px] font-bold shadow-[inset_2px_2px_4px_#cbced1,inset_-2px_-2px_4px_#ffffff] ${
-                      product.type === 'ITEM' ? 'text-amber-600' : 'text-blue-600'
-                    }`}>
-                      {product.type}
+                  <div key={product.id} className="flex gap-4 p-3 rounded-2xl hover:bg-slate-50 border border-transparent hover:border-gray-100 transition-all group cursor-pointer bg-white">
+                    <div className="w-14 h-14 flex-shrink-0 bg-gray-50 border border-gray-100 rounded-xl flex items-center justify-center relative overflow-hidden">
+                      {product.type === 'BOOK' ? (
+                        <div className="w-8 h-10 bg-amber-600 rounded-sm shadow-sm flex items-center justify-center text-white text-[8px] font-serif text-center px-1 leading-tight">{product.name.slice(0, 15)}</div>
+                      ) : (
+                        <Package className="w-6 h-6 text-slate-300" />
+                      )}
                     </div>
-                    <div className="flex-1 min-w-0">
-                      <h3 className="text-sm font-semibold text-slate-800 truncate mb-0.5" title={product.name}>{product.name}</h3>
-                      <p className="text-[11px] text-slate-500 truncate mb-1" title={product.sku}>{product.sku.replace(' - ', ' . ')}</p>
-                      <div className="text-[11px] font-medium text-emerald-600">{product.stock} available</div>
+                    <div className="flex-1 min-w-0 flex flex-col justify-center">
+                      <h3 className="text-sm font-bold text-slate-800 truncate mb-0.5" title={product.name}>{product.name}</h3>
+                      <p className="text-[11px] text-slate-500 truncate mb-1.5" title={product.sku}>{product.sku.replace(' - ', ' . ')}</p>
+                      <div className="text-[11px] font-semibold text-emerald-600 flex items-center gap-1.5">
+                        <div className="w-1.5 h-1.5 rounded-full bg-emerald-500"></div>
+                        {product.stock} available
+                      </div>
                     </div>
-                    <div className="flex flex-col items-end justify-between flex-shrink-0">
+                    <div className="flex flex-col items-end justify-between flex-shrink-0 py-0.5">
                       <div className="font-bold text-slate-700 text-sm tracking-tight">₹{product.price.toFixed(2)}</div>
                       <button 
                         onClick={() => {
@@ -371,9 +381,9 @@ const BuildInvoice: React.FC<BuildInvoiceProps> = ({ onBack, onSave, initialInvo
                             amount: product.price
                           }]);
                         }}
-                        className="flex items-center gap-1 text-[11px] font-bold text-slate-600 bg-[#f0f0f3] shadow-[4px_4px_8px_#cbced1,-4px_-4px_8px_#ffffff] hover:shadow-[inset_2px_2px_4px_#cbced1,inset_-2px_-2px_4px_#ffffff] hover:text-blue-600 px-3 py-1.5 rounded-lg transition-all"
+                        className="flex items-center gap-1.5 text-xs font-bold text-blue-600 bg-white hover:bg-blue-50 border border-gray-200 px-3 py-1.5 rounded-lg transition-all"
                       >
-                        <Plus className="w-3 h-3" /> Add
+                        <Plus className="w-3.5 h-3.5" /> Add
                       </button>
                     </div>
                   </div>
@@ -387,12 +397,20 @@ const BuildInvoice: React.FC<BuildInvoiceProps> = ({ onBack, onSave, initialInvo
         <div className="flex-1 flex flex-col gap-6 overflow-y-auto pb-4">
           
           {/* Top Section */}
-          <div className="bg-[#f0f0f3] rounded-3xl shadow-[8px_8px_16px_#cbced1,-8px_-8px_16px_#ffffff] p-6 relative overflow-hidden">
-            <div className="flex justify-between items-start mb-6 relative z-10">
-              <div>
-                <h2 className="text-xl font-bold text-slate-700 mb-1 tracking-tight">New invoice</h2>
-                <p className="text-xs text-slate-500">Number assigned when issued</p>
-              </div>
+          <div className="bg-white rounded-3xl shadow-[0_2px_15px_rgba(0,0,0,0.03)] border border-gray-100 p-6 relative overflow-hidden">
+            <div className="bg-[#eff1fe] p-5 rounded-2xl mb-6 flex items-center gap-4 relative overflow-hidden">
+               <div className="absolute right-0 bottom-0 w-64 h-full pointer-events-none opacity-50">
+                 <svg viewBox="0 0 100 50" preserveAspectRatio="none" className="w-full h-full text-[#dce1fc]">
+                   <path d="M0,50 Q25,20 50,30 T100,10 L100,50 Z" fill="currentColor" />
+                 </svg>
+               </div>
+               <div className="bg-white w-12 h-12 rounded-xl text-blue-600 flex items-center justify-center shrink-0 shadow-sm relative z-10">
+                 <FileText className="w-6 h-6 text-blue-500" />
+               </div>
+               <div className="relative z-10">
+                 <h2 className="text-lg font-bold text-slate-800 mb-0.5 tracking-tight">New invoice</h2>
+                 <p className="text-xs text-slate-500">Create and manage customer invoices</p>
+               </div>
             </div>
             
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
@@ -402,7 +420,7 @@ const BuildInvoice: React.FC<BuildInvoiceProps> = ({ onBack, onSave, initialInvo
                   <select 
                     value={documentType}
                     onChange={(e) => setDocumentType(e.target.value)}
-                    className="w-full appearance-none bg-[#f0f0f3] rounded-xl py-2.5 pl-3 pr-8 text-sm focus:outline-none focus:ring-0 text-slate-700 font-medium transition-all shadow-[inset_4px_4px_8px_#cbced1,inset_-4px_-4px_8px_#ffffff] border-none"
+                    className="w-full appearance-none bg-white border border-gray-200 rounded-xl py-2.5 pl-3 pr-8 text-sm focus:outline-none focus:border-blue-400 text-slate-700 font-medium transition-all shadow-sm"
                   >
                     <option>Tax invoice</option>
                     <option>Bill of supply</option>
@@ -410,7 +428,7 @@ const BuildInvoice: React.FC<BuildInvoiceProps> = ({ onBack, onSave, initialInvo
                     <option>Pro forma</option>
                     <option>Quotation</option>
                   </select>
-                  <ChevronDown className="absolute right-3 top-2.5 w-4 h-4 text-gray-400 pointer-events-none" />
+                  <ChevronDown className="absolute right-3 top-3 w-4 h-4 text-gray-400 pointer-events-none" />
                 </div>
               </div>
               <div>
@@ -420,34 +438,53 @@ const BuildInvoice: React.FC<BuildInvoiceProps> = ({ onBack, onSave, initialInvo
                     type="date" 
                     value={invoiceDate}
                     onChange={(e) => setInvoiceDate(e.target.value)}
-                    className="w-full bg-[#f0f0f3] rounded-xl py-2.5 px-3 text-sm focus:outline-none focus:ring-0 text-slate-700 font-medium transition-all shadow-[inset_4px_4px_8px_#cbced1,inset_-4px_-4px_8px_#ffffff] border-none" 
+                    className="w-full bg-white border border-gray-200 rounded-xl py-2.5 px-3 text-sm focus:outline-none focus:border-blue-400 text-slate-700 font-medium transition-all shadow-sm" 
                   />
                 </div>
               </div>
               <div>
                 <label className="block text-[11px] font-bold text-slate-500 mb-1.5">Branch / number series</label>
-                <input type="text" value="Hyderabad · HYD-INV" readOnly className="w-full bg-[#e0e0e0] rounded-xl py-2.5 px-3 text-sm focus:outline-none text-slate-500 font-medium cursor-not-allowed shadow-[inset_4px_4px_8px_#b5b5b5,inset_-4px_-4px_8px_#ffffff] border-none" />
+                <div className="relative">
+                  <input type="text" value="Hyderabad · HYD-INV" readOnly className="w-full bg-white border border-gray-200 rounded-xl py-2.5 px-3 text-sm focus:outline-none text-slate-600 font-medium cursor-default shadow-sm" />
+                  <ChevronDown className="absolute right-3 top-3 w-4 h-4 text-gray-400 pointer-events-none" />
+                </div>
               </div>
             </div>
           </div>
 
           {/* Customer Section */}
-          <div className="bg-[#f0f0f3] rounded-3xl shadow-[8px_8px_16px_#cbced1,-8px_-8px_16px_#ffffff] p-6 relative overflow-hidden flex justify-between items-center">
-            <div>
-              <div className="text-[10px] font-bold text-blue-600 tracking-wider uppercase mb-1">Customer</div>
-              <h3 className="font-bold text-slate-700">{customerName || 'Walk-In customer'}</h3>
-              <p className="text-[11px] text-slate-400 mt-0.5">Add customer details if needed</p>
-            </div>
-            <button 
-              onClick={() => setIsCustomerModalOpen(true)}
-              className="text-xs font-bold text-white bg-amber-500 hover:bg-amber-600 px-5 py-2.5 rounded-xl transition-all shadow-md border-none"
-            >
-              Edit customer
-            </button>
+          <div className="bg-white rounded-3xl shadow-[0_2px_15px_rgba(0,0,0,0.03)] p-5 relative overflow-hidden border border-gray-100 flex flex-col gap-5">
+             <div className="flex justify-between items-center">
+                <div className="flex items-center gap-4">
+                   <div className="bg-[#f3effe] w-12 h-12 rounded-xl flex items-center justify-center shrink-0">
+                     <User className="w-6 h-6 text-[#7c3aed]" />
+                   </div>
+                   <div>
+                     <h3 className="font-bold text-slate-800 text-sm mb-0.5">{customerName || 'Customer'}</h3>
+                     <p className="text-[11px] text-slate-400">Select a customer or add new</p>
+                   </div>
+                </div>
+                <button 
+                  onClick={() => setIsCustomerModalOpen(true)}
+                  className="flex items-center gap-1.5 text-xs font-bold text-blue-600 hover:text-blue-700 bg-white hover:bg-blue-50 px-4 py-2 rounded-lg transition-all border border-blue-100 shadow-sm"
+                >
+                  <Plus className="w-3.5 h-3.5" /> {customerName && customerName !== 'Walk-in customer' ? 'Edit Customer' : 'Add New Customer'}
+                </button>
+             </div>
+             
+             {/* Customer Search Bar */}
+             <div className="relative">
+                <Search className="w-4 h-4 text-gray-400 absolute left-3 top-2.5" />
+                <input 
+                  type="text" 
+                  placeholder="Search customer by name, mobile or email..." 
+                  className="w-full bg-gray-50 border border-gray-200 rounded-xl py-2 pl-9 pr-3 text-sm focus:outline-none focus:border-blue-400 focus:bg-white transition-colors text-slate-700" 
+                />
+             </div>
           </div>
 
           {/* Invoice Items */}
-          <div className="bg-[#f0f0f3] rounded-3xl shadow-[8px_8px_16px_#cbced1,-8px_-8px_16px_#ffffff] p-6 min-h-[250px] flex flex-col">
+          <div className="bg-white rounded-3xl shadow-sm min-h-[250px] flex flex-col">
             <div className="flex justify-between items-center mb-4">
               <h3 className="font-bold text-slate-800">Invoice items <span className="text-slate-400 font-medium text-sm">({invoiceItems.length})</span></h3>
               {invoiceItems.length > 0 && (
@@ -471,8 +508,14 @@ const BuildInvoice: React.FC<BuildInvoiceProps> = ({ onBack, onSave, initialInvo
                 <tbody>
                   {invoiceItems.length === 0 ? (
                     <tr>
-                      <td colSpan={7} className="py-12 text-center text-[13px] text-slate-400">
-                        Your invoice is empty. Click "Add Item" to start.
+                      <td colSpan={7} className="py-16 text-center text-slate-500">
+                        <div className="flex flex-col items-center justify-center">
+                           <div className="w-12 h-12 bg-gray-50 border border-gray-100 rounded-xl flex items-center justify-center mb-3">
+                              <FileText className="w-6 h-6 text-gray-300" />
+                           </div>
+                           <h4 className="text-sm font-bold text-slate-700 mb-1 tracking-tight">Your invoice is empty</h4>
+                           <p className="text-[11px]">Search and add items from the products list to get started.</p>
+                        </div>
                       </td>
                     </tr>
                   ) : (
@@ -495,7 +538,7 @@ const BuildInvoice: React.FC<BuildInvoiceProps> = ({ onBack, onSave, initialInvo
                                   setInvoiceItems(newItems);
                                 }
                               }}
-                              className="w-full appearance-none bg-[#f0f0f3] rounded-xl py-2 pl-3 pr-8 text-sm focus:outline-none focus:ring-0 text-slate-700 font-medium transition-all shadow-[inset_4px_4px_8px_#cbced1,inset_-4px_-4px_8px_#ffffff] border-none"
+                              className="w-full appearance-none bg-white rounded-xl py-2 pl-3 pr-8 text-sm focus:outline-none focus:ring-0 text-slate-700 font-medium transition-all shadow-sm border-none"
                             >
                               <option value="" disabled>Select product...</option>
                               {products.map(p => (
@@ -515,7 +558,7 @@ const BuildInvoice: React.FC<BuildInvoiceProps> = ({ onBack, onSave, initialInvo
                                 newItems[idx].amount = newItems[idx].price * newQty * (1 - newItems[idx].disc/100);
                                 setInvoiceItems(newItems);
                               }}
-                              className="w-6 h-6 flex-shrink-0 flex items-center justify-center rounded-lg bg-[#f0f0f3] shadow-[2px_2px_4px_#cbced1,-2px_-2px_4px_#ffffff] active:shadow-[inset_2px_2px_4px_#cbced1,inset_-2px_-2px_4px_#ffffff] text-slate-500 hover:text-blue-600 transition-all border-none focus:outline-none"
+                              className="w-6 h-6 flex-shrink-0 flex items-center justify-center rounded-lg bg-white shadow-sm active:shadow-sm text-slate-500 hover:text-blue-600 transition-all border-none focus:outline-none"
                             >
                               <Minus className="w-3 h-3" />
                             </button>
@@ -530,7 +573,7 @@ const BuildInvoice: React.FC<BuildInvoiceProps> = ({ onBack, onSave, initialInvo
                                 newItems[idx].amount = newItems[idx].price * newQty * (1 - newItems[idx].disc/100);
                                 setInvoiceItems(newItems);
                               }}
-                              className="w-10 text-center bg-[#f0f0f3] shadow-[inset_2px_2px_4px_#cbced1,inset_-2px_-2px_4px_#ffffff] rounded-lg py-1.5 text-sm font-medium focus:outline-none border-none text-slate-700 [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none" 
+                              className="w-10 text-center bg-white rounded-xl shadow-[0_2px_10px_rgba(0,0,0,0.03)] border border-gray-100/50 py-1.5 text-sm font-medium focus:outline-none border-none text-slate-700 [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none" 
                             />
                             <button 
                               onClick={() => {
@@ -540,7 +583,7 @@ const BuildInvoice: React.FC<BuildInvoiceProps> = ({ onBack, onSave, initialInvo
                                 newItems[idx].amount = newItems[idx].price * newQty * (1 - newItems[idx].disc/100);
                                 setInvoiceItems(newItems);
                               }}
-                              className="w-6 h-6 flex-shrink-0 flex items-center justify-center rounded-lg bg-[#f0f0f3] shadow-[2px_2px_4px_#cbced1,-2px_-2px_4px_#ffffff] active:shadow-[inset_2px_2px_4px_#cbced1,inset_-2px_-2px_4px_#ffffff] text-slate-500 hover:text-blue-600 transition-all border-none focus:outline-none"
+                              className="w-6 h-6 flex-shrink-0 flex items-center justify-center rounded-lg bg-white shadow-sm active:shadow-sm text-slate-500 hover:text-blue-600 transition-all border-none focus:outline-none"
                             >
                               <Plus className="w-3 h-3" />
                             </button>
@@ -559,7 +602,7 @@ const BuildInvoice: React.FC<BuildInvoiceProps> = ({ onBack, onSave, initialInvo
                               newItems[idx].amount = newPrice * newItems[idx].qty * (1 - newItems[idx].disc/100);
                               setInvoiceItems(newItems);
                             }}
-                            className="w-20 text-right bg-[#f0f0f3] shadow-[inset_2px_2px_4px_#cbced1,inset_-2px_-2px_4px_#ffffff] rounded-lg py-2 text-sm font-medium focus:outline-none border-none text-slate-700 ml-auto block" 
+                            className="w-20 text-right bg-white rounded-xl shadow-[0_2px_10px_rgba(0,0,0,0.03)] border border-gray-100/50 py-2 text-sm font-medium focus:outline-none border-none text-slate-700 ml-auto block" 
                           />
                         </td>
                         <td className="py-3 text-center px-2">
@@ -575,7 +618,7 @@ const BuildInvoice: React.FC<BuildInvoiceProps> = ({ onBack, onSave, initialInvo
                               newItems[idx].amount = newItems[idx].price * newItems[idx].qty * (1 - newDisc/100);
                               setInvoiceItems(newItems);
                             }}
-                            className="w-16 text-center bg-[#f0f0f3] shadow-[inset_2px_2px_4px_#cbced1,inset_-2px_-2px_4px_#ffffff] rounded-lg py-2 text-sm font-medium focus:outline-none border-none text-slate-700 mx-auto block" 
+                            className="w-16 text-center bg-white rounded-xl shadow-[0_2px_10px_rgba(0,0,0,0.03)] border border-gray-100/50 py-2 text-sm font-medium focus:outline-none border-none text-slate-700 block" 
                           />
                         </td>
                         <td className="py-3 text-center text-sm font-medium text-slate-700">{item.tax}</td>
@@ -607,7 +650,7 @@ const BuildInvoice: React.FC<BuildInvoiceProps> = ({ onBack, onSave, initialInvo
                     { product: { id: '', name: '', sku: '', price: 0 }, qty: 1, price: 0, disc: 0, tax: 0, amount: 0 }
                   ]);
                 }}
-                className="flex items-center gap-2 text-[11px] font-bold text-blue-600 bg-[#f0f0f3] shadow-[4px_4px_8px_#cbced1,-4px_-4px_8px_#ffffff] hover:shadow-[inset_2px_2px_4px_#cbced1,inset_-2px_-2px_4px_#ffffff] hover:text-blue-700 px-4 py-2.5 rounded-xl transition-all"
+                className="flex items-center gap-2 text-[11px] font-bold text-blue-600 bg-white shadow-sm hover:shadow-sm hover:text-blue-700 px-4 py-2.5 rounded-xl transition-all"
               >
                 <Plus className="w-3.5 h-3.5" /> Add Item Line
               </button>
@@ -618,7 +661,7 @@ const BuildInvoice: React.FC<BuildInvoiceProps> = ({ onBack, onSave, initialInvo
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             
             {/* Totals */}
-            <div className="bg-[#f0f0f3] rounded-3xl shadow-[8px_8px_16px_#cbced1,-8px_-8px_16px_#ffffff] p-6">
+            <div className="bg-white rounded-3xl shadow-sm p-6">
               <h3 className="font-bold text-slate-700 mb-4 tracking-tight">Totals</h3>
               <div className="flex gap-4 mb-6">
                 <div className="flex-1">
@@ -627,7 +670,7 @@ const BuildInvoice: React.FC<BuildInvoiceProps> = ({ onBack, onSave, initialInvo
                     type="number" 
                     value={billDiscount}
                     onChange={(e) => setBillDiscount(e.target.value)}
-                    className="w-full bg-[#f0f0f3] rounded-xl py-2 px-3 text-sm focus:outline-none focus:ring-0 text-slate-700 font-medium transition-all shadow-[inset_4px_4px_8px_#cbced1,inset_-4px_-4px_8px_#ffffff] border-none" 
+                    className="w-full bg-gray-50/50 rounded-xl py-2 px-3 text-sm focus:outline-none focus:ring-1 focus:ring-blue-500 text-slate-700 font-medium transition-all shadow-sm border border-gray-100" 
                   />
                 </div>
                 <div className="flex-1">
@@ -636,12 +679,12 @@ const BuildInvoice: React.FC<BuildInvoiceProps> = ({ onBack, onSave, initialInvo
                     type="number" 
                     value={otherCharges}
                     onChange={(e) => setOtherCharges(e.target.value)}
-                    className="w-full bg-[#f0f0f3] rounded-xl py-2 px-3 text-sm focus:outline-none focus:ring-0 text-slate-700 font-medium transition-all shadow-[inset_4px_4px_8px_#cbced1,inset_-4px_-4px_8px_#ffffff] border-none" 
+                    className="w-full bg-gray-50/50 rounded-xl py-2 px-3 text-sm focus:outline-none focus:ring-1 focus:ring-blue-500 text-slate-700 font-medium transition-all shadow-sm border border-gray-100" 
                   />
                 </div>
               </div>
               
-              <div className="space-y-2.5 text-sm">
+              <div className="space-y-3 text-sm">
                 <div className="flex justify-between text-slate-500">
                   <span>Item subtotal</span>
                   <span className="font-bold text-slate-800">
@@ -666,7 +709,7 @@ const BuildInvoice: React.FC<BuildInvoiceProps> = ({ onBack, onSave, initialInvo
                 </div>
               </div>
               
-              <div className="mt-4 flex justify-between items-center border-t border-gray-100 pt-4">
+              <div className="mt-5 flex justify-between items-center border-t border-gray-100 pt-5">
                  <span className="font-bold text-slate-900 text-sm">Total payable</span>
                  <span className="font-bold text-[#254ab8] text-xl">
                    ₹{(
@@ -678,12 +721,12 @@ const BuildInvoice: React.FC<BuildInvoiceProps> = ({ onBack, onSave, initialInvo
             </div>
 
             {/* Payment */}
-            <div className="bg-[#f0f0f3] rounded-3xl shadow-[8px_8px_16px_#cbced1,-8px_-8px_16px_#ffffff] p-6 flex flex-col">
+            <div className="bg-white rounded-3xl shadow-sm p-6 flex flex-col">
               <div className="flex justify-between items-center mb-4">
                 <h3 className="font-bold text-slate-700 tracking-tight">Payment</h3>
                 <button 
                   onClick={() => setPayments([...payments, { id: Date.now(), method: 'UPI', amount: '0', ref: '' }])}
-                  className="flex items-center gap-1 text-[11px] font-bold text-blue-600 bg-[#f0f0f3] shadow-[4px_4px_8px_#cbced1,-4px_-4px_8px_#ffffff] hover:shadow-[inset_2px_2px_4px_#cbced1,inset_-2px_-2px_4px_#ffffff] hover:text-blue-700 px-3 py-1.5 rounded-lg transition-all"
+                  className="flex items-center gap-1 text-[11px] font-bold text-blue-600 bg-blue-50/50 hover:bg-blue-50 px-3 py-1.5 rounded-lg transition-all"
                 >
                   <Plus className="w-3 h-3" /> Add method
                 </button>
@@ -707,7 +750,7 @@ const BuildInvoice: React.FC<BuildInvoiceProps> = ({ onBack, onSave, initialInvo
                                   newP[idx].method = e.target.value;
                                   setPayments(newP);
                                 }}
-                                className="w-full appearance-none bg-[#f0f0f3] rounded-xl py-2 pl-3 pr-8 text-sm focus:outline-none focus:ring-0 text-slate-700 transition-all shadow-[inset_4px_4px_8px_#cbced1,inset_-4px_-4px_8px_#ffffff] border-none"
+                                className="w-full appearance-none bg-gray-50/50 rounded-xl py-2 pl-3 pr-8 text-sm focus:outline-none focus:ring-1 focus:ring-blue-500 text-slate-700 transition-all border border-gray-100 shadow-sm"
                               >
                               <option>UPI</option>
                               <option>Cash</option>
@@ -725,7 +768,7 @@ const BuildInvoice: React.FC<BuildInvoiceProps> = ({ onBack, onSave, initialInvo
                               newP[idx].amount = e.target.value;
                               setPayments(newP);
                             }}
-                            className="w-24 bg-[#f0f0f3] rounded-xl py-2 px-3 text-sm focus:outline-none focus:ring-0 text-slate-700 transition-all shadow-[inset_4px_4px_8px_#cbced1,inset_-4px_-4px_8px_#ffffff] border-none"
+                            className="w-24 bg-gray-50/50 rounded-xl py-2 px-3 text-sm focus:outline-none focus:ring-1 focus:ring-blue-500 text-slate-700 transition-all border border-gray-100 shadow-sm"
                           />
                           <button 
                             onClick={() => setPayments(payments.filter((_, i) => i !== idx))}
@@ -743,7 +786,7 @@ const BuildInvoice: React.FC<BuildInvoiceProps> = ({ onBack, onSave, initialInvo
                             newP[idx].ref = e.target.value;
                             setPayments(newP);
                           }}
-                          className="w-full bg-[#f0f0f3] rounded-xl py-2 px-3 text-sm focus:outline-none focus:ring-0 text-slate-700 placeholder:text-gray-400 transition-all shadow-[inset_4px_4px_8px_#cbced1,inset_-4px_-4px_8px_#ffffff] border-none"
+                          className="w-full bg-gray-50/50 rounded-xl py-2 px-3 text-sm focus:outline-none focus:ring-1 focus:ring-blue-500 text-slate-700 placeholder:text-gray-400 transition-all border border-gray-100 shadow-sm"
                         />
                       </div>
                     ))}
@@ -751,7 +794,7 @@ const BuildInvoice: React.FC<BuildInvoiceProps> = ({ onBack, onSave, initialInvo
                 )}
               </div>
               
-              <div className="mt-6 space-y-2.5 text-sm pt-4 border-t border-gray-100">
+              <div className="mt-6 space-y-3 text-sm pt-5 border-t border-gray-100">
                 <div className="flex justify-between text-slate-500">
                   <span>Received</span>
                   <span className="font-bold text-slate-800">
@@ -795,21 +838,13 @@ const BuildInvoice: React.FC<BuildInvoiceProps> = ({ onBack, onSave, initialInvo
           </div>
           
           {/* Footer Actions */}
-          <div className="flex items-center justify-between border-t border-gray-200 pt-4 mt-4 bg-[#f8f9fa] sticky bottom-0 z-10 pb-2">
-            <div className="text-[11px] text-slate-500 leading-tight">
-            </div>
-            <div className="flex gap-3">
-              <button 
-                onClick={() => handleSave('Draft', true)}
-                className="px-4 py-2 rounded-lg text-sm font-bold text-white bg-slate-600 hover:bg-slate-700 shadow-sm transition-colors border-none"
-              >
-                Save draft
-              </button>
+          <div className="flex items-center justify-end pt-2 mt-4 sticky bottom-0 z-10 pb-2">
+            <div className="flex gap-4">
               <button 
                 onClick={() => setShowPreview(true)}
-                className="px-4 py-2 rounded-lg text-sm font-bold text-white bg-emerald-600 hover:bg-emerald-700 shadow-sm transition-colors border-none"
+                className="flex items-center gap-2 px-5 py-2.5 rounded-xl text-sm font-bold text-slate-700 bg-white border border-gray-200 hover:bg-gray-50 shadow-[0_2px_10px_rgba(0,0,0,0.03)] transition-colors"
               >
-                Preview
+                <Eye className="w-4 h-4" /> Preview Invoice
               </button>
               <button 
                 onClick={() => {
@@ -821,9 +856,27 @@ const BuildInvoice: React.FC<BuildInvoiceProps> = ({ onBack, onSave, initialInvo
                   setShowPreview(true);
                   setTimeout(() => window.print(), 100);
                 }}
-                className="px-5 py-2 rounded-lg text-sm font-bold text-white bg-[#254ab8] hover:bg-blue-800 shadow-sm transition-colors"
+                className="flex items-center gap-2 px-6 py-2.5 rounded-xl text-sm font-bold text-white bg-[#2563eb] hover:bg-blue-700 shadow-sm transition-colors border-none"
               >
-                Issue & print
+                <Save className="w-4 h-4" /> Save & Issue Invoice
+              </button>
+              <button 
+                onClick={() => {
+                  if (!customerPhone) {
+                    alert('Please enter a customer mobile number first.');
+                    return;
+                  }
+                  const phoneFormatted = customerPhone.replace(/\D/g, '');
+                  if (phoneFormatted.length < 10) {
+                    alert('Please enter a valid mobile number.');
+                    return;
+                  }
+                  const finalPhone = phoneFormatted.length === 10 ? `91${phoneFormatted}` : phoneFormatted;
+                  window.open(`https://wa.me/${finalPhone}`, '_blank');
+                }}
+                className="flex items-center gap-2 px-5 py-2.5 rounded-xl text-sm font-bold text-white bg-[#25D366] hover:bg-[#1ebd59] shadow-sm transition-colors"
+              >
+                <MessageCircle className="w-4 h-4" /> WhatsApp
               </button>
             </div>
           </div>
@@ -834,22 +887,43 @@ const BuildInvoice: React.FC<BuildInvoiceProps> = ({ onBack, onSave, initialInvo
       {/* Customer Modal */}
       {isCustomerModalOpen && (
         <div className="fixed inset-0 bg-slate-900/50 z-50 flex items-center justify-center p-4">
-          <div className="bg-white rounded-2xl shadow-xl w-full max-w-md overflow-hidden flex flex-col">
-            <div className="p-6 pb-4 border-b border-gray-100 relative">
-              <h2 className="text-xl font-bold text-slate-800 mb-1">Customer details</h2>
-              <p className="text-sm text-slate-500">Enter only the fields relevant to this invoice.</p>
-              <button 
-                onClick={() => setIsCustomerModalOpen(false)}
-                className="absolute top-6 right-6 w-8 h-8 flex items-center justify-center rounded-full bg-gray-50 hover:bg-gray-100 text-gray-500 transition-colors"
-              >
-                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M6 18L18 6M6 6l12 12"></path></svg>
-              </button>
+          <div className="bg-white rounded-3xl shadow-[0_2px_15px_rgba(0,0,0,0.1)] w-full max-w-[550px] overflow-hidden flex flex-col relative">
+            
+            <button 
+              onClick={() => setIsCustomerModalOpen(false)}
+              className="absolute top-5 right-5 w-8 h-8 flex items-center justify-center rounded-full bg-white border border-gray-100 hover:bg-gray-50 text-slate-500 transition-colors z-20 shadow-sm"
+            >
+              <X className="w-4 h-4" />
+            </button>
+
+            <div className="bg-[#eff1fe] p-6 relative overflow-hidden">
+               <div className="absolute right-0 bottom-0 w-64 h-full pointer-events-none opacity-50">
+                 <svg viewBox="0 0 100 50" preserveAspectRatio="none" className="w-full h-full text-[#dce1fc]">
+                   <path d="M0,50 Q25,20 50,30 T100,10 L100,50 Z" fill="currentColor" />
+                 </svg>
+               </div>
+               <div className="flex items-center gap-4 relative z-10">
+                 <div className="bg-white w-14 h-14 rounded-2xl text-blue-600 flex items-center justify-center shrink-0 shadow-sm">
+                   <Users className="w-7 h-7 text-blue-600" />
+                 </div>
+                 <div>
+                   <h2 className="text-xl font-bold text-[#0c3f50] mb-0.5 tracking-tight">Customer details</h2>
+                   <p className="text-sm text-slate-500">Enter only the fields relevant to this invoice.</p>
+                 </div>
+               </div>
             </div>
             
-            <div className="p-6 space-y-4">
+            <div className="p-6 space-y-5">
+              
               <div className="relative">
-                <label className="block text-[11px] font-bold text-slate-600 mb-1.5">Name / business</label>
+                <div className="flex items-center gap-2 mb-1.5">
+                   <div className="bg-[#eff1fe] text-blue-600 p-1.5 rounded-lg">
+                      <User className="w-3.5 h-3.5" />
+                   </div>
+                   <label className="block text-sm font-bold text-slate-700">Name / business <span className="text-red-500">*</span></label>
+                </div>
                 <div className="relative">
+                  <User className="absolute left-3 top-3 w-4 h-4 text-gray-400 pointer-events-none" />
                   <input 
                     type="text" 
                     value={customerName}
@@ -862,15 +936,15 @@ const BuildInvoice: React.FC<BuildInvoiceProps> = ({ onBack, onSave, initialInvo
                       setIsDropdownOpen(true);
                     }}
                     placeholder="Search or enter name..."
-                    className="w-full border border-gray-200 rounded-lg py-2.5 px-3 text-sm focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500 text-slate-800" 
+                    className="w-full border border-gray-200 rounded-xl py-2.5 pl-9 pr-8 text-sm focus:outline-none focus:border-blue-400 text-slate-800 transition-colors shadow-sm" 
                   />
                   <ChevronDown className="absolute right-3 top-3 w-4 h-4 text-gray-400 pointer-events-none" />
                 </div>
                 
                 {isDropdownOpen && (
-                  <div className="absolute z-10 w-full mt-1 bg-white border border-gray-200 rounded-lg shadow-lg max-h-48 overflow-y-auto">
+                  <div className="absolute z-10 w-full mt-1 bg-white border border-gray-200 rounded-xl shadow-lg max-h-48 overflow-y-auto">
                     <div 
-                      className="px-3 py-2 text-sm text-slate-800 hover:bg-blue-50 cursor-pointer border-b border-gray-100 font-medium"
+                      className="px-3 py-2.5 text-sm text-slate-800 hover:bg-blue-50 cursor-pointer border-b border-gray-100 font-medium"
                       onClick={() => {
                         setCustomerName('Walk-in customer');
                         setCustomerPhone('');
@@ -888,7 +962,7 @@ const BuildInvoice: React.FC<BuildInvoiceProps> = ({ onBack, onSave, initialInvo
                         return (
                           <div 
                             key={m.id} 
-                            className="px-3 py-2 text-sm text-slate-700 hover:bg-blue-50 cursor-pointer"
+                            className="px-3 py-2.5 text-sm text-slate-700 hover:bg-blue-50 cursor-pointer border-b border-gray-50 last:border-0"
                             onClick={() => {
                               setCustomerName(fullName);
                               setCustomerPhone(m.contact_number || '');
@@ -898,7 +972,7 @@ const BuildInvoice: React.FC<BuildInvoiceProps> = ({ onBack, onSave, initialInvo
                             }}
                           >
                             <div className="font-semibold">{fullName}</div>
-                            {m.contact_number && <div className="text-[11px] text-slate-500">{m.contact_number}</div>}
+                            {m.contact_number && <div className="text-[11px] text-slate-500 mt-0.5">{m.contact_number}</div>}
                           </div>
                         );
                     })}
@@ -908,54 +982,96 @@ const BuildInvoice: React.FC<BuildInvoiceProps> = ({ onBack, onSave, initialInvo
               
               <div className="flex gap-4">
                 <div className="flex-1">
-                  <label className="block text-[11px] font-bold text-slate-600 mb-1.5">Phone</label>
-                  <input 
-                    type="text" 
-                    value={customerPhone}
-                    onChange={(e) => setCustomerPhone(e.target.value)}
-                    className="w-full border border-gray-200 rounded-lg py-2.5 px-3 text-sm focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500 text-slate-800" 
-                  />
+                  <div className="flex items-center gap-2 mb-1.5">
+                     <div className="bg-[#eff1fe] text-blue-600 p-1.5 rounded-lg">
+                        <Phone className="w-3.5 h-3.5" />
+                     </div>
+                     <label className="block text-sm font-bold text-slate-700">Phone</label>
+                  </div>
+                  <div className="relative">
+                    <Phone className="absolute left-3 top-3 w-4 h-4 text-gray-400 pointer-events-none" />
+                    <input 
+                      type="text" 
+                      value={customerPhone}
+                      onChange={(e) => setCustomerPhone(e.target.value)}
+                      placeholder="Enter phone number"
+                      className="w-full border border-gray-200 rounded-xl py-2.5 pl-9 pr-3 text-sm focus:outline-none focus:border-blue-400 text-slate-800 transition-colors shadow-sm" 
+                    />
+                  </div>
                 </div>
                 <div className="flex-1">
-                  <label className="block text-[11px] font-bold text-slate-600 mb-1.5">GSTIN (if applicable)</label>
-                  <input type="text" className="w-full border border-gray-200 rounded-lg py-2.5 px-3 text-sm focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500 text-slate-800" />
+                  <div className="flex items-center gap-2 mb-1.5">
+                     <div className="bg-[#eff1fe] text-blue-600 p-1.5 rounded-lg">
+                        <FileText className="w-3.5 h-3.5" />
+                     </div>
+                     <label className="block text-sm font-bold text-slate-700">GSTIN (if applicable)</label>
+                  </div>
+                  <div className="relative">
+                    <FileText className="absolute left-3 top-3 w-4 h-4 text-gray-400 pointer-events-none" />
+                    <input 
+                      type="text" 
+                      placeholder="Enter GSTIN number"
+                      className="w-full border border-gray-200 rounded-xl py-2.5 pl-9 pr-3 text-sm focus:outline-none focus:border-blue-400 text-slate-800 transition-colors shadow-sm" 
+                    />
+                  </div>
                 </div>
               </div>
               
               <div>
-                <label className="block text-[11px] font-bold text-slate-600 mb-1.5">Billing address</label>
-                <textarea 
-                  rows={3} 
-                  value={customerAddress}
-                  onChange={(e) => setCustomerAddress(e.target.value)}
-                  className="w-full border border-gray-200 rounded-lg py-2.5 px-3 text-sm focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500 text-slate-800 resize-none"
-                ></textarea>
+                <div className="flex items-center gap-2 mb-1.5">
+                   <div className="bg-[#eff1fe] text-blue-600 p-1.5 rounded-lg">
+                      <MapPin className="w-3.5 h-3.5" />
+                   </div>
+                   <label className="block text-sm font-bold text-slate-700">Billing address</label>
+                </div>
+                <div className="relative">
+                  <MapPin className="absolute left-3 top-3 w-4 h-4 text-gray-400 pointer-events-none" />
+                  <textarea 
+                    rows={3} 
+                    value={customerAddress}
+                    onChange={(e) => setCustomerAddress(e.target.value)}
+                    placeholder="Enter complete billing address"
+                    className="w-full border border-gray-200 rounded-xl py-2.5 pl-9 pr-3 text-sm focus:outline-none focus:border-blue-400 text-slate-800 resize-none transition-colors shadow-sm"
+                  ></textarea>
+                  <div className="absolute bottom-3 right-3 text-[10px] text-gray-400 font-medium">
+                    {customerAddress.length}/300
+                  </div>
+                </div>
               </div>
               
               <div>
-                <label className="block text-[11px] font-bold text-slate-600 mb-1.5">State / place of supply</label>
-                <input 
-                  type="text" 
-                  value={customerState}
-                  onChange={(e) => setCustomerState(e.target.value)}
-                  placeholder="e.g. Telangana" 
-                  className="w-full border border-gray-200 rounded-lg py-2.5 px-3 text-sm focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500 text-slate-800" 
-                />
+                <div className="flex items-center gap-2 mb-1.5">
+                   <div className="bg-[#eff1fe] text-blue-600 p-1.5 rounded-lg">
+                      <Building className="w-3.5 h-3.5" />
+                   </div>
+                   <label className="block text-sm font-bold text-slate-700">State / place of supply</label>
+                </div>
+                <div className="relative">
+                  <Building className="absolute left-3 top-3 w-4 h-4 text-gray-400 pointer-events-none" />
+                  <input 
+                    type="text" 
+                    value={customerState}
+                    onChange={(e) => setCustomerState(e.target.value)}
+                    placeholder="e.g. Telangana" 
+                    className="w-full border border-gray-200 rounded-xl py-2.5 pl-9 pr-8 text-sm focus:outline-none focus:border-blue-400 text-slate-800 transition-colors shadow-sm" 
+                  />
+                  <ChevronDown className="absolute right-3 top-3 w-4 h-4 text-gray-400 pointer-events-none" />
+                </div>
               </div>
             </div>
             
-            <div className="p-6 pt-4 border-t border-gray-100 flex justify-end gap-3 bg-gray-50/50">
+            <div className="px-6 py-4 border-t border-gray-100 flex justify-end gap-3 bg-white">
               <button 
                 onClick={() => setIsCustomerModalOpen(false)}
-                className="px-5 py-2 rounded-lg text-sm font-bold text-slate-600 bg-white border border-gray-200 hover:bg-gray-50 transition-colors shadow-sm"
+                className="flex items-center gap-2 px-5 py-2.5 rounded-xl text-sm font-bold text-slate-700 bg-white border border-gray-200 hover:bg-gray-50 transition-colors shadow-sm"
               >
-                Cancel
+                <X className="w-4 h-4" /> Cancel
               </button>
               <button 
                 onClick={() => setIsCustomerModalOpen(false)}
-                className="px-5 py-2 rounded-lg text-sm font-bold text-white bg-[#254ab8] hover:bg-blue-800 transition-colors shadow-sm"
+                className="flex items-center gap-2 px-5 py-2.5 rounded-xl text-sm font-bold text-white bg-[#2563eb] hover:bg-blue-700 transition-colors shadow-sm border-none"
               >
-                Save customer
+                <Save className="w-4 h-4" /> Save customer
               </button>
             </div>
           </div>

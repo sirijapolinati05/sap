@@ -39,16 +39,45 @@ const Login: React.FC = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-900 via-indigo-950 to-purple-900 flex items-center justify-center p-4">
-      <div className="relative">
+    <div className="min-h-screen bg-gradient-to-br from-slate-900 via-indigo-950 to-purple-900 flex items-center justify-center animated-gradient relative overflow-hidden" style={{ backgroundSize: '200% 200%' }}>
+      
+      {/* Animated background orbs */}
+      <div className="absolute inset-0 overflow-hidden pointer-events-none">
+        <div className="absolute w-72 h-72 bg-purple-500/20 rounded-full blur-3xl" 
+          style={{ top: '10%', left: '15%', animation: 'orb-float-1 8s ease-in-out infinite' }} />
+        <div className="absolute w-96 h-96 bg-blue-500/15 rounded-full blur-3xl" 
+          style={{ top: '50%', right: '10%', animation: 'orb-float-2 10s ease-in-out infinite' }} />
+        <div className="absolute w-64 h-64 bg-indigo-400/15 rounded-full blur-3xl" 
+          style={{ bottom: '10%', left: '30%', animation: 'orb-float-3 12s ease-in-out infinite' }} />
+        <div className="absolute w-48 h-48 bg-pink-500/10 rounded-full blur-3xl" 
+          style={{ top: '30%', right: '35%', animation: 'orb-float-1 9s ease-in-out infinite reverse' }} />
+        <div className="absolute w-32 h-32 bg-emerald-400/10 rounded-full blur-2xl" 
+          style={{ bottom: '25%', right: '20%', animation: 'orb-float-2 7s ease-in-out infinite reverse' }} />
+        
+        {/* Floating particles */}
+        {Array.from({ length: 20 }).map((_, i) => (
+          <div
+            key={i}
+            className="absolute w-1 h-1 bg-white/20 rounded-full"
+            style={{
+              top: `${Math.random() * 100}%`,
+              left: `${Math.random() * 100}%`,
+              animation: `particle-rise ${8 + Math.random() * 12}s linear infinite`,
+              animationDelay: `${Math.random() * 8}s`,
+            }}
+          />
+        ))}
+      </div>
+
+      <div className="relative z-10">
         {/* Glow effect behind the card */}
         <div className="absolute -inset-1 bg-gradient-to-r from-emerald-400 to-emerald-500 rounded-3xl blur opacity-30"></div>
         
         {/* Main Card */}
-        <div className="relative bg-white rounded-3xl shadow-2xl p-10 w-full max-w-md flex flex-col items-center">
+        <div className="relative bg-white rounded-3xl shadow-2xl p-10 w-full max-w-md flex flex-col items-center animate-scale-in">
           
           {/* Logo Placeholder */}
-          <div className="mb-4">
+          <div className="mb-4 animate-float">
             <svg className="w-16 h-16 text-blue-600" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1" strokeLinecap="round" strokeLinejoin="round">
               <polygon points="12 2 2 7 12 12 22 7 12 2"></polygon>
               <polyline points="2 17 12 22 22 17"></polyline>
@@ -123,7 +152,7 @@ const Login: React.FC = () => {
             <button 
               type="submit" 
               disabled={loading}
-              className="w-full mt-4 bg-blue-500 hover:bg-blue-600 disabled:bg-blue-300 text-white font-medium py-2.5 px-4 rounded-lg transition-colors duration-300 ease-in-out focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 flex justify-center items-center"
+              className="w-full mt-4 bg-gradient-to-r from-blue-500 to-indigo-600 hover:from-blue-600 hover:to-indigo-700 disabled:from-blue-300 disabled:to-blue-400 text-white font-medium py-2.5 px-4 rounded-lg transition-all duration-300 ease-in-out focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 flex justify-center items-center btn-press shadow-md hover:shadow-lg"
             >
               {loading ? (
                 <svg className="animate-spin h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">

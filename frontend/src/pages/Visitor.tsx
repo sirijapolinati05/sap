@@ -1,5 +1,5 @@
-﻿import React, { useState, useEffect } from 'react';
-import { Search, Edit, X, Star, Filter, ChevronDown, ArrowDown } from 'lucide-react';
+import React, { useState, useEffect } from 'react';
+import { Search, Edit, X, Star, Filter, ChevronDown, ArrowDown, User, Calendar, MapPin, Mail, Phone, FileText, List, Save, Users, CalendarDays } from 'lucide-react';
 
 const hyderabadPincodes = Array.from({length: 114}, (_, i) => (500001 + i).toString());
 
@@ -159,30 +159,30 @@ const Visitor: React.FC = () => {
   };
 
   return (
-    <div className="p-4 md:p-6 space-y-6">
+    <div className="w-full space-y-6">
       {/* Edit Modal */}
       {editingVisitor && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 backdrop-blur-sm p-4">
-          <div className="bg-[#f0f0f3] rounded-2xl shadow-[20px_20px_40px_#cbced1,-20px_-20px_40px_#ffffff] w-full max-w-3xl max-h-[90vh] overflow-y-auto">
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 backdrop-blur-sm">
+          <div className="bg-white rounded-2xl shadow-sm w-full max-w-3xl max-h-[90vh] overflow-y-auto">
             {/* Modal Header */}
             <div className="flex items-center justify-between px-6 py-4 border-b border-gray-200">
               <h2 className="text-base font-bold text-slate-800">Edit Visitor</h2>
               <button
                 onClick={() => setEditingVisitor(null)}
-                className="p-1.5 rounded-lg bg-[#f0f0f3] shadow-[3px_3px_6px_#cbced1,-3px_-3px_6px_#ffffff] hover:shadow-[inset_2px_2px_4px_#cbced1,inset_-2px_-2px_4px_#ffffff] text-slate-500 hover:text-red-500 transition-all"
+                className="p-1.5 rounded-lg bg-white shadow-sm hover:shadow-sm text-slate-500 hover:text-red-500 transition-all"
               >
                 <X className="w-4 h-4" />
               </button>
             </div>
 
             {/* Modal Body */}
-            <div className="p-6 flex flex-col lg:flex-row gap-8">
+            <div className="flex flex-col lg:flex-row gap-8">
               {/* Left Column */}
               <div className="flex-1 space-y-0">
                 <div className="bg-[#a56472] text-white px-4 py-2 font-semibold text-sm rounded-t-md shadow-md">
                   Visitor Info
                 </div>
-                <div className="border-none rounded-b-md p-5 space-y-4 bg-[#f0f0f3] shadow-[5px_5px_10px_#cbced1,-5px_-5px_10px_#ffffff]">
+                <div className="border-none rounded-b-md p-5 space-y-4 bg-white shadow-sm">
                   {/* Title */}
                   <div>
                     <label className="block text-xs font-semibold text-gray-700 mb-2 relative w-max">
@@ -199,24 +199,24 @@ const Visitor: React.FC = () => {
                   </div>
                   {/* First / Last Name */}
                   <div className="flex gap-4">
-                    <div className="relative w-1/2 bg-[#f0f0f3] shadow-[inset_4px_4px_8px_#cbced1,inset_-4px_-4px_8px_#ffffff] rounded overflow-hidden">
+                    <div className="relative w-1/2 bg-white shadow-sm rounded overflow-hidden">
                       <div className="absolute top-0 left-0 w-0 h-0 border-t-[10px] border-r-[10px] border-t-red-500 border-r-transparent"></div>
                       <label className="block px-2 pt-1 text-[10px] font-medium text-gray-500">First Name</label>
                       <input type="text" name="first_name" value={editForm.first_name} onChange={handleEditChange} className="w-full bg-transparent px-2 pb-1 text-sm focus:outline-none text-gray-800 font-medium" />
                     </div>
-                    <div className="relative w-1/2 bg-[#f0f0f3] shadow-[inset_4px_4px_8px_#cbced1,inset_-4px_-4px_8px_#ffffff] rounded overflow-hidden">
+                    <div className="relative w-1/2 bg-white shadow-sm rounded overflow-hidden">
                       <label className="block px-2 pt-1 text-[10px] font-medium text-gray-500">Last Name</label>
                       <input type="text" name="last_name" value={editForm.last_name} onChange={handleEditChange} className="w-full bg-transparent px-2 pb-1 text-sm focus:outline-none text-gray-800 font-medium" />
                     </div>
                   </div>
                   {/* DOB */}
-                  <div className="relative bg-[#f0f0f3] shadow-[inset_4px_4px_8px_#cbced1,inset_-4px_-4px_8px_#ffffff] rounded overflow-hidden">
+                  <div className="relative bg-white shadow-sm rounded overflow-hidden">
                     <label className="block px-2 pt-1 text-[10px] font-medium text-gray-500">Date of Birth</label>
                     <input type="date" name="dob" value={editForm.dob} onChange={handleEditChange} className="w-full bg-transparent px-2 pb-1 text-sm focus:outline-none text-gray-800 font-medium" />
                   </div>
                   {/* Country Code & Mobile */}
                   <div className="flex gap-4">
-                    <div className="relative w-1/3 bg-[#f0f0f3] shadow-[inset_4px_4px_8px_#cbced1,inset_-4px_-4px_8px_#ffffff] rounded overflow-hidden">
+                    <div className="relative w-1/3 bg-white shadow-sm rounded overflow-hidden">
                       <div className="absolute top-0 left-0 w-0 h-0 border-t-[10px] border-r-[10px] border-t-red-500 border-r-transparent"></div>
                       <label className="block px-2 pt-1 text-[10px] font-medium text-[#52a8d1]">Country Code</label>
                       <select name="country_code" value={editForm.country_code} onChange={handleEditChange} className="w-full text-sm focus:outline-none text-gray-800 font-medium bg-transparent px-2 pb-1 appearance-none">
@@ -224,31 +224,31 @@ const Visitor: React.FC = () => {
                         <option value="+ 1(USA)">+ 1(USA)</option>
                       </select>
                     </div>
-                    <div className="relative w-2/3 bg-[#f0f0f3] shadow-[inset_4px_4px_8px_#cbced1,inset_-4px_-4px_8px_#ffffff] rounded overflow-hidden">
+                    <div className="relative w-2/3 bg-white shadow-sm rounded overflow-hidden">
                       <div className="absolute top-0 left-0 w-0 h-0 border-t-[10px] border-r-[10px] border-t-red-500 border-r-transparent"></div>
                       <label className="block px-2 pt-1 text-[10px] font-medium text-gray-500">Mobile Number</label>
                       <input type="text" name="mobile" value={editForm.mobile} onChange={handleEditChange} className="w-full bg-transparent px-2 pb-1 text-sm focus:outline-none text-gray-800 font-medium" />
                     </div>
                   </div>
                   {/* Email */}
-                  <div className="relative bg-[#f0f0f3] shadow-[inset_4px_4px_8px_#cbced1,inset_-4px_-4px_8px_#ffffff] rounded overflow-hidden">
+                  <div className="relative bg-white shadow-sm rounded overflow-hidden">
                     <label className="block px-2 pt-1 text-[10px] font-medium text-gray-500">Email</label>
                     <input type="email" name="email" value={editForm.email} onChange={handleEditChange} className="w-full bg-transparent px-2 pb-1 text-sm focus:outline-none text-gray-800 font-medium" />
                   </div>
                   {/* Address */}
                   {['address_1', 'address_2', 'address_3'].map((field, i) => (
-                    <div key={field} className="relative bg-[#f0f0f3] shadow-[inset_4px_4px_8px_#cbced1,inset_-4px_-4px_8px_#ffffff] rounded overflow-hidden">
+                    <div key={field} className="relative bg-white shadow-sm rounded overflow-hidden">
                       <label className="block px-2 pt-1 text-[10px] font-medium text-gray-500">Address {i + 1}</label>
                       <input type="text" name={field} value={(editForm as any)[field]} onChange={handleEditChange} className="w-full bg-transparent px-2 pb-1 text-sm focus:outline-none text-gray-800 font-medium" />
                     </div>
                   ))}
                   {/* City & Pincode */}
                   <div className="flex gap-4">
-                    <div className="relative w-1/2 bg-[#f0f0f3] shadow-[inset_4px_4px_8px_#cbced1,inset_-4px_-4px_8px_#ffffff] rounded overflow-hidden">
+                    <div className="relative w-1/2 bg-white shadow-sm rounded overflow-hidden">
                       <label className="block px-2 pt-1 text-[10px] font-medium text-gray-500">City</label>
                       <input type="text" name="city" value={editForm.city} onChange={handleEditChange} className="w-full bg-transparent px-2 pb-1 text-sm focus:outline-none text-gray-800 font-medium" />
                     </div>
-                    <div className="relative w-1/2 bg-[#f0f0f3] shadow-[inset_4px_4px_8px_#cbced1,inset_-4px_-4px_8px_#ffffff] rounded overflow-hidden flex items-center">
+                    <div className="relative w-1/2 bg-white shadow-sm rounded overflow-hidden flex items-center">
                       <input list="edit-hyderabad-pincodes" name="pincode" value={editForm.pincode} onChange={handleEditChange} className="w-full bg-transparent px-2 py-2 text-sm focus:outline-none text-gray-800 font-medium placeholder-gray-500" placeholder="Pincode" />
                       <datalist id="edit-hyderabad-pincodes">
                         {hyderabadPincodes.map(pin => <option key={pin} value={pin} />)}
@@ -257,14 +257,14 @@ const Visitor: React.FC = () => {
                   </div>
                   {/* Country & State */}
                   <div className="flex gap-4">
-                    <div className="relative w-1/2 bg-[#f0f0f3] shadow-[inset_4px_4px_8px_#cbced1,inset_-4px_-4px_8px_#ffffff] rounded overflow-hidden flex items-center">
+                    <div className="relative w-1/2 bg-white shadow-sm rounded overflow-hidden flex items-center">
                       <select name="country" value={editForm.country} onChange={handleEditChange} className="w-full bg-transparent px-2 py-2 text-sm focus:outline-none text-gray-800 font-medium appearance-none">
                         <option value="">Country</option>
                         <option value="India">India</option>
                       </select>
                       <ChevronDown className="w-4 h-4 text-gray-600 absolute right-2 pointer-events-none" />
                     </div>
-                    <div className="relative w-1/2 bg-[#f0f0f3] shadow-[inset_4px_4px_8px_#cbced1,inset_-4px_-4px_8px_#ffffff] rounded overflow-hidden flex flex-col">
+                    <div className="relative w-1/2 bg-white shadow-sm rounded overflow-hidden flex flex-col">
                       <label className="block px-2 pt-1 text-[10px] font-medium text-gray-500">State</label>
                       <div className="flex items-center px-2 pb-1 relative">
                         <select name="state" value={editForm.state} onChange={handleEditChange} className="w-full text-sm focus:outline-none text-gray-800 font-medium bg-transparent appearance-none">
@@ -281,14 +281,14 @@ const Visitor: React.FC = () => {
               {/* Right Column */}
               <div className="w-full lg:w-[300px] flex flex-col gap-4 pt-0 lg:pt-10">
                 {/* Visit Date */}
-                <div className="relative bg-[#f0f0f3] shadow-[inset_4px_4px_8px_#cbced1,inset_-4px_-4px_8px_#ffffff] rounded overflow-hidden">
+                <div className="relative bg-white shadow-sm rounded overflow-hidden">
                   <div className="absolute top-0 left-0 w-0 h-0 border-t-[10px] border-r-[10px] border-t-red-500 border-r-transparent z-10 pointer-events-none"></div>
                   <label className="block px-3 pt-1.5 text-[10px] font-medium text-gray-500">Visit Date</label>
                   <input type="date" name="visit_date" value={editForm.visit_date} onChange={handleEditChange} className="w-full bg-transparent px-3 pb-1.5 text-sm focus:outline-none text-gray-800 font-medium" />
                 </div>
                 {/* Visit Purpose */}
                 <div>
-                  <div className="relative bg-[#f0f0f3] shadow-[inset_4px_4px_8px_#cbced1,inset_-4px_-4px_8px_#ffffff] rounded overflow-hidden">
+                  <div className="relative bg-white shadow-sm rounded overflow-hidden">
                     <div className="absolute top-0 left-0 w-0 h-0 border-t-[10px] border-r-[10px] border-t-red-500 border-r-transparent pointer-events-none"></div>
                     <label className="block px-3 pt-1.5 text-[10px] font-medium text-gray-500">Visit Purpose</label>
                     <textarea name="visit_purpose" value={editForm.visit_purpose} onChange={handleEditChange} className="w-full px-3 pb-1 text-sm focus:outline-none text-gray-800 font-medium min-h-[60px] resize-none bg-transparent" />
@@ -307,14 +307,14 @@ const Visitor: React.FC = () => {
             <div className="flex justify-between items-center px-6 py-4 border-t border-gray-200">
               <button
                 onClick={() => setEditingVisitor(null)}
-                className="bg-[#f0f0f3] hover:shadow-[inset_4px_4px_8px_#cbced1,inset_-4px_-4px_8px_#ffffff] hover:text-red-600 text-black px-8 py-2 rounded-lg font-semibold text-sm transition-all shadow-[5px_5px_10px_#cbced1,-5px_-5px_10px_#ffffff]"
+                className="bg-white hover:shadow-sm hover:text-red-600 text-black px-8 py-2 rounded-lg font-semibold text-sm transition-all shadow-sm"
               >
                 Cancel
               </button>
               <button
                 onClick={handleEditSave}
                 disabled={editSaving}
-                className="bg-[#f0f0f3] hover:shadow-[inset_4px_4px_8px_#cbced1,inset_-4px_-4px_8px_#ffffff] hover:text-green-600 text-black px-8 py-2 rounded-lg font-semibold text-sm transition-all shadow-[5px_5px_10px_#cbced1,-5px_-5px_10px_#ffffff] disabled:opacity-50"
+                className="bg-white hover:shadow-sm hover:text-green-600 text-black px-8 py-2 rounded-lg font-semibold text-sm transition-all shadow-sm disabled:opacity-50"
               >
                 {editSaving ? 'Saving...' : 'Save'}
               </button>
@@ -323,218 +323,279 @@ const Visitor: React.FC = () => {
         </div>
       )}
 
-      {/* Tabs */}
-      <div className="flex space-x-6 mb-6">
-        <button 
-          onClick={() => setActiveTab('register')}
-          className={`flex items-center justify-center px-4 py-1.5 font-medium text-sm transition-all rounded-full ${
-            activeTab === 'register' 
-              ? 'bg-[#5a6c8e] text-white shadow-[inset_0_2px_4px_rgba(255,255,255,0.3),0_4px_6px_rgba(0,0,0,0.2)] border border-[#4a5a75] active:scale-95 active:shadow-[inset_0_1px_2px_rgba(0,0,0,0.4)]' 
-              : 'text-slate-500 hover:text-slate-700'
-          }`}
-        >
-          Visitor Register
-        </button>
-        <button 
-          onClick={() => setActiveTab('list')}
-          className={`flex items-center justify-center px-6 py-1.5 font-medium text-sm transition-all rounded-full ${
-            activeTab === 'list' 
-              ? 'bg-[#5a6c8e] text-white shadow-[inset_0_2px_4px_rgba(255,255,255,0.3),0_4px_6px_rgba(0,0,0,0.2)] border border-[#4a5a75] active:scale-95 active:shadow-[inset_0_1px_2px_rgba(0,0,0,0.4)]' 
-              : 'text-slate-500 hover:text-slate-700'
-          }`}
-        >
-          Visitor List
-        </button>
+      {/* Page Header & Tabs */}
+      <div className="mb-6 relative">
+        <div className="relative z-10">
+          <h1 className="text-3xl font-bold text-[#0c3f50]">Visitor</h1>
+          <p className="text-slate-500 text-sm mt-1 mb-6">Register a new visitor or view the visitor list</p>
+          
+          <div className="flex space-x-2">
+            <button 
+              onClick={() => setActiveTab('register')}
+              className={`flex items-center justify-center px-5 py-2.5 font-semibold text-sm transition-all rounded-lg ${
+                activeTab === 'register' 
+                  ? 'bg-[#2b6be0] text-white shadow-sm hover:bg-[#255bc2]' 
+                  : 'text-slate-600 hover:bg-gray-100 bg-transparent'
+              }`}
+            >
+              <Users className="w-4 h-4 mr-2" />
+              Visitor Register
+            </button>
+            <button 
+              onClick={() => setActiveTab('list')}
+              className={`flex items-center justify-center px-5 py-2.5 font-semibold text-sm transition-all rounded-lg ${
+                activeTab === 'list' 
+                  ? 'bg-[#2b6be0] text-white shadow-sm hover:bg-[#255bc2]' 
+                  : 'text-slate-600 hover:bg-gray-100 bg-transparent'
+              }`}
+            >
+              <List className="w-4 h-4 mr-2" />
+              Visitor List
+            </button>
+          </div>
+        </div>
       </div>
 
       {activeTab === 'register' ? (
-        <div className="flex flex-col gap-6 max-w-[1000px] bg-[#f0f0f3] p-6 rounded-xl shadow-[10px_10px_20px_#cbced1,-10px_-10px_20px_#ffffff] border-none">
+        <div className="flex flex-col gap-6 w-full">
           <div className="flex flex-col lg:flex-row gap-8">
             {/* Left Column */}
-            <div className="flex-1 space-y-0">
-              <div className="bg-[#a56472] text-white px-4 py-2 font-semibold text-sm rounded-t-md shadow-md">
-                Visitor Info
-              </div>
-              <div className="border-none rounded-b-md p-6 space-y-5 bg-[#f0f0f3] shadow-[5px_5px_10px_#cbced1,-5px_-5px_10px_#ffffff]">
-                {/* Title */}
-                <div>
-                  <label className="block text-xs font-semibold text-gray-700 mb-2 relative w-max">
-                    Title<span className="text-red-500 absolute -top-1 -right-2 text-lg leading-none">*</span>
-                  </label>
-                  <div className="flex flex-wrap gap-4 w-48">
-                    {['Mr', 'Mrs', 'Ms', 'Dr'].map(t => (
-                      <label key={t} className="flex items-center space-x-1 cursor-pointer">
-                        <input type="radio" name="title" value={t} checked={formData.title === t} onChange={handleChange} className="form-radio text-black focus:ring-black h-4 w-4" />
-                        <span className="text-sm font-medium">{t}</span>
-                      </label>
-                    ))}
+            <div className="flex-1 space-y-6">
+              <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-6 relative overflow-hidden">
+                <div className="flex items-start space-x-4 mb-8">
+                  <div className="w-12 h-12 rounded-xl bg-[#f0f5fc] text-[#2b6be0] flex items-center justify-center">
+                    <User className="w-6 h-6 stroke-[1.5]" />
+                  </div>
+                  <div>
+                    <h2 className="text-[17px] font-bold text-slate-800">Visitor Information</h2>
+                    <p className="text-sm text-slate-500 mt-0.5">Please enter the visitor details below</p>
                   </div>
                 </div>
 
-                {/* First Name & Last Name */}
-                <div className="flex gap-4">
-                  <div className="relative w-1/2 border-none bg-[#f0f0f3] shadow-[inset_4px_4px_8px_#cbced1,inset_-4px_-4px_8px_#ffffff] rounded overflow-hidden">
-                    <div className="absolute top-0 left-0 w-0 h-0 border-t-[10px] border-r-[10px] border-t-red-500 border-r-transparent"></div>
-                    <label className="block px-2 pt-1 text-[10px] font-medium text-gray-500">First Name</label>
-                    <input type="text" name="first_name" value={formData.first_name || ''} onChange={handleChange} className="w-full bg-transparent px-2 pb-1 text-sm focus:outline-none text-gray-800 font-medium" />
+                <div className="space-y-5">
+                  {/* Title */}
+                  <div>
+                    <label className="block text-xs font-bold text-gray-700 mb-2">Title <span className="text-red-500">*</span></label>
+                    <div className="flex flex-wrap gap-4">
+                      {['Mr', 'Mrs', 'Ms', 'Dr'].map(t => (
+                        <label key={t} className="flex items-center space-x-2 cursor-pointer">
+                          <input type="radio" name="title" value={t} checked={formData.title === t} onChange={handleChange} className="w-4 h-4 text-[#2b6be0] border-gray-300 focus:ring-[#2b6be0]" />
+                          <span className="text-sm font-medium text-gray-700">{t}</span>
+                        </label>
+                      ))}
+                    </div>
                   </div>
-                  <div className="relative w-1/2 border-none bg-[#f0f0f3] shadow-[inset_4px_4px_8px_#cbced1,inset_-4px_-4px_8px_#ffffff] rounded overflow-hidden">
-                    <label className="block px-2 pt-1 text-[10px] font-medium text-gray-500">Last Name</label>
-                    <input type="text" name="last_name" value={formData.last_name || ''} onChange={handleChange} className="w-full bg-transparent px-2 pb-1 text-sm focus:outline-none text-gray-800 font-medium" />
-                  </div>
-                </div>
 
-                {/* DOB */}
-                <div className="relative w-full border-none bg-[#f0f0f3] shadow-[inset_4px_4px_8px_#cbced1,inset_-4px_-4px_8px_#ffffff] rounded overflow-hidden flex flex-col">
-                  <label className="block px-2 pt-1 text-[10px] font-medium text-gray-500">Dob</label>
-                  <div className="flex-1">
-                    <input type="date" name="dob" value={formData.dob || ''} onChange={handleChange} className="w-full bg-transparent px-2 pb-1 text-sm focus:outline-none text-gray-800 font-medium" />
-                  </div>
-                </div>
-
-                {/* Country Code & Mobile Number */}
-                <div className="flex gap-4">
-                  <div className="relative w-1/3 border-none bg-[#f0f0f3] shadow-[inset_4px_4px_8px_#cbced1,inset_-4px_-4px_8px_#ffffff] rounded overflow-hidden shadow-[0_0_0_1px_#52a8d1]">
-                    <div className="absolute top-0 left-0 w-0 h-0 border-t-[10px] border-r-[10px] border-t-red-500 border-r-transparent"></div>
-                    <label className="block px-2 pt-1 text-[10px] font-medium text-[#52a8d1]">Country Code</label>
-                    <div className="flex items-center px-2 pb-1 relative">
-                      <select name="country_code" value={formData.country_code || ''} onChange={handleChange} className="w-full text-sm focus:outline-none text-gray-800 font-medium bg-transparent appearance-none">
-                        <option value="+ 91(India)">+ 91(India)</option>
-                        <option value="+ 1(USA)">+ 1(USA)</option>
-                      </select>
-                      <div className="absolute right-0 flex items-center gap-1 text-gray-500 bg-white px-1 pointer-events-none">
-                        <X className="w-3 h-3 cursor-pointer hover:text-black pointer-events-auto" />
-                        <div className="h-4 w-px bg-gray-300"></div>
-                        <ChevronDown className="w-3 h-3 cursor-pointer" />
+                  {/* First Name & Last Name */}
+                  <div className="flex gap-4">
+                    <div className="w-1/2">
+                      <label className="block text-xs font-bold text-gray-700 mb-1.5">First Name <span className="text-red-500">*</span></label>
+                      <div className="relative">
+                        <User className="absolute left-3 top-2.5 h-4 w-4 text-gray-400" />
+                        <input type="text" name="first_name" value={formData.first_name || ''} onChange={handleChange} className="w-full pl-10 pr-3 py-2 border border-gray-200 rounded-lg text-sm focus:outline-none focus:border-[#2b6be0] focus:ring-1 focus:ring-[#2b6be0] placeholder-gray-400" placeholder="Enter first name" />
+                      </div>
+                    </div>
+                    <div className="w-1/2">
+                      <label className="block text-xs font-bold text-gray-700 mb-1.5">Last Name <span className="text-red-500">*</span></label>
+                      <div className="relative">
+                        <User className="absolute left-3 top-2.5 h-4 w-4 text-gray-400" />
+                        <input type="text" name="last_name" value={formData.last_name || ''} onChange={handleChange} className="w-full pl-10 pr-3 py-2 border border-gray-200 rounded-lg text-sm focus:outline-none focus:border-[#2b6be0] focus:ring-1 focus:ring-[#2b6be0] placeholder-gray-400" placeholder="Enter last name" />
                       </div>
                     </div>
                   </div>
-                  <div className="relative w-2/3 border-none bg-[#f0f0f3] shadow-[inset_4px_4px_8px_#cbced1,inset_-4px_-4px_8px_#ffffff] rounded overflow-hidden">
-                    <div className="absolute top-0 left-0 w-0 h-0 border-t-[10px] border-r-[10px] border-t-red-500 border-r-transparent"></div>
-                    <label className="block px-2 pt-1 text-[10px] font-medium text-gray-500">Mobile Number</label>
-                    <input type="text" name="mobile" value={formData.mobile || ''} onChange={handleChange} className="w-full bg-transparent px-2 pb-1 text-sm focus:outline-none text-gray-800 font-medium" />
+
+                  {/* DOB */}
+                  <div>
+                    <label className="block text-xs font-bold text-gray-700 mb-1.5">Date of Birth</label>
+                    <div className="relative">
+                      <Calendar className="absolute left-3 top-2.5 h-4 w-4 text-gray-400" />
+                      <input type="date" name="dob" value={formData.dob || ''} onChange={handleChange} className="w-full pl-10 pr-3 py-2 border border-gray-200 rounded-lg text-sm focus:outline-none focus:border-[#2b6be0] focus:ring-1 focus:ring-[#2b6be0] text-gray-800" />
+                    </div>
                   </div>
-                </div>
 
-                {/* Email */}
-                <div className="relative w-full border-none bg-[#f0f0f3] shadow-[inset_4px_4px_8px_#cbced1,inset_-4px_-4px_8px_#ffffff] rounded overflow-hidden">
-                  <label className="block px-2 pt-1 text-[10px] font-medium text-gray-500">Email</label>
-                  <input type="email" name="email" value={formData.email || ''} onChange={handleChange} className="w-full bg-transparent px-2 pb-1 text-sm focus:outline-none text-gray-800 font-medium" />
-                </div>
-
-                {/* Address 1 */}
-                <div className="relative w-full border-none bg-[#f0f0f3] shadow-[inset_4px_4px_8px_#cbced1,inset_-4px_-4px_8px_#ffffff] rounded overflow-hidden">
-                  <label className="block px-2 pt-1 text-[10px] font-medium text-gray-500">Address 1</label>
-                  <input type="text" name="address_1" value={formData.address_1 || ''} onChange={handleChange} className="w-full bg-transparent px-2 pb-1 text-sm focus:outline-none text-gray-800 font-medium" />
-                </div>
-
-                {/* Address 2 */}
-                <div className="relative w-full border-none bg-[#f0f0f3] shadow-[inset_4px_4px_8px_#cbced1,inset_-4px_-4px_8px_#ffffff] rounded overflow-hidden">
-                  <label className="block px-2 pt-1 text-[10px] font-medium text-gray-500">Address 2</label>
-                  <input type="text" name="address_2" value={formData.address_2 || ''} onChange={handleChange} className="w-full bg-transparent px-2 pb-1 text-sm focus:outline-none text-gray-800 font-medium" />
-                </div>
-
-                {/* Address 3 */}
-                <div className="relative w-full border-none bg-[#f0f0f3] shadow-[inset_4px_4px_8px_#cbced1,inset_-4px_-4px_8px_#ffffff] rounded overflow-hidden">
-                  <label className="block px-2 pt-1 text-[10px] font-medium text-gray-500">Address 3</label>
-                  <input type="text" name="address_3" value={formData.address_3 || ''} onChange={handleChange} className="w-full bg-transparent px-2 pb-1 text-sm focus:outline-none text-gray-800 font-medium" />
-                </div>
-
-                {/* City & Pincode */}
-                <div className="flex gap-4">
-                  <div className="relative w-1/2 border-none bg-[#f0f0f3] shadow-[inset_4px_4px_8px_#cbced1,inset_-4px_-4px_8px_#ffffff] rounded overflow-hidden">
-                    <label className="block px-2 pt-1 text-[10px] font-medium text-gray-500">City</label>
-                    <input type="text" name="city" value={formData.city || ''} onChange={handleChange} className="w-full bg-transparent px-2 pb-1 text-sm focus:outline-none text-gray-800 font-medium" />
+                  {/* Country Code & Mobile Number */}
+                  <div className="flex gap-4">
+                    <div className="w-1/3">
+                      <label className="block text-xs font-bold text-gray-700 mb-1.5">Country Code</label>
+                      <div className="relative">
+                        <div className="absolute left-3 top-2.5 flex items-center">
+                          <span className="text-sm">🇮🇳</span>
+                        </div>
+                        <select name="country_code" value={formData.country_code || ''} onChange={handleChange} className="w-full pl-9 pr-8 py-2 border border-gray-200 rounded-lg text-sm focus:outline-none focus:border-[#2b6be0] focus:ring-1 focus:ring-[#2b6be0] appearance-none bg-white">
+                          <option value="+ 91(India)">+91 (India)</option>
+                          <option value="+ 1(USA)">+1 (USA)</option>
+                        </select>
+                        <ChevronDown className="absolute right-3 top-3 h-4 w-4 text-gray-400 pointer-events-none" />
+                      </div>
+                    </div>
+                    <div className="w-2/3">
+                      <label className="block text-xs font-bold text-gray-700 mb-1.5">Mobile Number <span className="text-red-500">*</span></label>
+                      <div className="relative">
+                        <Phone className="absolute left-3 top-2.5 h-4 w-4 text-gray-400" />
+                        <input type="text" name="mobile" value={formData.mobile || ''} onChange={handleChange} className="w-full pl-10 pr-3 py-2 border border-gray-200 rounded-lg text-sm focus:outline-none focus:border-[#2b6be0] focus:ring-1 focus:ring-[#2b6be0] placeholder-gray-400" placeholder="Enter mobile number" />
+                      </div>
+                    </div>
                   </div>
-                  <div className="relative w-1/2 border-none bg-[#f0f0f3] shadow-[inset_4px_4px_8px_#cbced1,inset_-4px_-4px_8px_#ffffff] rounded overflow-hidden flex items-center bg-gray-50">
-                    <input 
-                      list="hyderabad-pincodes"
-                      name="pincode" 
-                      value={formData.pincode || ''} 
-                      onChange={handleChange} 
-                      className="w-full bg-transparent px-2 py-2 text-sm focus:outline-none text-gray-800 font-medium bg-transparent placeholder-gray-500" 
-                      placeholder="Search Pincode"
-                    />
-                    <datalist id="hyderabad-pincodes">
-                      {hyderabadPincodes.map(pin => (
-                        <option key={pin} value={pin} />
-                      ))}
-                    </datalist>
-                    <Search className="w-4 h-4 text-gray-400 absolute right-2 pointer-events-none" />
-                  </div>
-                </div>
 
-                {/* Country & State */}
-                <div className="flex gap-4">
-                  <div className="relative w-1/2 border-none bg-[#f0f0f3] shadow-[inset_4px_4px_8px_#cbced1,inset_-4px_-4px_8px_#ffffff] rounded overflow-hidden flex items-center">
-                    <select name="country" value={formData.country || ''} onChange={handleChange} className="w-full bg-transparent px-2 py-2 text-sm focus:outline-none text-gray-800 font-medium bg-transparent appearance-none">
-                      <option value="">Country</option>
-                      <option value="India">India</option>
-                    </select>
-                    <ChevronDown className="w-4 h-4 text-gray-600 absolute right-2 pointer-events-none" />
+                  {/* Email */}
+                  <div>
+                    <label className="block text-xs font-bold text-gray-700 mb-1.5">Email</label>
+                    <div className="relative">
+                      <Mail className="absolute left-3 top-2.5 h-4 w-4 text-gray-400" />
+                      <input type="email" name="email" value={formData.email || ''} onChange={handleChange} className="w-full pl-10 pr-3 py-2 border border-gray-200 rounded-lg text-sm focus:outline-none focus:border-[#2b6be0] focus:ring-1 focus:ring-[#2b6be0] placeholder-gray-400" placeholder="Enter email address" />
+                    </div>
                   </div>
-                  <div className="relative w-1/2 border-none bg-[#f0f0f3] shadow-[inset_4px_4px_8px_#cbced1,inset_-4px_-4px_8px_#ffffff] rounded overflow-hidden flex flex-col">
-                     <label className="block px-2 pt-1 text-[10px] font-medium text-gray-500">State</label>
-                     <div className="flex items-center px-2 pb-1 relative">
-                        <select name="state" value={formData.state || ''} onChange={handleChange} className="w-full text-sm focus:outline-none text-gray-800 font-medium bg-transparent appearance-none">
+
+                  {/* Address 1, 2, 3 */}
+                  {['address_1', 'address_2', 'address_3'].map((field, i) => (
+                    <div key={field}>
+                      <label className="block text-xs font-bold text-gray-700 mb-1.5">Address {i + 1}</label>
+                      <div className="relative">
+                        <MapPin className="absolute left-3 top-2.5 h-4 w-4 text-gray-400" />
+                        <input type="text" name={field} value={(formData as any)[field] || ''} onChange={handleChange} className="w-full pl-10 pr-3 py-2 border border-gray-200 rounded-lg text-sm focus:outline-none focus:border-[#2b6be0] focus:ring-1 focus:ring-[#2b6be0] placeholder-gray-400" placeholder={`Enter address line ${i + 1}`} />
+                      </div>
+                    </div>
+                  ))}
+
+                  {/* City & Pincode */}
+                  <div className="flex gap-4">
+                    <div className="w-1/2">
+                      <label className="block text-xs font-bold text-gray-700 mb-1.5">City</label>
+                      <input type="text" name="city" value={formData.city || ''} onChange={handleChange} className="w-full px-3 py-2 border border-gray-200 rounded-lg text-sm focus:outline-none focus:border-[#2b6be0] focus:ring-1 focus:ring-[#2b6be0] placeholder-gray-400" placeholder="Enter city" />
+                    </div>
+                    <div className="w-1/2">
+                      <label className="block text-xs font-bold text-gray-700 mb-1.5">Pincode</label>
+                      <div className="relative">
+                        <input 
+                          list="hyderabad-pincodes"
+                          name="pincode" 
+                          value={formData.pincode || ''} 
+                          onChange={handleChange} 
+                          className="w-full pl-3 pr-8 py-2 border border-gray-200 rounded-lg text-sm focus:outline-none focus:border-[#2b6be0] focus:ring-1 focus:ring-[#2b6be0] placeholder-gray-400" 
+                          placeholder="Search Pincode"
+                        />
+                        <Search className="absolute right-3 top-2.5 h-4 w-4 text-gray-400 pointer-events-none" />
+                        <datalist id="hyderabad-pincodes">
+                          {hyderabadPincodes.map(pin => <option key={pin} value={pin} />)}
+                        </datalist>
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Country & State */}
+                  <div className="flex gap-4">
+                    <div className="w-1/2">
+                      <label className="block text-xs font-bold text-gray-700 mb-1.5">Country</label>
+                      <div className="relative">
+                        <select name="country" value={formData.country || ''} onChange={handleChange} className="w-full pl-3 pr-8 py-2 border border-gray-200 rounded-lg text-sm focus:outline-none focus:border-[#2b6be0] focus:ring-1 focus:ring-[#2b6be0] appearance-none bg-white text-gray-700">
+                          <option value="">Country</option>
+                          <option value="India">India</option>
+                        </select>
+                        <ChevronDown className="absolute right-3 top-3 h-4 w-4 text-gray-400 pointer-events-none" />
+                      </div>
+                    </div>
+                    <div className="w-1/2">
+                      <label className="block text-xs font-bold text-gray-700 mb-1.5">State</label>
+                      <div className="relative">
+                        <select name="state" value={formData.state || ''} onChange={handleChange} className="w-full pl-3 pr-8 py-2 border border-gray-200 rounded-lg text-sm focus:outline-none focus:border-[#2b6be0] focus:ring-1 focus:ring-[#2b6be0] appearance-none bg-white text-gray-700">
                           <option value="">--Select--</option>
                           <option value="Telangana">Telangana</option>
                         </select>
-                        <ChevronDown className="w-4 h-4 text-gray-600 absolute right-0 pointer-events-none" />
-                     </div>
+                        <ChevronDown className="absolute right-3 top-3 h-4 w-4 text-gray-400 pointer-events-none" />
+                      </div>
+                    </div>
                   </div>
                 </div>
               </div>
             </div>
             
             {/* Right Column */}
-            <div className="w-full lg:w-[450px] flex flex-col gap-4 pt-0 lg:pt-10">
-              {/* Visit Date */}
-              <div className="relative border-none bg-[#f0f0f3] shadow-[inset_4px_4px_8px_#cbced1,inset_-4px_-4px_8px_#ffffff] rounded overflow-hidden flex">
-                <div className="absolute top-0 left-0 w-0 h-0 border-t-[10px] border-r-[10px] border-t-red-500 border-r-transparent z-10 pointer-events-none"></div>
-                <div className="flex-1 relative">
-                  <label className="absolute top-1.5 left-3 text-[10px] font-medium text-gray-500 pointer-events-none">Visit Date</label>
-                  <input type="date" name="visit_date" value={formData.visit_date || ''} onChange={handleChange} className="w-full bg-transparent px-3 pt-5 pb-1.5 text-sm focus:outline-none text-gray-800 font-medium" />
+            <div className="w-full lg:w-[480px] space-y-6">
+              <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-6">
+                <div className="flex items-start space-x-4 mb-8">
+                  <div className="w-12 h-12 rounded-xl bg-[#fce8e8] text-[#e63946] flex items-center justify-center">
+                    <CalendarDays className="w-6 h-6 stroke-[1.5]" />
+                  </div>
+                  <div>
+                    <h2 className="text-[17px] font-bold text-slate-800">Visit Details</h2>
+                    <p className="text-sm text-slate-500 mt-0.5">Provide purpose and visit date</p>
+                  </div>
+                </div>
+
+                <div className="space-y-5">
+                  {/* Visit Date */}
+                  <div>
+                    <label className="block text-xs font-bold text-gray-700 mb-1.5">Visit Date <span className="text-red-500">*</span></label>
+                    <div className="relative">
+                      <Calendar className="absolute left-3 top-2.5 h-4 w-4 text-gray-400" />
+                      <input type="date" name="visit_date" value={formData.visit_date || ''} onChange={handleChange} className="w-full pl-10 pr-3 py-2 border border-gray-200 rounded-lg text-sm focus:outline-none focus:border-[#2b6be0] focus:ring-1 focus:ring-[#2b6be0] text-gray-800" />
+                    </div>
+                  </div>
+
+                  {/* Visit Purpose */}
+                  <div>
+                    <label className="block text-xs font-bold text-gray-700 mb-1.5">Visit Purpose <span className="text-red-500">*</span></label>
+                    <div className="relative">
+                      <FileText className="absolute left-3 top-3 h-4 w-4 text-gray-400" />
+                      <textarea 
+                        name="visit_purpose"
+                        value={formData.visit_purpose || ''}
+                        onChange={handleChange}
+                        className="w-full pl-10 pr-3 py-2 border border-gray-200 rounded-lg text-sm focus:outline-none focus:border-[#2b6be0] focus:ring-1 focus:ring-[#2b6be0] placeholder-gray-400 resize-none h-32"
+                        placeholder="Enter purpose of visit..."
+                        maxLength={250}
+                      ></textarea>
+                      <div className="absolute bottom-3 right-3 text-[10px] text-gray-400 font-medium">
+                        {formData.visit_purpose.length}/250
+                      </div>
+                    </div>
+                  </div>
+                  
+                  {/* Interested to become member */}
+                  <label className={`block cursor-pointer border rounded-xl p-4 transition-all ${formData.interested_to_become_member ? 'bg-[#f0f5fc] border-[#2b6be0]' : 'bg-gray-50 border-gray-200 hover:border-gray-300'}`}>
+                    <div className="flex items-start">
+                      <div className="flex items-center h-5 mt-0.5">
+                        <input 
+                          type="checkbox" 
+                          name="interested_to_become_member" 
+                          checked={formData.interested_to_become_member} 
+                          onChange={handleChange} 
+                          className="w-4 h-4 text-[#2b6be0] border-gray-300 rounded focus:ring-[#2b6be0]" 
+                        />
+                      </div>
+                      <div className="ml-3">
+                        <span className="block text-sm font-bold text-gray-800">Is interested to become Member</span>
+                        <span className="block text-xs text-gray-500 mt-1">Check this if the visitor is interested in membership</span>
+                      </div>
+                    </div>
+                  </label>
                 </div>
               </div>
 
-              {/* Visit Purpose */}
-              <div>
-                <div className="relative border-none bg-[#f0f0f3] shadow-[inset_4px_4px_8px_#cbced1,inset_-4px_-4px_8px_#ffffff] rounded overflow-hidden">
-                  <div className="absolute top-0 left-0 w-0 h-0 border-t-[10px] border-r-[10px] border-t-red-500 border-r-transparent pointer-events-none"></div>
-                  <label className="block px-3 pt-1.5 text-[10px] font-medium text-gray-500">Visit Purpose</label>
-                  <textarea 
-                    name="visit_purpose"
-                    value={formData.visit_purpose || ''}
-                    onChange={handleChange}
-                    className="w-full px-3 pb-1 text-sm focus:outline-none text-gray-800 font-medium min-h-[60px] resize-none"
-                    placeholder=""
-                  ></textarea>
-                </div>
-                <div className="text-right text-[10px] text-gray-500 font-medium mt-1">Required</div>
-              </div>
-              
-              <div className="flex items-center space-x-2 pt-2">
-                <input type="checkbox" id="interested" name="interested_to_become_member" checked={formData.interested_to_become_member} onChange={handleChange} className="rounded border-gray-400 text-gray-600 focus:ring-gray-600 h-4 w-4 bg-white" />
-                <label htmlFor="interested" className="text-sm font-medium text-gray-700">Is interested to become Member</label>
+              {/* Footer Buttons */}
+              <div className="flex justify-end items-center gap-4 mt-6">
+                <button 
+                  onClick={() => setFormData({ ...emptyForm, visit_date: new Date().toISOString().split('T')[0] })}
+                  className="flex items-center px-6 py-2.5 rounded-lg font-bold text-sm text-gray-700 bg-white border border-gray-200 hover:bg-gray-50 transition-all shadow-sm"
+                >
+                  <X className="w-4 h-4 mr-2" />
+                  Reset
+                </button>
+                <button 
+                  onClick={handleSave} 
+                  className="flex items-center px-6 py-2.5 rounded-lg font-bold text-sm text-white bg-[#2b6be0] hover:bg-[#255bc2] transition-all shadow-sm"
+                >
+                  <Save className="w-4 h-4 mr-2" />
+                  Save Visitor
+                </button>
               </div>
             </div>
           </div>
-
-          {/* Footer Buttons */}
-          <div className="flex justify-between items-center mt-6 pt-4">
-            <button className="bg-[#f0f0f3] hover:shadow-[inset_4px_4px_8px_#cbced1,inset_-4px_-4px_8px_#ffffff] hover:text-red-600 text-black px-8 py-2 rounded-lg font-semibold text-sm transition-all shadow-[5px_5px_10px_#cbced1,-5px_-5px_10px_#ffffff] border-none">
-              Cancel
-            </button>
-            <button onClick={handleSave} className="bg-[#f0f0f3] hover:shadow-[inset_4px_4px_8px_#cbced1,inset_-4px_-4px_8px_#ffffff] hover:text-green-600 text-black px-8 py-2 rounded-lg font-semibold text-sm transition-all shadow-[5px_5px_10px_#cbced1,-5px_-5px_10px_#ffffff] border-none">
-              Save
-            </button>
-          </div>
         </div>
       ) : (
-        <div className="bg-[#f0f0f3] rounded-xl shadow-[10px_10px_20px_#cbced1,-10px_-10px_20px_#ffffff] border-none overflow-hidden flex flex-col min-h-[500px]">
+        <div className="bg-white rounded-xl shadow-sm border-none overflow-hidden flex flex-col min-h-[500px]">
           {/* Toolbar */}
-          <div className="flex flex-wrap items-center gap-4 p-4">
+          <div className="flex flex-wrap items-center gap-4">
             <div className="flex items-center relative">
               <Search className="w-4 h-4 text-gray-500 absolute left-3 pointer-events-none" />
               <input 
@@ -542,24 +603,24 @@ const Visitor: React.FC = () => {
                 placeholder="Search" 
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
-                className="border-none bg-[#f0f0f3] shadow-[inset_4px_4px_8px_#cbced1,inset_-4px_-4px_8px_#ffffff] rounded-lg pl-9 pr-4 py-2 text-sm focus:outline-none min-w-[200px]"
+                className="border-none bg-white rounded-xl shadow-[0_2px_10px_rgba(0,0,0,0.03)] border border-gray-100/50 pl-9 pr-4 py-2 text-sm focus:outline-none min-w-[200px]"
               />
             </div>
-            <button className="bg-[#f0f0f3] hover:shadow-[inset_2px_2px_5px_#cbced1,inset_-2px_-2px_5px_#ffffff] text-black px-6 py-1.5 rounded-lg font-semibold text-sm transition-all shadow-[4px_4px_8px_#cbced1,-4px_-4px_8px_#ffffff] border-none">
+            <button className="bg-white hover:shadow-sm text-black px-6 py-1.5 rounded-lg font-semibold text-sm transition-all shadow-sm border-none">
               Go
             </button>
             
             <div className="flex items-center ml-4 space-x-2">
               <span className="text-sm text-slate-600 font-medium">Rows</span>
               <div className="relative">
-                <select className="appearance-none border-none bg-[#f0f0f3] shadow-[inset_4px_4px_8px_#cbced1,inset_-4px_-4px_8px_#ffffff] rounded-lg px-4 py-1.5 pr-8 text-sm focus:outline-none">
+                <select className="appearance-none border-none bg-white rounded-xl shadow-[0_2px_10px_rgba(0,0,0,0.03)] border border-gray-100/50 px-4 py-1.5 pr-8 text-sm focus:outline-none">
                   <option>50</option>
                 </select>
                 <ChevronDown className="w-4 h-4 text-gray-500 absolute right-2 top-2 pointer-events-none" />
               </div>
             </div>
 
-            <div className="flex items-center ml-auto space-x-1 cursor-pointer bg-[#f0f0f3] shadow-[3px_3px_6px_#cbced1,-3px_-3px_6px_#ffffff] hover:shadow-[inset_2px_2px_4px_#cbced1,inset_-2px_-2px_4px_#ffffff] px-4 py-1.5 rounded-lg transition-all">
+            <div className="flex items-center ml-auto space-x-1 cursor-pointer bg-white shadow-sm hover:shadow-sm px-4 py-1.5 rounded-lg transition-all">
               <span className="text-sm text-slate-800 font-medium">Actions</span>
               <ChevronDown className="w-4 h-4 text-slate-800" />
             </div>
@@ -568,7 +629,7 @@ const Visitor: React.FC = () => {
           {/* Filters Row */}
           <div className="flex items-center px-4 pb-3">
             <Filter className="w-4 h-4 text-gray-600 mr-3" />
-            <div className="flex items-center bg-[#8ebc7f]/80 text-[#1f3718] px-3 py-1.5 rounded-lg border-none shadow-[3px_3px_6px_#cbced1,-3px_-3px_6px_#ffffff] text-xs font-semibold">
+            <div className="flex items-center bg-[#8ebc7f]/80 text-[#1f3718] px-3 py-1.5 rounded-lg border-none shadow-sm text-xs font-semibold">
               <input type="checkbox" defaultChecked className="mr-2 rounded-sm text-green-800 focus:ring-green-800" />
               <Star className="w-3.5 h-3.5 mr-1 text-[#1f3718]" />
               <span>Members</span>
@@ -579,7 +640,7 @@ const Visitor: React.FC = () => {
           </div>
 
           {/* Data Table */}
-          <div className="overflow-x-auto flex-1 mx-4 mb-4 p-4 shadow-[inset_5px_5px_10px_#cbced1,inset_-5px_-5px_10px_#ffffff] bg-[#f0f0f3] rounded-xl">
+          <div className="overflow-x-auto flex-1 mx-4 mb-4 shadow-sm bg-white rounded-xl">
             <table className="w-full text-sm text-left whitespace-nowrap border border-gray-300">
               <thead className="text-[11px] font-bold text-gray-500 uppercase tracking-wider border-b border-gray-300">
                 <tr>
@@ -621,7 +682,7 @@ const Visitor: React.FC = () => {
                       <td className="px-4 py-2 border-r border-gray-300">
                         <button
                           onClick={() => handleEditOpen(visitor)}
-                          className={`p-1.5 rounded-md bg-[#f0f0f3] shadow-[3px_3px_6px_#cbced1,-3px_-3px_6px_#ffffff] hover:shadow-[inset_2px_2px_4px_#cbced1,inset_-2px_-2px_4px_#ffffff] ${isInterested ? 'text-[#2b4c23]' : 'text-blue-500'} transition-all`}
+                          className={`p-1.5 rounded-md bg-white shadow-sm hover:shadow-sm ${isInterested ? 'text-[#2b4c23]' : 'text-blue-500'} transition-all`}
                           title="Edit visitor"
                         >
                           <Edit className="w-3.5 h-3.5" />
@@ -659,7 +720,7 @@ const Visitor: React.FC = () => {
             </table>
           </div>
           
-          <div className="p-4 mx-4 mb-4 rounded-xl shadow-[inset_4px_4px_8px_#cbced1,inset_-4px_-4px_8px_#ffffff] text-xs font-semibold text-slate-600 flex justify-end">
+          <div className="mx-4 mb-4 rounded-xl shadow-sm text-xs font-semibold text-slate-600 flex justify-end">
             {(() => {
               const count = visitorsList.filter(v => {
                 const q = searchQuery.toLowerCase();

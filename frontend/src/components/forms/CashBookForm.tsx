@@ -11,7 +11,7 @@ const CashBookForm: React.FC<CashBookFormProps> = ({ isOpen, onClose }) => {
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-30 p-4">
-      <div className="bg-gray-50 rounded-xl shadow-[0_20px_40px_rgba(0,0,0,0.5),inset_0_2px_4px_rgba(255,255,255,1)] border border-gray-300 w-full max-w-4xl flex flex-col h-[650px] max-h-[90vh]">
+      <div className="bg-gray-50 rounded-xl shadow-sm border border-gray-300 w-full max-w-4xl flex flex-col h-[650px] max-h-[90vh]">
         <div className="flex justify-between items-center p-5 border-b border-gray-200">
           <h2 className="text-xl font-bold text-slate-800">Add/Edit Expense</h2>
           <button 
@@ -27,13 +27,13 @@ const CashBookForm: React.FC<CashBookFormProps> = ({ isOpen, onClose }) => {
             
             {/* Voucher No */}
             <div className="relative">
-              <input type="text" placeholder="Voucher No" className="w-full border border-gray-400/60 rounded-md py-3 px-3 text-sm bg-white focus:outline-none focus:border-blue-500 shadow-[inset_0_3px_6px_rgba(0,0,0,0.15),0_1px_0_rgba(255,255,255,1)] " />
+              <input type="text" placeholder="Voucher No" className="w-full border border-gray-400/60 rounded-md py-3 px-3 text-sm bg-white focus:outline-none focus:border-blue-500 shadow-sm " />
             </div>
 
             {/* Ref Vendor/Customer */}
             <div className="relative">
               <label className="absolute -top-2 left-2 bg-white px-1 text-[11px] text-gray-500 font-medium z-10">Ref Vendor/Customer</label>
-              <select className="w-full border border-gray-400/60 rounded-md py-3 px-3 text-sm appearance-none bg-white focus:outline-none focus:border-blue-500 shadow-[inset_0_3px_6px_rgba(0,0,0,0.15),0_1px_0_rgba(255,255,255,1)] ">
+              <select className="w-full border border-gray-400/60 rounded-md py-3 px-3 text-sm appearance-none bg-white focus:outline-none focus:border-blue-500 shadow-sm ">
                 <option>--Select--</option>
               </select>
               <ChevronDown className="w-4 h-4 text-gray-400 absolute right-3 top-3.5 pointer-events-none" />
@@ -42,7 +42,7 @@ const CashBookForm: React.FC<CashBookFormProps> = ({ isOpen, onClose }) => {
             {/* Expense Type */}
             <div className="relative">
               <div className="absolute top-0 left-0 w-2 h-2 bg-red-500 z-10 rounded-tl-md" style={{ clipPath: 'polygon(0 0, 100% 0, 0 100%)' }}></div>
-              <select className="w-full border border-gray-400/60 rounded-md py-3 px-3 text-sm appearance-none bg-white focus:outline-none focus:border-blue-500 shadow-[inset_0_3px_6px_rgba(0,0,0,0.15),0_1px_0_rgba(255,255,255,1)] ">
+              <select className="w-full border border-gray-400/60 rounded-md py-3 px-3 text-sm appearance-none bg-white focus:outline-none focus:border-blue-500 shadow-sm ">
                 <option>Expense Type</option>
               </select>
               <ChevronDown className="w-4 h-4 text-gray-400 absolute right-3 top-3.5 pointer-events-none" />
@@ -54,7 +54,7 @@ const CashBookForm: React.FC<CashBookFormProps> = ({ isOpen, onClose }) => {
                 <div className="absolute top-0 left-0 w-2 h-2 bg-red-500 z-10 rounded-tl-md" style={{ clipPath: 'polygon(0 0, 100% 0, 0 100%)' }}></div>
                 <label className="absolute -top-2 left-2 bg-white px-1 text-[11px] text-gray-500 font-medium z-10">Expense Date</label>
                 <div className="flex w-full">
-                  <input type="text" defaultValue="22-Sep-2026" className="w-full border border-gray-400/60 border-r-0 rounded-l-md py-3 px-3 text-sm bg-white focus:outline-none focus:border-blue-500 shadow-[inset_0_3px_6px_rgba(0,0,0,0.15),0_1px_0_rgba(255,255,255,1)] " />
+                  <input type="text" defaultValue="22-Sep-2026" className="w-full border border-gray-400/60 border-r-0 rounded-l-md py-3 px-3 text-sm bg-white focus:outline-none focus:border-blue-500 shadow-sm " />
                   <div className="border border-gray-300 bg-gray-100 rounded-r-md px-3 flex items-center justify-center">
                     <Calendar className="w-4 h-4 text-gray-500" />
                   </div>
@@ -64,7 +64,7 @@ const CashBookForm: React.FC<CashBookFormProps> = ({ isOpen, onClose }) => {
               {/* Amount */}
               <div className="relative">
                 <div className="absolute top-0 left-0 w-2 h-2 bg-red-500 z-10 rounded-tl-md" style={{ clipPath: 'polygon(0 0, 100% 0, 0 100%)' }}></div>
-                <input type="text" placeholder="Amount" className="w-full border border-gray-400/60 rounded-md py-3 px-3 text-sm bg-white focus:outline-none focus:border-blue-500 shadow-[inset_0_3px_6px_rgba(0,0,0,0.15),0_1px_0_rgba(255,255,255,1)] " />
+                <input type="text" placeholder="Amount" className="w-full border border-gray-400/60 rounded-md py-3 px-3 text-sm bg-white focus:outline-none focus:border-blue-500 shadow-sm " />
               </div>
             </div>
 
@@ -96,7 +96,7 @@ const CashBookForm: React.FC<CashBookFormProps> = ({ isOpen, onClose }) => {
               <label className="absolute top-2 left-3 text-[11px] text-gray-500 font-medium z-10">Note</label>
               <textarea 
                 placeholder="Add note regarding the expense" 
-                className="w-full border border-gray-400/60 rounded-md pt-7 pb-3 px-3 text-sm bg-white focus:outline-none focus:border-blue-500 shadow-[inset_0_3px_6px_rgba(0,0,0,0.15),0_1px_0_rgba(255,255,255,1)]  resize-none h-32"
+                className="w-full border border-gray-400/60 rounded-md pt-7 pb-3 px-3 text-sm bg-white focus:outline-none focus:border-blue-500 shadow-sm  resize-none h-32"
               ></textarea>
             </div>
           </div>

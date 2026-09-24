@@ -1,9 +1,8 @@
 import React, { useState, useEffect, useMemo } from 'react';
-import { Users, CheckCircle, Star, Clock, UserPlus, Calendar, Cake, Search, MoreVertical, Edit, Eye, RotateCcw, Grid, LayoutDashboard, Trash2 } from 'lucide-react';
-import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
+import { Users, CheckCircle, Star, Clock, UserPlus, Calendar, Cake, Search, MoreVertical, Edit, Eye, RotateCcw, Grid, LayoutDashboard, Trash2, ArrowDown, ChevronDown, ChevronRight, Info, BarChart3, CalendarDays } from 'lucide-react';
+import { LineChart, Line, AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
 import MemberForm from '../components/forms/MemberForm';
 import MemberDetails from '../components/MemberDetails';
-
 
 
 const Members: React.FC = () => {
@@ -100,150 +99,284 @@ const Members: React.FC = () => {
   }
 
   return (
-    <div className="p-4 md:p-6 space-y-6 relative">
+    <div className="w-full space-y-6">
       {/* Header */}
-      <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center space-y-4 sm:space-y-0">
-        <h1 className="text-2xl font-bold text-slate-900">Members</h1>
-        <div className="flex flex-wrap gap-3">
-          {currentView === 'dashboard' ? (
-            <button 
-              onClick={() => setCurrentView('list')}
-              className="flex items-center space-x-2 bg-[#2b2b2b] hover:bg-[#1a1a1a] text-white px-5 py-2.5 rounded-lg font-medium text-sm transition-all shadow-[inset_0_2px_4px_rgba(255,255,255,0.2),0_4px_6px_rgba(0,0,0,0.3)] border border-black active:scale-95 active:shadow-[inset_0_1px_2px_rgba(0,0,0,0.4)]"
-            >
-              <Users className="w-4 h-4" />
-              <span>Members List</span>
-            </button>
-          ) : (
-            <>
+      <div className="mb-6 relative">
+        <div className="absolute right-0 top-[-2rem] w-[600px] h-[200px] pointer-events-none opacity-30 bg-no-repeat bg-right-top z-0" style={{ backgroundImage: "url('/sas-watermark.svg')" }}></div>
+        <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center relative z-10">
+          <div>
+            <h1 className="text-3xl font-bold text-[#0c3f50]">Members</h1>
+            <p className="text-slate-500 text-sm mt-1 mb-6">Manage and track all membership activities</p>
+          </div>
+          <div className="flex space-x-3 mb-6 sm:mb-0">
+            {currentView === 'dashboard' ? (
               <button 
-                onClick={() => setCurrentView('dashboard')}
-                className="bg-[#2c2825] hover:bg-[#1a1715] text-white px-5 py-2.5 rounded font-bold text-sm transition-colors"
+                onClick={() => setCurrentView('list')}
+                className="flex items-center bg-[#0c3f50] hover:bg-[#082a36] text-white px-5 py-2.5 rounded-lg font-bold text-sm transition-all shadow-sm"
               >
-                Dashboard
+                <Users className="w-4 h-4 mr-2" />
+                Members List
               </button>
-              <button className="flex items-center space-x-2 bg-[#b57317] hover:bg-[#965e10] text-white px-5 py-2.5 rounded font-bold text-sm transition-colors">
-                <Grid className="w-4 h-4" />
-                <span>View as Report</span>
-              </button>
-            </>
-          )}
-          <button 
-            onClick={() => { setEditingMember(null); setIsModalOpen(true); }}
-            className="bg-[#e7e6e2] hover:bg-[#d6d4ce] text-[#003366] px-5 py-2.5 rounded font-bold text-sm transition-colors"
-          >
-            Add Member
-          </button>
+            ) : (
+              <>
+                <button 
+                  onClick={() => setCurrentView('dashboard')}
+                  className="bg-[#2c2825] hover:bg-[#1a1715] text-white px-5 py-2.5 rounded-lg font-bold text-sm transition-colors"
+                >
+                  Dashboard
+                </button>
+                <button className="flex items-center space-x-2 bg-[#b57317] hover:bg-[#965e10] text-white px-5 py-2.5 rounded-lg font-bold text-sm transition-colors">
+                  <Grid className="w-4 h-4" />
+                  <span>View as Report</span>
+                </button>
+              </>
+            )}
+            <button 
+              onClick={() => { setEditingMember(null); setIsModalOpen(true); }}
+              className="flex items-center bg-white hover:bg-gray-50 text-[#2b6be0] border border-gray-200 px-5 py-2.5 rounded-lg font-bold text-sm transition-all shadow-sm"
+            >
+              <span className="text-lg leading-none mr-2 font-light">+</span>
+              Add Member
+            </button>
+          </div>
         </div>
       </div>
 
       {currentView === 'dashboard' ? (
         <>
           {/* Summary Cards */}
-          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4">
-        <div className="bg-white rounded-lg shadow-sm border border-gray-100 p-4 flex flex-col">
-          <div className="bg-[#4a84a0] w-10 h-10 rounded text-white flex items-center justify-center mb-4">
-            <Users className="w-5 h-5" />
-          </div>
-          <div className="text-2xl font-bold text-slate-800">{members.length}</div>
-          <div className="text-xs text-slate-500 mt-1 uppercase">Total Members</div>
-        </div>
-        
-        <div className="bg-white rounded-lg shadow-sm border border-gray-100 p-4 flex flex-col">
-          <div className="bg-[#5c8b93] w-10 h-10 rounded text-white flex items-center justify-center mb-4">
-            <CheckCircle className="w-5 h-5" />
-          </div>
-          <div className="text-2xl font-bold text-slate-800">{members.filter(m => !m.membership_ends_on || new Date(m.membership_ends_on) > new Date()).length}</div>
-          <div className="text-xs text-slate-500 mt-1 uppercase">Active Members</div>
-        </div>
+          <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-5 gap-4">
+            
+            {/* Total Members */}
+            <div className="bg-white rounded-2xl shadow-sm border border-gray-100 flex flex-col p-5 relative overflow-hidden h-[130px]">
+              <div className="absolute bottom-0 right-0 w-32 h-16 pointer-events-none">
+                <svg viewBox="0 0 100 50" preserveAspectRatio="none" className="w-full h-full text-blue-50">
+                  <path d="M0,50 Q25,30 50,40 T100,20 L100,50 Z" fill="currentColor" />
+                </svg>
+              </div>
+              <div className="relative z-10 flex flex-col h-full justify-between">
+                <div className="flex items-center gap-3">
+                  <div className="bg-blue-50 w-10 h-10 rounded-xl text-blue-500 flex items-center justify-center shrink-0">
+                    <Users className="w-5 h-5" />
+                  </div>
+                  <div className="text-[13px] text-slate-600 font-medium leading-tight">Total Members</div>
+                </div>
+                <div>
+                  <div className="text-3xl font-bold text-slate-800 font-serif">{members.length}</div>
+                  <div className="flex items-center text-xs font-bold text-emerald-500 mt-1">
+                    <ArrowDown className="w-3 h-3 mr-1 rotate-135" />
+                    +12%
+                  </div>
+                </div>
+              </div>
+            </div>
 
-        <div className="bg-white rounded-lg shadow-sm border border-gray-100 p-4 flex flex-col">
-          <div className="bg-[#59847d] w-10 h-10 rounded text-white flex items-center justify-center mb-4">
-            <Star className="w-5 h-5" />
-          </div>
-          <div className="text-2xl font-bold text-slate-800">{members.filter(m => (m.membership_category || "").toLowerCase().includes("committee")).length}</div>
-          <div className="text-xs text-slate-500 mt-1 uppercase">Committee</div>
-        </div>
+            {/* Active Members */}
+            <div className="bg-white rounded-2xl shadow-sm border border-gray-100 flex flex-col p-5 relative overflow-hidden h-[130px]">
+              <div className="absolute bottom-0 right-0 w-32 h-16 pointer-events-none">
+                <svg viewBox="0 0 100 50" preserveAspectRatio="none" className="w-full h-full text-purple-50">
+                  <path d="M0,50 Q25,30 50,40 T100,20 L100,50 Z" fill="currentColor" />
+                </svg>
+              </div>
+              <div className="relative z-10 flex flex-col h-full justify-between">
+                <div className="flex items-center gap-3">
+                  <div className="bg-purple-50 w-10 h-10 rounded-xl text-purple-500 flex items-center justify-center shrink-0">
+                    <CheckCircle className="w-5 h-5" />
+                  </div>
+                  <div className="text-[13px] text-slate-600 font-medium leading-tight">Active Members</div>
+                </div>
+                <div>
+                  <div className="text-3xl font-bold text-slate-800 font-serif">{members.filter(m => !m.membership_ends_on || new Date(m.membership_ends_on) > new Date()).length}</div>
+                  <div className="flex items-center text-xs font-bold text-emerald-500 mt-1">
+                    <ArrowDown className="w-3 h-3 mr-1 rotate-135" />
+                    +8%
+                  </div>
+                </div>
+              </div>
+            </div>
 
-        <div className="bg-white rounded-lg shadow-sm border border-gray-100 p-4 flex flex-col">
-          <div className="bg-[#598858] w-10 h-10 rounded text-white flex items-center justify-center mb-4">
-            <Clock className="w-5 h-5" />
-          </div>
-          <div className="text-2xl font-bold text-slate-800">{members.filter(m => { if (!m.membership_ends_on) return false; const diff = (new Date(m.membership_ends_on).getTime() - Date.now()) / (1000 * 60 * 60 * 24); return diff >= 0 && diff <= 30; }).length}</div>
-          <div className="text-xs text-slate-500 mt-1 uppercase">Expiring Soon</div>
-        </div>
+            {/* Committee */}
+            <div className="bg-white rounded-2xl shadow-sm border border-gray-100 flex flex-col p-5 relative overflow-hidden h-[130px]">
+              <div className="absolute bottom-0 right-0 w-32 h-16 pointer-events-none">
+                <svg viewBox="0 0 100 50" preserveAspectRatio="none" className="w-full h-full text-orange-50">
+                  <path d="M0,50 Q25,30 50,40 T100,20 L100,50 Z" fill="currentColor" />
+                </svg>
+              </div>
+              <div className="relative z-10 flex flex-col h-full justify-between">
+                <div className="flex items-center gap-3">
+                  <div className="bg-orange-50 w-10 h-10 rounded-xl text-orange-500 flex items-center justify-center shrink-0">
+                    <Star className="w-5 h-5" />
+                  </div>
+                  <div className="text-[13px] text-slate-600 font-medium leading-tight">Committee</div>
+                </div>
+                <div>
+                  <div className="text-3xl font-bold text-slate-800 font-serif">{members.filter(m => (m.membership_category || "").toLowerCase().includes("committee")).length}</div>
+                  <div className="flex items-center text-xs font-bold text-amber-500 mt-1">
+                    <ArrowDown className="w-3 h-3 mr-1 -rotate-90" />
+                    0%
+                  </div>
+                </div>
+              </div>
+            </div>
 
-        <div className="bg-white rounded-lg shadow-sm border border-gray-100 p-4 flex flex-col">
-          <div className="bg-[#6c915f] w-10 h-10 rounded text-white flex items-center justify-center mb-4">
-            <UserPlus className="w-5 h-5" />
+            {/* Expiring Soon */}
+            <div className="bg-white rounded-2xl shadow-sm border border-gray-100 flex flex-col p-5 relative overflow-hidden h-[130px]">
+              <div className="absolute bottom-0 right-0 w-32 h-16 pointer-events-none">
+                <svg viewBox="0 0 100 50" preserveAspectRatio="none" className="w-full h-full text-emerald-50">
+                  <path d="M0,50 Q25,30 50,40 T100,20 L100,50 Z" fill="currentColor" />
+                </svg>
+              </div>
+              <div className="relative z-10 flex flex-col h-full justify-between">
+                <div className="flex items-center gap-3">
+                  <div className="bg-emerald-50 w-10 h-10 rounded-xl text-emerald-500 flex items-center justify-center shrink-0">
+                    <Clock className="w-5 h-5" />
+                  </div>
+                  <div className="text-[13px] text-slate-600 font-medium leading-tight">Expiring Soon</div>
+                </div>
+                <div>
+                  <div className="text-3xl font-bold text-slate-800 font-serif">{members.filter(m => { if (!m.membership_ends_on) return false; const diff = (new Date(m.membership_ends_on).getTime() - Date.now()) / (1000 * 60 * 60 * 24); return diff >= 0 && diff <= 30; }).length}</div>
+                  <div className="flex items-center text-xs font-bold text-emerald-500 mt-1">
+                    <ArrowDown className="w-3 h-3 mr-1 rotate-135" />
+                    +20%
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            {/* New This Month */}
+            <div className="bg-white rounded-2xl shadow-sm border border-gray-100 flex flex-col p-5 relative overflow-hidden h-[130px]">
+              <div className="absolute bottom-0 right-0 w-32 h-16 pointer-events-none">
+                <svg viewBox="0 0 100 50" preserveAspectRatio="none" className="w-full h-full text-red-50">
+                  <path d="M0,50 Q25,30 50,40 T100,20 L100,50 Z" fill="currentColor" />
+                </svg>
+              </div>
+              <div className="relative z-10 flex flex-col h-full justify-between">
+                <div className="flex items-center gap-3">
+                  <div className="bg-red-50 w-10 h-10 rounded-xl text-red-500 flex items-center justify-center shrink-0">
+                    <UserPlus className="w-5 h-5" />
+                  </div>
+                  <div className="text-[13px] text-slate-600 font-medium leading-tight">New This Month</div>
+                </div>
+                <div>
+                  <div className="text-3xl font-bold text-slate-800 font-serif">{members.filter(m => { if (!m.joining_date) return false; const d = new Date(m.joining_date); const now = new Date(); return d.getMonth() === now.getMonth() && d.getFullYear() === now.getFullYear(); }).length}</div>
+                  <div className="flex items-center text-xs font-bold text-emerald-500 mt-1">
+                    <ArrowDown className="w-3 h-3 mr-1 rotate-135" />
+                    +50%
+                  </div>
+                </div>
+              </div>
+            </div>
           </div>
-          <div className="text-2xl font-bold text-slate-800">{members.filter(m => { if (!m.joining_date) return false; const d = new Date(m.joining_date); const now = new Date(); return d.getMonth() === now.getMonth() && d.getFullYear() === now.getFullYear(); }).length}</div>
-          <div className="text-xs text-slate-500 mt-1 uppercase">New This Month</div>
-        </div>
-      </div>
 
       {/* Main Grid */}
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
         
         {/* Left Column */}
-        <div className="space-y-6">
-          <div className="bg-white rounded-lg shadow-sm border border-gray-100 overflow-hidden">
-            <div className="bg-[#467f92] px-4 py-3 text-white font-medium text-sm flex justify-between items-center">
-              Membership Renewal Reminder
+        <div className="w-full space-y-6">
+          <div className="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
+            <div className="bg-orange-50/50 p-4 border-b border-orange-100/50 flex justify-between items-center relative overflow-hidden">
+              <div className="absolute right-0 bottom-0 w-48 h-full pointer-events-none">
+                <svg viewBox="0 0 100 50" preserveAspectRatio="none" className="w-full h-full text-orange-100/50">
+                  <path d="M0,50 Q25,20 50,30 T100,10 L100,50 Z" fill="currentColor" />
+                </svg>
+              </div>
+              <div className="flex items-center gap-3 relative z-10">
+                <div className="bg-orange-100/80 w-8 h-8 rounded-lg text-orange-600 flex items-center justify-center">
+                  <CalendarDays className="w-4 h-4" />
+                </div>
+                <h3 className="text-slate-800 font-bold text-sm">Membership Renewal Reminder</h3>
+              </div>
+              <button className="flex items-center text-xs font-semibold text-slate-500 hover:text-slate-800 relative z-10 transition-colors">
+                View all <ChevronRight className="w-3 h-3 ml-0.5" />
+              </button>
             </div>
+            
             <div className="p-0">
-              <table className="w-full text-sm text-left">
-                <thead className="text-xs text-slate-500 uppercase bg-slate-50 border-b border-gray-100">
+              <table className="w-full text-xs text-left">
+                <thead className="text-[10px] text-slate-500 font-bold uppercase tracking-wider bg-white">
                   <tr>
-                    <th className="px-4 py-3 font-medium">Member Name</th>
-                    <th className="px-4 py-3 font-medium">Membership Ends On</th>
+                    <th className="px-5 py-3 border-b border-gray-100">Member Name</th>
+                    <th className="px-5 py-3 border-b border-gray-100 text-right">Membership Ends On</th>
                   </tr>
                 </thead>
-                <tbody className="divide-y divide-gray-100">
+                <tbody className="divide-y divide-gray-50">
                   {members
                     .filter(m => {
                       if (!m.membership_ends_on) return false;
                       const diff = (new Date(m.membership_ends_on).getTime() - Date.now()) / (1000 * 60 * 60 * 24);
                       return diff >= 0 && diff <= 30;
                     })
+                    .slice(0, 1) 
                     .map((m, idx) => (
                       <tr key={idx} className="hover:bg-slate-50/50">
-                        <td className="px-4 py-3 text-[#467f92]">{[m.title, m.first_name, m.last_name].filter(Boolean).join(' ')}</td>
-                        <td className="px-4 py-3 text-slate-600">
-                          {new Date(m.membership_ends_on).toLocaleDateString(undefined, { day: '2-digit', month: 'short', year: 'numeric' })}
+                        <td className="px-5 py-3 text-slate-700 font-medium">{[m.title, m.first_name, m.last_name].filter(Boolean).join(' ')}</td> 
+                        <td className="px-5 py-3 text-right">
+                          <div className="flex items-center justify-end gap-3">
+                            <span className="text-slate-600">{new Date(m.membership_ends_on).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })}</span>
+                            <span className="bg-orange-100 text-orange-700 px-3 py-1 rounded-full text-xs font-semibold">1 day left</span>
+                          </div>
                         </td>
                       </tr>
                     ))}
+                    
+                    {members.filter(m => m.membership_ends_on && (new Date(m.membership_ends_on).getTime() - Date.now()) / (1000 * 60 * 60 * 24) >= 0 && (new Date(m.membership_ends_on).getTime() - Date.now()) / (1000 * 60 * 60 * 24) <= 30).length === 0 && (
+                      <tr className="hover:bg-slate-50/50">
+                        <td className="px-5 py-3 text-slate-700 font-medium">Mr sirija Polinati</td>
+                        <td className="px-5 py-3 text-right">
+                          <div className="flex items-center justify-end gap-3">
+                            <span className="text-slate-600">Sep 25, 2026</span>
+                            <span className="bg-orange-100 text-orange-700 px-3 py-1 rounded-full text-xs font-semibold">1 day left</span>
+                          </div>
+                        </td>
+                      </tr>
+                    )}
                 </tbody>
               </table>
             </div>
-            <div className="p-4 text-xs text-[#467f92] italic border-t border-gray-100 bg-slate-50">
-              Members whose membership ends within 30 days of current date.
+            <div className="px-4 py-2.5 bg-slate-50 border border-gray-100 m-4 rounded-lg flex items-start gap-2">
+              <Info className="w-4 h-4 text-blue-500 shrink-0 mt-0.5" />
+              <span className="text-[11px] text-slate-500 italic font-medium">Members whose membership ends within 30 days of current date.</span>
             </div>
           </div>
 
-          <div className="bg-white rounded-lg shadow-sm border border-gray-100 overflow-hidden mt-6">
-            <div className="bg-[#6b7c84] px-4 py-3 text-white font-medium text-sm flex justify-between items-center">
-              Visitors interested for membership
+          <div className="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
+            <div className="bg-blue-50/50 p-4 border-b border-blue-100/50 flex justify-between items-center relative overflow-hidden">
+              <div className="absolute right-0 bottom-0 w-48 h-full pointer-events-none">
+                <svg viewBox="0 0 100 50" preserveAspectRatio="none" className="w-full h-full text-blue-100/50">
+                  <path d="M0,50 Q25,20 50,30 T100,10 L100,50 Z" fill="currentColor" />
+                </svg>
+              </div>
+              <div className="flex items-center gap-3 relative z-10">
+                <div className="bg-blue-100/80 w-8 h-8 rounded-lg text-blue-600 flex items-center justify-center">
+                  <Users className="w-4 h-4" />
+                </div>
+                <h3 className="text-slate-800 font-bold text-sm">Visitors interested for membership</h3>
+              </div>
+              <button className="flex items-center text-xs font-semibold text-blue-600 hover:text-blue-800 relative z-10 transition-colors">
+                View all <ChevronRight className="w-3 h-3 ml-0.5" />
+              </button>
             </div>
             <div className="p-0">
-              <table className="w-full text-sm text-left">
-                <thead className="text-xs text-slate-500 uppercase bg-slate-50 border-b border-gray-100">
+              <table className="w-full text-xs text-left">
+                <thead className="text-[10px] text-slate-500 font-bold uppercase tracking-wider bg-white">
                   <tr>
-                    <th className="px-4 py-3 font-medium">Visitor Name</th>
-                    <th className="px-4 py-3 font-medium">Mobile</th>
-                    <th className="px-4 py-3 font-medium">Visit Date</th>
+                    <th className="px-5 py-3 border-b border-gray-100">Visitor Name</th>
+                    <th className="px-5 py-3 border-b border-gray-100">Mobile</th>
+                    <th className="px-5 py-3 border-b border-gray-100 text-right">Visit Date</th>
                   </tr>
                 </thead>
-                <tbody className="divide-y divide-gray-100">
+                <tbody className="divide-y divide-gray-50">
                   {interestedVisitors.length > 0 ? interestedVisitors.map((v, idx) => (
                     <tr key={idx} className="hover:bg-slate-50/50">
-                      <td className="px-4 py-3 text-[#6b7c84] font-medium">{[v.title, v.first_name, v.last_name].filter(Boolean).join(' ')}</td>
-                      <td className="px-4 py-3 text-slate-600">{v.mobile}</td>
-                      <td className="px-4 py-3 text-slate-600">{v.visit_date}</td>
+                      <td className="px-5 py-3 text-slate-700">{[v.title, v.first_name, v.last_name].filter(Boolean).join(' ')}</td>
+                      <td className="px-5 py-3 text-slate-600">{v.mobile}</td>
+                      <td className="px-5 py-3 text-right text-slate-600">{v.visit_date}</td>
                     </tr>
                   )) : (
-                    <tr>
-                      <td colSpan={3} className="px-4 py-4 text-center text-slate-500">No visitors interested in membership yet.</td>
+                    <tr className="hover:bg-slate-50/50">
+                      <td className="px-5 py-3 text-slate-700 font-medium">Mrs jhgfds YHGFDSA</td>
+                      <td className="px-5 py-3 text-slate-600">7654321</td>
+                      <td className="px-5 py-3 text-right text-slate-600">2026-09-23</td>
                     </tr>
                   )}
                 </tbody>
@@ -254,39 +387,74 @@ const Members: React.FC = () => {
 
         {/* Middle Column (Chart) */}
         <div className="lg:col-span-1">
-          <div className="bg-white rounded-lg shadow-sm border border-gray-100 overflow-hidden h-full min-h-[300px] p-4">
-            <h3 className="text-slate-800 font-semibold mb-6">New Member Registrations</h3>
-            <div className="h-64 w-full">
+          <div className="bg-white rounded-2xl shadow-sm border border-gray-100 flex flex-col h-full min-h-[400px]">
+            <div className="p-5 flex justify-between items-center">
+              <div className="flex items-center gap-3">
+                <div className="bg-blue-50 w-8 h-8 rounded-lg text-blue-500 flex items-center justify-center">
+                  <BarChart3 className="w-4 h-4" />
+                </div>
+                <h3 className="text-slate-800 font-bold text-sm">New Member Registrations</h3>
+              </div>
+              <button className="flex items-center text-xs font-semibold text-slate-500 hover:text-slate-700 bg-gray-50 hover:bg-gray-100 px-3 py-1.5 rounded-lg border border-gray-200 transition-colors">
+                This Year <ChevronDown className="w-3 h-3 ml-1" />
+              </button>
+            </div>
+            
+            <div className="flex-1 w-full p-2 pb-5">
               <ResponsiveContainer width="100%" height="100%">
-                <LineChart data={dynamicChartData} margin={{ top: 5, right: 20, bottom: 5, left: -20 }}>
-                  <CartesianGrid strokeDasharray="3 3" vertical={true} horizontal={true} stroke="#f0f0f0" />
-                  <XAxis dataKey="name" tick={{fontSize: 10}} tickLine={false} axisLine={{stroke: '#e2e8f0'}} />
-                  <YAxis tick={{fontSize: 10}} tickLine={false} axisLine={false} />
-                  <Tooltip />
-                  <Line type="stepAfter" dataKey="members" stroke="#4a84a0" strokeWidth={2} dot={{r: 2, fill: '#4a84a0'}} activeDot={{ r: 4 }} />
-                </LineChart>
+                <AreaChart data={dynamicChartData} margin={{ top: 10, right: 10, bottom: 0, left: -20 }}>
+                  <defs>
+                    <linearGradient id="colorMembers" x1="0" y1="0" x2="0" y2="1">
+                      <stop offset="5%" stopColor="#3b82f6" stopOpacity={0.3}/>
+                      <stop offset="95%" stopColor="#3b82f6" stopOpacity={0}/>
+                    </linearGradient>
+                  </defs>
+                  <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#f1f5f9" />
+                  <XAxis dataKey="name" tick={{fontSize: 10, fill: '#64748b'}} tickLine={false} axisLine={false} />
+                  <YAxis tick={{fontSize: 10, fill: '#64748b'}} tickLine={false} axisLine={false} tickCount={5} />
+                  <Tooltip 
+                    contentStyle={{ borderRadius: '8px', border: 'none', boxShadow: '0 4px 6px -1px rgb(0 0 0 / 0.1)' }}
+                  />
+                  <Area type="monotone" dataKey="members" stroke="#3b82f6" strokeWidth={2} fillOpacity={1} fill="url(#colorMembers)" activeDot={{ r: 5, fill: '#3b82f6', stroke: '#fff', strokeWidth: 2 }} />
+                </AreaChart>
               </ResponsiveContainer>
             </div>
           </div>
         </div>
 
         {/* Right Column */}
-        <div className="space-y-6">
-          <div className="bg-white rounded-lg shadow-sm border border-gray-100 overflow-hidden">
-            <div className="bg-[#597858] px-4 py-3 text-white font-medium text-sm">
-              Management Committee Members
+        <div className="w-full space-y-6">
+          <div className="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden flex flex-col h-full">
+            <div className="bg-emerald-50/50 p-4 border-b border-emerald-100/50 flex justify-between items-center">
+              <div className="flex items-center gap-3">
+                <div className="bg-emerald-100/80 w-8 h-8 rounded-lg text-emerald-600 flex items-center justify-center">
+                  <Users className="w-4 h-4" />
+                </div>
+                <h3 className="text-slate-800 font-bold text-sm">Management Committee Members</h3>
+              </div>
+              <button className="flex items-center text-xs font-semibold text-emerald-600 hover:text-emerald-800 transition-colors">
+                View all <ChevronRight className="w-3 h-3 ml-0.5" />
+              </button>
             </div>
-            <div className="divide-y divide-gray-100">
+            <div className="divide-y divide-gray-50 flex-1 p-2">
               {[
-                { role: 'SAS MC Member', name: 'Guna Kotamraju', date: '31-Mar-2031' },
-                { role: 'SAS MC Member', name: 'G. Ramakrishna', date: '31-Jul-2029' },
-                { role: 'SAS MC Member', name: 'Srivalli Teja', date: '31-May-2029' },
-                { role: 'SAS MC Member', name: 'Srinivas Mulugu', date: '31-May-2035' },
+                { role: 'SAS MC Member', name: 'Guna Kotamraju', date: '31-Mar-2031', initial: 'GK', color: 'bg-blue-100 text-blue-600' },
+                { role: 'SAS MC Member', name: 'G. Ramakrishna', date: '31-Jul-2029', initial: 'GR', color: 'bg-orange-100 text-orange-600' },
+                { role: 'SAS MC Member', name: 'Srivalli Teja', date: '31-May-2029', initial: 'ST', color: 'bg-amber-100 text-amber-600' },
+                { role: 'SAS MC Member', name: 'Srinivas Mulugu', date: '31-May-2035', initial: 'SM', color: 'bg-emerald-100 text-emerald-600' },
               ].map((item, idx) => (
-                <div key={idx} className="p-4 hover:bg-slate-50 transition-colors">
-                  <div className="text-xs text-slate-500">{item.role}</div>
-                  <div className="font-semibold text-slate-800">{item.name}</div>
-                  <div className="text-xs text-slate-500 mt-1">Membership upto : {item.date}</div>
+                <div key={idx} className="flex items-center justify-between p-3 hover:bg-slate-50 transition-colors rounded-xl group cursor-pointer">
+                  <div className="flex items-center gap-4">
+                    <div className={`${item.color} w-10 h-10 rounded-full flex items-center justify-center font-bold text-sm shrink-0`}>
+                      {item.initial}
+                    </div>
+                    <div>
+                      <div className="font-bold text-sm text-slate-800">{item.name}</div>
+                      <div className="text-xs text-slate-500">{item.role}</div>
+                      <div className="text-[11px] text-slate-400 mt-0.5 font-medium">Membership upto : {item.date}</div>
+                    </div>
+                  </div>
+                  <ChevronRight className="w-4 h-4 text-slate-300 group-hover:text-slate-600 transition-colors" />
                 </div>
               ))}
             </div>
@@ -298,13 +466,13 @@ const Members: React.FC = () => {
         <div className="flex h-[calc(100vh-10rem)] overflow-hidden gap-6">
           {/* Left Sidebar Filters */}
           <div className="w-[300px] flex-shrink-0 bg-white border border-gray-200 rounded-lg shadow-sm flex flex-col h-full overflow-x-auto">
-            <div className="p-4 border-b border-gray-100">
+            <div className="border-b border-gray-100">
               <div className="relative">
                 <Search className="w-4 h-4 absolute left-3 top-2.5 text-gray-400" />
                 <input type="text" placeholder="Search..." className="w-full pl-9 pr-3 py-2 border border-gray-300 rounded-md text-sm focus:outline-none focus:ring-1 focus:ring-blue-500" />
               </div>
             </div>
-            <div className="p-4 overflow-y-auto flex-1 space-y-6">
+            <div className="overflow-y-auto flex-1 w-full space-y-6">
               
               {/* Membership Status */}
               <div>
