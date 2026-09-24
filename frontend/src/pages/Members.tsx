@@ -3,6 +3,7 @@ import { Users, CheckCircle, Star, Clock, UserPlus, Calendar, Cake, Search, More
 import { LineChart, Line, AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
 import MemberForm from '../components/forms/MemberForm';
 import MemberDetails from '../components/MemberDetails';
+import BackgroundImage from '../assets/Background1.png';
 
 
 const Members: React.FC = () => {
@@ -99,7 +100,12 @@ const Members: React.FC = () => {
   }
 
   return (
-    <div className="w-full space-y-6">
+    <div className="w-full space-y-6 relative">
+      {/* Background image */}
+      <div
+        className="fixed top-[72px] bottom-0 left-0 md:left-[224px] right-0 pointer-events-none -z-10"
+        style={{ backgroundImage: `url(${BackgroundImage})`, backgroundSize: 'cover', backgroundPosition: 'center' }}
+      />
       {/* Header */}
       <div className="mb-6 relative">
         <div className="absolute right-0 top-[-2rem] w-[600px] h-[200px] pointer-events-none opacity-30 bg-no-repeat bg-right-top z-0" style={{ backgroundImage: "url('/sas-watermark.svg')" }}></div>

@@ -67,10 +67,10 @@ const UpcomingBirthdays: React.FC = () => {
     <div className="bg-white rounded-xl shadow-[0_2px_10px_rgba(0,0,0,0.03)] border border-gray-100/50 overflow-hidden">
       <div className="px-6 py-5 flex items-center justify-between">
         <div className="flex items-center space-x-3 text-[#0c3f50]">
-          <Gift className="w-[22px] h-[22px] stroke-[1.5]" />
+          <img src={UpcomingBirthdaysImg} alt="Upcoming Birthdays" className="w-8 h-8 object-contain" />
           <h2 className="text-[19px] font-serif font-bold">Upcoming birthdays</h2>
         </div>
-        <span className="bg-[#eaf5ef] text-[#2c815b] text-[12px] font-bold px-3 py-1 rounded-md">{data.length} upcoming</span>
+        <span className="bg-gradient-to-b from-[#eef7f2] to-[#d3eadf] text-[#1b6b45] text-[12px] font-extrabold px-3.5 py-1 rounded-full shadow-[0_4px_6px_rgba(44,129,91,0.2),inset_0_2px_2px_rgba(255,255,255,0.9),inset_0_-2px_3px_rgba(44,129,91,0.3)] border border-[#a2cfb9]">{data.length} upcoming</span>
       </div>
       <div className="px-6 pb-4 text-slate-500 text-[13px]">
         Member celebrations on the calendar
@@ -84,7 +84,7 @@ const UpcomingBirthdays: React.FC = () => {
         data.map((item, idx) => (
           <div key={idx} className="px-6 py-3 border-t border-gray-50 flex items-center justify-between group cursor-pointer hover:bg-gray-50/50 transition-colors">
             <div className="flex items-center space-x-4">
-              <div className="w-10 h-10 rounded-full bg-[#eaf5ef] text-[#2c815b] flex items-center justify-center font-bold text-[13px]">
+              <div className="w-10 h-10 rounded-full bg-gradient-to-b from-[#ddf0e6] to-[#b8dfc9] text-[#1b5e40] flex items-center justify-center font-bold text-[13px] shadow-[0_2px_4px_rgba(44,129,91,0.15),inset_0_1px_2px_rgba(255,255,255,0.8)] border border-[#c2ddd0] flex-shrink-0">
                 {getInitials(item.name)}
               </div>
               <div className="font-bold text-[#0c3f50] text-[14px]">{item.name}</div>
@@ -130,10 +130,10 @@ const MembershipRenewals: React.FC = () => {
     <div className="bg-white rounded-xl shadow-[0_2px_10px_rgba(0,0,0,0.03)] border border-gray-100/50 overflow-hidden">
       <div className="px-6 py-5 flex items-center justify-between">
         <div className="flex items-center space-x-3 text-[#0c3f50]">
-          <CalendarDays className="w-[22px] h-[22px] stroke-[1.5]" />
+          <img src={MembershipRenewalsImg} alt="Membership Renewals" className="w-8 h-8 object-contain" />
           <h2 className="text-[19px] font-serif font-bold">Membership renewals</h2>
         </div>
-        <span className="bg-[#fdf4e8] text-[#c98330] text-[12px] font-bold px-3 py-1 rounded-md">{data.length} due soon</span>
+        <span className="bg-gradient-to-b from-[#fdf6ec] to-[#f4e2ca] text-[#a46513] text-[12px] font-extrabold px-3.5 py-1 rounded-full shadow-[0_4px_6px_rgba(201,131,48,0.2),inset_0_2px_2px_rgba(255,255,255,0.9),inset_0_-2px_3px_rgba(201,131,48,0.3)] border border-[#e8c697]">{data.length} due soon</span>
       </div>
       <div className="px-6 pb-4 text-slate-500 text-[13px]">
         Members whose plans end soon
@@ -147,7 +147,7 @@ const MembershipRenewals: React.FC = () => {
         data.map((item, idx) => (
           <div key={idx} className="px-6 py-4 border-t border-gray-50 flex items-center justify-between group cursor-pointer hover:bg-gray-50/50 transition-colors">
             <div className="flex items-center space-x-4">
-              <div className="w-10 h-10 rounded-full bg-[#fdf4e8] text-[#c98330] flex items-center justify-center font-bold text-[13px]">
+              <div className="w-10 h-10 rounded-full bg-gradient-to-b from-[#fdf0d0] to-[#f5d99a] text-[#a46513] flex items-center justify-center font-bold text-[13px] shadow-[0_2px_4px_rgba(201,131,48,0.15),inset_0_1px_2px_rgba(255,255,255,0.8)] border border-[#edd9a3] flex-shrink-0">
                 {getInitials(item.name)}
               </div>
               <div>
@@ -165,6 +165,16 @@ const MembershipRenewals: React.FC = () => {
   );
 };
 
+import BackgroundImage from '../assets/Background1.png';
+import CalendarImg from '../assets/calendar.png';
+import TotalMembersImg from '../assets/total-members.png';
+import TodayVisitorsImg from '../assets/today-visitors.png';
+import TodaySalesImg from '../assets/today-sales.png';
+import LowStockImg from '../assets/low-stock-items.png';
+import MembershipRenewalsImg from '../assets/membership-renewals.png';
+import UpcomingBirthdaysImg from '../assets/upcoming-birthdays.png';
+import MyTasksImg from '../assets/my-tasks.png';
+
 // ── Home Page ─────────────────────────────────────────────────────────────────
 const Home: React.FC = () => {
   const navigate = useNavigate();
@@ -174,6 +184,8 @@ const Home: React.FC = () => {
   const [taskName, setTaskName] = useState('');
   const [taskDate, setTaskDate] = useState('');
   const [tasks, setTasks] = useState<{id: number, name: string, date: string, status: string}[]>([]);
+  const [donationPeriod, setDonationPeriod] = useState('This month');
+  const [donationDropdownOpen, setDonationDropdownOpen] = useState(false);
   const [kpiData, setKpiData] = useState({
     totalMembers: 0,
     todayVisitors: 0,
@@ -300,26 +312,31 @@ const Home: React.FC = () => {
   };
 
   return (
-    <div className="w-full space-y-6">
+    <div className="w-full relative">
+      <div 
+        className="fixed top-[72px] bottom-0 left-0 md:left-[224px] right-0 bg-no-repeat pointer-events-none -z-10" 
+        style={{ backgroundImage: `url(${BackgroundImage})`, backgroundSize: 'cover', backgroundPosition: 'center' }}
+      />
+      <div className="relative z-10 w-full space-y-6">
       
-      {/* Header Section */}
-      <div className="flex justify-between items-end mb-8 mt-2">
-        <div>
-          <h3 className="text-[#c39b5b] font-bold text-[11px] tracking-[0.2em] uppercase mb-3">Daily Overview</h3>
-          <h1 className="text-[32px] font-serif text-[#0c3f50] font-bold tracking-tight">{getGreeting(currentTime)}, Mrs Sharada Attili 👋</h1>
-          <p className="text-slate-500 mt-1 font-medium text-[15px]">Here's what's happening with your workspace today.</p>
+        {/* Header Section */}
+        <div className="flex justify-between items-end mb-8 mt-2">
+          <div>
+            <h3 className="text-[#c39b5b] font-bold text-[11px] tracking-[0.2em] uppercase mb-3">Daily Overview</h3>
+            <h1 className="text-[32px] font-serif text-[#0c3f50] font-bold tracking-tight">{getGreeting(currentTime)}, Mrs Sharada Attili 👋</h1>
+            <p className="text-[#59788d] mt-1 font-medium text-[15px]">Here's what's happening with your workspace today.</p>
+          </div>
+          <div className="flex items-center text-[#59788d] bg-white/60 border border-white/60 backdrop-blur-md px-4 py-2 rounded-xl font-medium text-[14px] shadow-sm">
+            <Calendar className="w-[18px] h-[18px] mr-2" />
+            {formatDate(currentTime)}
+          </div>
         </div>
-        <div className="flex items-center text-slate-500 font-medium text-[15px] pb-1">
-          <Calendar className="w-4 h-4 mr-2" />
-          {formatDate(currentTime)}
-        </div>
-      </div>
 
       {/* Renewal Banner */}
       <div className="bg-[#fef9e8] border border-[#f3e5c4] rounded-xl p-5 flex items-center justify-between shadow-sm">
         <div className="flex items-center space-x-5">
-          <div className="w-12 h-12 bg-[#f7eacc] rounded-xl flex items-center justify-center text-[#c98330]">
-             <CalendarDays className="w-6 h-6 stroke-[1.5]" />
+          <div className="w-16 h-16 flex items-center justify-center overflow-hidden flex-shrink-0">
+             <img src={CalendarImg} alt="Calendar" className="w-16 h-16 object-contain" />
           </div>
           <div>
             <h3 className="text-[#0c3f50] font-bold text-[16px]">{renewalCount} memberships renew in next 30 days</h3>
@@ -334,99 +351,83 @@ const Home: React.FC = () => {
       </div>
 
       {/* KPI Cards */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+      <div className="flex flex-wrap gap-4">
         {/* Total Members */}
-        <div className="bg-white rounded-xl shadow-sm border border-gray-100 relative overflow-hidden h-[150px]">
-          <div className="absolute bottom-0 left-0 right-0 h-full pointer-events-none z-0">
-             <svg viewBox="0 0 100 100" preserveAspectRatio="none" className="w-full h-full">
-                <path d="M0,100 L100,100 L100,50 Q75,80 50,85 T0,95 Z" fill="#e8effa" />
+        <div className="flex-1 min-w-[220px] bg-white rounded-[20px] shadow-sm border border-gray-200 relative overflow-hidden h-[140px] flex items-center p-5">
+          <div className="absolute bottom-0 right-0 w-[60%] h-[80%] pointer-events-none z-0">
+             <svg viewBox="0 0 100 100" preserveAspectRatio="none" className="w-full h-full opacity-60">
+                <path d="M0,100 L100,100 L100,30 C80,30 70,55 50,60 C30,65 15,90 0,100 Z" fill="#e0f0ff" />
+                <path d="M0,100 L100,100 L100,10 C85,15 75,45 50,55 C25,65 10,95 0,100 Z" fill="none" stroke="#bfdbfe" strokeWidth="1" />
              </svg>
           </div>
-          <div className="relative z-10 p-5 h-full flex flex-col justify-between">
-             <div className="flex justify-between items-start">
-                <div className="bg-[#f0f5fc] p-2.5 rounded-xl text-[#3b71ca] shadow-sm">
-                   <Users className="w-5 h-5 stroke-[1.5]" />
-                </div>
-                <div></div>
+          <div className="relative z-10 flex items-center space-x-5 w-full">
+             <div className="w-12 h-12 flex items-center justify-center flex-shrink-0">
+                <img src={TotalMembersImg} alt="Total Members" className="w-12 h-12 object-contain" />
              </div>
-             <div className="absolute inset-0 flex flex-col items-center justify-center pointer-events-none pt-4">
-                <p className="text-[#0c3f50] font-bold text-[11px] tracking-wide uppercase mb-1">Total Members</p>
-                <h2 className="text-[#0c3f50] text-[34px] font-bold font-serif leading-none tracking-tight">{kpiData.totalMembers}</h2>
-             </div>
-             <div className="mt-auto">
-                <span className="text-[#1b5e40] font-bold text-[12px]">↑ +12%</span>
+             <div className="flex flex-col">
+                <p className="text-[#0c3f50] font-semibold text-[14px]">Total Members</p>
+                <h2 className="text-[#0c3f50] text-[28px] font-bold leading-none mt-1 mb-1">{kpiData.totalMembers}</h2>
+                <span className="text-[#16a34a] font-bold text-[13px]">↑ +12%</span>
              </div>
           </div>
         </div>
 
         {/* Today's Visitors */}
-        <div className="bg-white rounded-xl shadow-sm border border-gray-100 relative overflow-hidden h-[150px]">
-          <div className="absolute bottom-0 left-0 right-0 h-full pointer-events-none z-0">
-             <svg viewBox="0 0 100 100" preserveAspectRatio="none" className="w-full h-full">
-                <path d="M0,100 L100,100 L100,45 Q75,40 50,65 T0,90 Z" fill="#f4ebf8" />
+        <div className="flex-1 min-w-[220px] bg-white rounded-[20px] shadow-sm border border-gray-200 relative overflow-hidden h-[140px] flex items-center p-5">
+          <div className="absolute bottom-0 right-0 w-[60%] h-[80%] pointer-events-none z-0">
+             <svg viewBox="0 0 100 100" preserveAspectRatio="none" className="w-full h-full opacity-60">
+                <path d="M0,100 L100,100 L100,30 C80,30 70,55 50,60 C30,65 15,90 0,100 Z" fill="#f3e8ff" />
+                <path d="M0,100 L100,100 L100,10 C85,15 75,45 50,55 C25,65 10,95 0,100 Z" fill="none" stroke="#d8b4fe" strokeWidth="1" />
              </svg>
           </div>
-          <div className="relative z-10 p-5 h-full flex flex-col justify-between">
-             <div className="flex justify-between items-start">
-                <div className="bg-[#f9f1fb] p-2.5 rounded-xl text-[#9044d4] shadow-sm">
-                   <UserCheck className="w-5 h-5 stroke-[1.5]" />
-                </div>
-                <div></div>
+          <div className="relative z-10 flex items-center space-x-5 w-full">
+             <div className="w-12 h-12 flex items-center justify-center flex-shrink-0">
+                <img src={TodayVisitorsImg} alt="Today's Visitors" className="w-12 h-12 object-contain" />
              </div>
-             <div className="absolute inset-0 flex flex-col items-center justify-center pointer-events-none pt-4">
-                <p className="text-[#0c3f50] font-bold text-[11px] tracking-wide uppercase mb-1">Today's Visitors</p>
-                <h2 className="text-[#0c3f50] text-[34px] font-bold font-serif leading-none tracking-tight">{kpiData.todayVisitors}</h2>
-             </div>
-             <div className="mt-auto">
-                <span className="text-[#1b5e40] font-bold text-[12px]">↑ +6%</span>
+             <div className="flex flex-col">
+                <p className="text-[#0c3f50] font-semibold text-[14px]">Today's Visitors</p>
+                <h2 className="text-[#0c3f50] text-[28px] font-bold leading-none mt-1 mb-1">{kpiData.todayVisitors}</h2>
+                <span className="text-[#16a34a] font-bold text-[13px]">↑ +6%</span>
              </div>
           </div>
         </div>
 
         {/* Today's Sales */}
-        <div className="bg-white rounded-xl shadow-sm border border-gray-100 relative overflow-hidden h-[150px]">
-          <div className="absolute bottom-0 left-0 right-0 h-full pointer-events-none z-0">
-             <svg viewBox="0 0 100 100" preserveAspectRatio="none" className="w-full h-full">
-                <path d="M0,100 L100,100 L100,30 Q60,70 50,55 T0,70 Z" fill="#e6f2ec" />
+        <div className="flex-1 min-w-[220px] bg-white rounded-[20px] shadow-sm border border-gray-200 relative overflow-hidden h-[140px] flex items-center p-5">
+          <div className="absolute bottom-0 right-0 w-[60%] h-[80%] pointer-events-none z-0">
+             <svg viewBox="0 0 100 100" preserveAspectRatio="none" className="w-full h-full opacity-60">
+                <path d="M0,100 L100,100 L100,30 C80,30 70,55 50,60 C30,65 15,90 0,100 Z" fill="#dcfce7" />
+                <path d="M0,100 L100,100 L100,10 C85,15 75,45 50,55 C25,65 10,95 0,100 Z" fill="none" stroke="#86efac" strokeWidth="1" />
              </svg>
           </div>
-          <div className="relative z-10 p-5 h-full flex flex-col justify-between">
-             <div className="flex justify-between items-start">
-                <div className="bg-[#ebf7f0] p-2.5 rounded-xl text-[#1b5e40] shadow-sm">
-                   <TrendingUp className="w-5 h-5 stroke-[1.5]" />
-                </div>
-                <div></div>
+          <div className="relative z-10 flex items-center space-x-5 w-full">
+             <div className="w-12 h-12 flex items-center justify-center flex-shrink-0">
+                <img src={TodaySalesImg} alt="Today's Sales" className="w-12 h-12 object-contain" />
              </div>
-             <div className="absolute inset-0 flex flex-col items-center justify-center pointer-events-none pt-4">
-                <p className="text-[#0c3f50] font-bold text-[11px] tracking-wide uppercase mb-1">Today's Sales</p>
-                <h2 className="text-[#0c3f50] text-[34px] font-bold font-serif leading-none tracking-tight">₹ {kpiData.todaySales.toLocaleString()}</h2>
-             </div>
-             <div className="mt-auto">
-                <span className="text-[#1b5e40] font-bold text-[12px]">↑ +8%</span>
+             <div className="flex flex-col">
+                <p className="text-[#0c3f50] font-semibold text-[14px]">Today's Sales</p>
+                <h2 className="text-[#0c3f50] text-[28px] font-bold leading-none mt-1 mb-1">₹ {kpiData.todaySales.toLocaleString()}</h2>
+                <span className="text-[#16a34a] font-bold text-[13px]">↑ +8%</span>
              </div>
           </div>
         </div>
 
         {/* Low Stock Items */}
-        <div className="bg-white rounded-xl shadow-sm border border-gray-100 relative overflow-hidden h-[150px]">
-          <div className="absolute bottom-0 left-0 right-0 h-full pointer-events-none z-0">
-             <svg viewBox="0 0 100 100" preserveAspectRatio="none" className="w-full h-full">
-                <path d="M0,100 L100,100 L100,60 Q80,50 60,60 T0,75 Z" fill="#faeae0" />
+        <div className="flex-1 min-w-[220px] bg-white rounded-[20px] shadow-sm border border-gray-200 relative overflow-hidden h-[140px] flex items-center p-5">
+          <div className="absolute bottom-0 right-0 w-[60%] h-[80%] pointer-events-none z-0">
+             <svg viewBox="0 0 100 100" preserveAspectRatio="none" className="w-full h-full opacity-60">
+                <path d="M0,100 L100,100 L100,30 C80,30 70,55 50,60 C30,65 15,90 0,100 Z" fill="#ffedd5" />
+                <path d="M0,100 L100,100 L100,10 C85,15 75,45 50,55 C25,65 10,95 0,100 Z" fill="none" stroke="#fdba74" strokeWidth="1" />
              </svg>
           </div>
-          <div className="relative z-10 p-5 h-full flex flex-col justify-between">
-             <div className="flex justify-between items-start">
-                <div className="bg-[#fcf0ea] p-2.5 rounded-xl text-[#e66c2d] shadow-sm">
-                   <Package className="w-5 h-5 stroke-[1.5]" />
-                </div>
-                <div></div>
+          <div className="relative z-10 flex items-center space-x-5 w-full">
+             <div className="w-12 h-12 flex items-center justify-center flex-shrink-0">
+                <img src={LowStockImg} alt="Low Stock Items" className="w-12 h-12 object-contain" />
              </div>
-             <div className="absolute inset-0 flex flex-col items-center justify-center pointer-events-none pt-4">
-                <p className="text-[#0c3f50] font-bold text-[11px] tracking-wide uppercase mb-1">Low Stock Items</p>
-                <h2 className="text-[#0c3f50] text-[34px] font-bold font-serif leading-none tracking-tight">{kpiData.lowStock}</h2>
-             </div>
-             <div className="mt-auto">
-                <span className="text-[#e14b38] font-bold text-[12px]">↓ -2</span>
+             <div className="flex flex-col">
+                <p className="text-[#0c3f50] font-semibold text-[14px]">Low Stock Items</p>
+                <h2 className="text-[#0c3f50] text-[28px] font-bold leading-none mt-1 mb-1">{kpiData.lowStock}</h2>
+                <span className="text-[#ea580c] font-bold text-[13px]">↓ -2</span>
              </div>
           </div>
         </div>
@@ -448,14 +449,12 @@ const Home: React.FC = () => {
           <div className="bg-white rounded-xl shadow-[0_2px_10px_rgba(0,0,0,0.03)] border border-gray-100/50 overflow-hidden h-[240px] flex flex-col">
             <div className="px-6 py-5 flex items-center justify-between">
               <div className="flex items-center space-x-3 text-[#0c3f50]">
-                <div className="bg-[#e8f1fc] text-[#3b82f6] p-1 rounded-md border border-[#cbe1fc]">
-                  <Check className="w-5 h-5 stroke-[2]" />
-                </div>
+                <img src={MyTasksImg} alt="My Tasks" className="w-8 h-8 object-contain" />
                 <h2 className="text-[19px] font-serif font-bold">My tasks</h2>
               </div>
               <button 
                 onClick={() => setIsTaskModalOpen(true)}
-                className="flex items-center space-x-1.5 bg-[#f0f6ff] text-[#2563eb] hover:bg-[#e0edff] transition-colors px-3 py-1.5 rounded-lg text-[13px] font-bold shadow-sm"
+                className="flex items-center space-x-1.5 bg-[#0c3f50] hover:bg-[#082a36] text-white font-medium text-[13px] px-4 py-2 rounded-lg transition-colors group shadow-sm"
               >
                 <Plus className="w-4 h-4 stroke-[2.5]" />
                 <span>Add task</span>
@@ -495,9 +494,32 @@ const Home: React.FC = () => {
               <div className="flex items-center space-x-3 text-[#0c3f50]">
                 <h2 className="text-[19px] font-serif font-bold">Top donations</h2>
               </div>
-              <div className="flex items-center space-x-2 border border-gray-200 rounded-lg px-3 py-1.5 text-sm text-gray-600 bg-white cursor-pointer shadow-sm">
-                <span>This month</span>
-                <ChevronDown className="w-4 h-4 text-gray-400" />
+              {/* Donation Period Dropdown */}
+              <div className="relative">
+                <div
+                  className="flex items-center space-x-2 border border-gray-200 rounded-lg px-3 py-1.5 text-sm text-gray-600 bg-white cursor-pointer shadow-sm hover:bg-gray-50 transition-colors select-none"
+                  onClick={() => setDonationDropdownOpen(!donationDropdownOpen)}
+                >
+                  <span>{donationPeriod}</span>
+                  <ChevronDown className={`w-4 h-4 text-gray-400 transition-transform ${donationDropdownOpen ? 'rotate-180' : ''}`} />
+                </div>
+                {donationDropdownOpen && (
+                  <div className="absolute right-0 top-full mt-1 bg-white border border-gray-200 rounded-lg shadow-lg z-50 min-w-[140px] overflow-hidden">
+                    {['This week', 'This month', 'Last 3 months', 'This year', 'All time'].map(opt => (
+                      <button
+                        key={opt}
+                        className={`w-full text-left px-4 py-2.5 text-sm transition-colors ${
+                          donationPeriod === opt
+                            ? 'bg-[#fdf4e8] text-[#a46513] font-semibold'
+                            : 'text-gray-700 hover:bg-gray-50'
+                        }`}
+                        onClick={() => { setDonationPeriod(opt); setDonationDropdownOpen(false); }}
+                      >
+                        {opt}
+                      </button>
+                    ))}
+                  </div>
+                )}
               </div>
             </div>
             <div className="flex-1 flex flex-col mx-6 border-t border-gray-50 pt-6">
@@ -583,7 +605,7 @@ const Home: React.FC = () => {
           </div>
         </div>
       )}
-
+    </div>
     </div>
   );
 };

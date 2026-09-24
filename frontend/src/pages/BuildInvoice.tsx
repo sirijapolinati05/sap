@@ -279,10 +279,9 @@ const BuildInvoice: React.FC<BuildInvoiceProps> = ({ onBack, onSave, initialInvo
   }
 
   return (
-    <div className="md:bg-[#f8f9fa] flex flex-col font-sans h-full">
+    <div className="flex flex-col font-sans h-full bg-transparent">
       {/* Header */}
       <div className="mb-6 relative">
-        <div className="absolute right-0 top-[-2rem] w-[600px] h-[200px] pointer-events-none opacity-30 bg-no-repeat bg-right-top z-0" style={{ backgroundImage: "url('/sas-watermark.svg')" }}></div>
         <div className="flex justify-between items-start relative z-10">
           <div>
             <div className="text-[10px] font-bold text-amber-500 tracking-wider uppercase mb-1 flex items-center gap-2">

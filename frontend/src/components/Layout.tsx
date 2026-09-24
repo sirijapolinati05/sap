@@ -6,6 +6,7 @@ import {
   BookOpen, FileBarChart, Settings, Key, LogOut, ChevronDown, Flower2,
   Search, Bell, ChevronRight
 } from 'lucide-react';
+import BackgroundImage from '../assets/Background1.png';
 
 const Layout: React.FC = () => {
   const navigate = useNavigate();
@@ -31,7 +32,12 @@ const Layout: React.FC = () => {
   };
 
   return (
-    <div className="min-h-screen bg-[#fbf9f6] flex flex-col font-sans text-slate-800">
+    <div className="min-h-screen flex flex-col font-sans text-slate-800 relative">
+      {/* Global fixed background */}
+      <div
+        className="fixed top-0 bottom-0 left-0 right-0 pointer-events-none -z-20"
+        style={{ backgroundImage: `url(${BackgroundImage})`, backgroundSize: 'cover', backgroundPosition: 'center' }}
+      />
       
       {/* Top Navbar */}
       <header className="h-[72px] flex items-center justify-between px-4 sm:px-10 bg-white border-b border-gray-100 fixed top-0 left-0 right-0 z-30 md:pl-[264px] print:hidden">
@@ -48,18 +54,20 @@ const Layout: React.FC = () => {
           </div>
         </div>
 
-        {/* Center Search Bar */}
+        {/* Center Search Bar - 3D inset look */}
         <div className="absolute left-1/2 -translate-x-1/2 w-full max-w-xl hidden sm:flex items-center px-4">
-          <div className="flex-1 flex items-center bg-[#f4f7f9] border border-[#e8edf2] rounded-full px-4 py-1.5 focus-within:bg-white focus-within:border-blue-300 focus-within:shadow-sm transition-all">
-            <Search className="w-4 h-4 text-blue-500 mr-2" />
-            <input 
+          <div className="flex-1 flex items-center rounded-full px-4 py-2 transition-all"
+            style={{
+              background: 'linear-gradient(145deg, #e2e8f0, #f8fafc)',
+              boxShadow: 'inset 3px 3px 6px rgba(0,0,0,0.12), inset -2px -2px 5px rgba(255,255,255,0.9), 0 1px 2px rgba(0,0,0,0.05)'
+            }}
+          >
+            <Search className="w-4 h-4 text-slate-400 mr-2 flex-shrink-0" />
+            <input
               type="text"
               placeholder="Search members, sales, inventory..."
-              className="flex-1 bg-transparent border-none focus:outline-none text-sm text-slate-700 py-1"
+              className="flex-1 bg-transparent border-none focus:outline-none text-sm text-slate-600 placeholder-slate-400"
             />
-            <div className="flex items-center bg-white border border-gray-200 rounded px-2 py-0.5 ml-2 shadow-sm">
-              <span className="text-[10px] font-medium text-slate-500">Ctrl + K</span>
-            </div>
           </div>
         </div>
 
@@ -69,9 +77,7 @@ const Layout: React.FC = () => {
             <span className="absolute -top-1 -right-1 w-2.5 h-2.5 bg-red-500 rounded-full border-2 border-white"></span>
           </button>
 
-          <button className="text-slate-600 hover:text-slate-900 transition-colors hidden sm:block">
-            <HelpCircle className="w-5 h-5" />
-          </button>
+          
           
           <div className="group relative flex items-center space-x-1.5 cursor-pointer p-1 rounded transition-colors">
             <span className="font-medium text-slate-700 hidden sm:block">Mrs Sharada Attili</span>
@@ -179,18 +185,6 @@ const Layout: React.FC = () => {
 
         {/* Main Content Area */}
         <main className="flex-1 overflow-y-auto bg-transparent md:ml-56 px-4 sm:px-10 py-8 relative min-h-screen">
-          {/* Subtle background mandala/floral pattern */}
-          <div className="absolute top-0 right-10 w-[600px] h-[600px] opacity-[0.03] pointer-events-none text-[#0c3f50] hidden md:block">
-            <svg viewBox="0 0 100 100" fill="currentColor" className="w-full h-full">
-              <path d="M50 0C50 0 65 35 100 50C100 50 65 65 50 100C50 100 35 65 0 50C0 50 35 35 50 0Z" />
-              <circle cx="50" cy="50" r="40" stroke="currentColor" strokeWidth="0.5" fill="none" />
-              <circle cx="50" cy="50" r="30" stroke="currentColor" strokeWidth="0.5" fill="none" />
-              <circle cx="50" cy="50" r="20" stroke="currentColor" strokeWidth="0.5" fill="none" />
-              {[...Array(12)].map((_, i) => (
-                <line key={i} x1="50" y1="50" x2={50 + 40 * Math.cos(i * 30 * Math.PI / 180)} y2={50 + 40 * Math.sin(i * 30 * Math.PI / 180)} stroke="currentColor" strokeWidth="0.5" />
-              ))}
-            </svg>
-          </div>
           <div className="relative z-10 w-full">
             <Outlet />
           </div>
