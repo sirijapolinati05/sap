@@ -16,6 +16,10 @@
       "destination": { "service": "backend" }
     },
     {
+      "source": "/([^.]*)",
+      "destination": { "service": "frontend", "path": "/index.html" }
+    },
+    {
       "source": "/(.*)",
       "destination": { "service": "frontend" }
     }
